@@ -189,6 +189,26 @@ the commit it ran at.
   share of variance on the first component; and the cosine between the released axis and the
   default vector minus the mean role vector (the paper's definition of the axis).
 
+**Result, 2026-11-16: PASS.** Run at commit `2623cbd`, the commit that fixed the threshold;
+full output in `results/gate1_axis_pc1.json`.
+
+| Quantity | Value |
+|---|---|
+| Absolute cosine, axis against first principal component, layer 32 | **0.672** (threshold 0.60) |
+| Role vectors loaded; tensor shape | 275; (64, 5120) |
+| Clears the paper's middle-layer figure of 0.71 | **no** |
+| Lowest absolute cosine over the 64 layers | 0.564 (two layers fall below 0.60) |
+| Share of variance on the first component, layer 32 | 0.379 |
+| Cosine, released axis against default vector minus mean role vector, layer 32 | 0.9998 |
+
+What this does and does not show. The gate passes as specified. The released axis is, almost
+exactly, the contrast the paper defines (0.9998). The paper's two figures for the cosine with the
+first principal component are **not** reproduced from the released Qwen files with this
+procedure: 0.672 against "above 0.71" at layer 32, and two layers below "above 0.60 at every
+layer". The cause was not investigated, because the gate allows one variant only; candidate
+explanations include a different layer indexing or a different set of inputs to the paper's PCA.
+The difference is reported in the write-up as found.
+
 ### 5.2 Gate 2: memory (GPU)
 
 One full-length conversation runs on one 80 GB card with activations captured at the five layers
