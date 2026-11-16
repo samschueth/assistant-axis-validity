@@ -1,0 +1,8 @@
+# Laptop stages: gate 1, the sample-size simulation, analysis, figures, tests.
+# Compile with: uv pip compile requirements.in -o requirements.txt
+numpy
+scipy
+torch
+huggingface_hub
+matplotlib
+pytest

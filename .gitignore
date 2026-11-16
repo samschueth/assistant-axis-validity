@@ -1,0 +1,30 @@
+# Large artifacts — regenerate, never commit (see DATA_AND_MODELS.md)
+*.pt
+*.pth
+*.safetensors
+*.bin
+*.npy
+*.npz
+*.h5
+activations/
+checkpoints/
+cache/
+data/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+
+# Local-only pre-publication safety term list (see Makefile: safety-check)
+.safety-terms
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/

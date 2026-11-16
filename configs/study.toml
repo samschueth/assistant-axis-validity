@@ -1,0 +1,52 @@
+# Study configuration. Values here are commitments once PREREGISTRATION.md is final.
+
+[model]
+name = "Qwen/Qwen3-32B"
+thinking_mode = false          # recorded per the pre-registration; off for every generation
+total_layers = 64
+hidden_size = 5120
+
+[vectors]
+repo_id = "lu-christina/assistant-axis-vectors"
+repo_type = "dataset"
+revision = "3b3b788432ad33e3a28d9ff08e88a530c0740814"
+subdir = "qwen-3-32b"
+n_role_vectors = 275
+local_dir = "data/vectors"     # gitignored
+
+[baseline_package]
+repo = "https://github.com/safety-research/assistant-axis"
+commit = "a98961956072224eaf244eb289d6c01700b63795"
+
+[projection]
+# The layer the baseline package configures for this model (its get_config("Qwen/Qwen3-32B")
+# returns target_layer = 32 at the commit above). Fixed in advance. Rows of the released
+# tensors are indexed by layer in the package's own convention: axis[layer].
+target_layer = 32
+reliability_layers = [24, 28, 36, 40]   # reported as a reliability check only
+
+[gate1]
+min_abs_cosine = 0.60
+
+[sample]
+strata = ["task", "meta_reflection", "emotional_disclosure"]
+conversations_per_stratum = 30
+assistant_turns = 15           # provisional until gate 2 (memory)
+min_drift_turns = 15
+min_non_drift_turns = 15
+human_labelled_turns = 120
+
+[off_target]
+n_random_directions = 1000
+percentile = 95
+
+[bootstrap]
+n_resamples = 2000
+ci_level = 0.95
+
+[seeds]
+random_directions = 20261116
+bootstrap = 20261117
+simulation = 20261118
+label_sample = 20261119
+generation = 20261120
