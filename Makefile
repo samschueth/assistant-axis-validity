@@ -1,5 +1,5 @@
 # One command per stage. Seeds are fixed in configs/study.toml; see DATA_AND_MODELS.md.
-.PHONY: help setup fetch-vectors gate1 simulate generate project judge analyze figures test safety-check
+.PHONY: help setup fetch-vectors gate1 gate2 simulate generate project judge analyze figures test safety-check
 
 PY = .venv/bin/python
 
@@ -7,6 +7,7 @@ help:
 	@echo "setup         pinned laptop environment"
 	@echo "fetch-vectors download the released axis and role vectors (pinned revision)"
 	@echo "gate1         gate 1: released axis vs first principal component of the role vectors"
+	@echo "gate2         GPU: gate 2, memory for one full-length conversation with capture"
 	@echo "simulate      sample-size simulation on synthetic data"
 	@echo "generate      GPU: conversation generation and activation capture"
 	@echo "project       per-turn projections, target and off-target"
@@ -31,6 +32,9 @@ fetch-vectors:
 
 gate1:
 	$(PY) src/gate1_axis_pc1.py
+
+gate2:
+	python src/gate2_memory.py
 
 simulate:
 	$(PY) src/analysis/sample_size_sim.py

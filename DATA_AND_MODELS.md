@@ -27,11 +27,19 @@ weights-only loading.
 
 | Source | Use | Licence | Pinned commit |
 |---|---|---|---|
-| `github.com/safety-research/assistant-axis` | model loading and activation capture in the GPU stages; the configured target layer for the model | **none stated** | `a98961956072224eaf244eb289d6c01700b63795` |
+| `github.com/safety-research/assistant-axis` | read for three conventions, listed below | **none stated** | `a98961956072224eaf244eb289d6c01700b63795` |
 
-Because that repository states no licence, it is installed and called (`requirements-gpu.txt`)
-and **no code or transcript from it is copied into this repository**. Its released transcripts
-are read for orientation only.
+That repository states no licence. **No code or transcript from it is copied into this
+repository, and it is not installed**: it pulls in a serving stack the study does not need. Its
+source was read at the pinned commit for the conventions the released vectors depend on, and the
+capture code here is written for this study to follow them:
+
+- the target layer for `Qwen/Qwen3-32B` is 32, of 64;
+- layer L means the output of transformer block L, zero-indexed;
+- a turn's activation is the mean over the reply's tokens in a forward pass over the
+  conversation, with thinking mode off.
+
+Its released transcripts are read for orientation only.
 
 ## Datasets and transcripts
 
@@ -58,7 +66,7 @@ All seeds are in `configs/study.toml` under `[seeds]`.
 | Stage | File | State |
 |---|---|---|
 | laptop: gate 1, simulation, analysis, figures, tests | `requirements.txt`, compiled from `requirements.in` | pinned |
-| GPU: generation and capture | `requirements-gpu.txt` | baseline package pinned by commit; the full freeze is recorded here before the first run |
+| GPU: generation and capture | `requirements-gpu.txt` on image `runpod/pytorch:2.4.0-py3.11-cuda12.4.1-devel-ubuntu22.04` | pinned |
 
 Python 3.12.
 

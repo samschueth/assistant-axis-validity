@@ -1,6 +1,13 @@
 # GPU stages only (generation and activation capture). Not needed for gate 1, the simulation,
-# the analysis or the figures. The baseline package carries no licence: it is installed and
-# called, never copied. Exact versions of everything it pulls in are frozen on the instance and
-# recorded in DATA_AND_MODELS.md before the first run that produces anything in results/.
--r requirements.txt
-assistant-axis @ git+https://github.com/safety-research/assistant-axis@a98961956072224eaf244eb289d6c01700b63795
+# the analysis or the figures. torch comes from the instance image (recorded in
+# DATA_AND_MODELS.md).
+#
+# The Assistant Axis baseline package is NOT installed. It carries no licence and pulls in a
+# serving stack this study does not need. What the study needs from it is one convention, read
+# from its source at the pinned commit and recorded in DATA_AND_MODELS.md: layer L is the output
+# of transformer block L, and a turn's activation is the mean over the reply's tokens in a
+# forward pass over the conversation. The capture code here is written for this study.
+transformers==4.51.3
+accelerate==1.6.0
+hf_transfer==0.1.9
+numpy

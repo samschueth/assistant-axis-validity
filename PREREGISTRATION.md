@@ -224,6 +224,14 @@ in section 4.2, without running out of memory. The turn count is fixed only afte
 15 assistant turns complete. If 15 do not fit, the count is reduced to the largest that does;
 **fewer than 10 is a fail** **[owner to confirm the floor of 10]**.
 
+**Fixed before it was run.** The script is `src/gate2_memory.py`. "Full-length" is the worst
+case the study can produce: weights in 16-bit floats on one card; every assistant turn forced to
+the cap of 384 new tokens; long filler user turns of about 150 tokens; then one forward pass
+over the whole conversation with hooks on the five layers, which is how the study captures
+activations. The gate measures memory only. Its text is filler, it is not study data, and no
+projection is computed from it. The cap of 384 tokens per assistant turn applies to the whole
+study.
+
 ### 5.3 Gate 3: separation (GPU)
 
 On a small fresh set, the axis separates default-assistant replies from replies given under a
