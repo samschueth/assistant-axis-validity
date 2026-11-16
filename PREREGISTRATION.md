@@ -376,7 +376,58 @@ The judge's ratings are not used as the outcome until it passes.
 
 ## 9. Sample size
 
-*The simulation is committed and run before this section is completed.*
+**Simulation run 2026-11-16** at commit `7b2c874`, which fixed the script and the scenario grid
+before any output was read. Script: `src/analysis/sample_size_sim.py`. Full table:
+`results/sample_size_sim.md`. The data are synthetic and every grid value is an assumption, not
+an estimate from data. The analysis applied to each simulated dataset is the one in section 4,
+including the entry rule and the decision rule. 1,000 replicates per scenario.
+
+**What the design can detect.** Power is the share of replicates in which the primary gap is
+"above zero" under section 4.6.
+
+| True target AUC, within stratum | Off-target directions carry no signal | Off-target P95 of 0.05 | Off-target P95 of 0.10 | P95 of 0.05, strong clustering |
+|---|---|---|---|---|
+| 0.65 | 0.06–0.11 | 0.04–0.08 | 0.01 | 0.01 |
+| 0.70 | 0.43–0.58 | 0.31–0.49 | 0.19–0.25 | 0.12 |
+| 0.75 | 0.86–0.95 | 0.82–0.92 | 0.65–0.78 | 0.53 |
+| 0.80 | 0.99–1.00 | 0.98–0.99 | 0.96–0.99 | 0.90 |
+
+Ranges run from the lower base-rate setting (2%, 15%, 15% drift turns in the three strata) to the
+higher one (5%, 35%, 35%). "Off-target P95" is the true 95th percentile of the off-target scores.
+The strong-clustering column was run at the higher base rates only.
+
+- **The bar has a noise floor of about 0.10.** With 275 off-target directions that carry no
+  signal at all, the 95th percentile of their scores is still about 0.10, from sampling noise
+  alone. So a target AUC of 0.60 gives a gap of zero on average. The floor rises to 0.11–0.14
+  when off-target directions carry real signal or clustering within conversations is strong.
+- **The smallest target AUC detected with at least 80% power is 0.75** when clustering is
+  moderate and off-target signal is weak, and **0.80** when off-target signal is strong or
+  clustering is strong.
+- **A true target AUC of 0.70 is more likely to be missed than found** (power 0.12–0.58), even
+  though the point estimate of the gap is positive in about 95% or more of those replicates. The
+  decision rule is what costs the power: the interval is wide.
+- **False positives.** With a true target AUC of 0.50, or a target that is exchangeable with the
+  off-target directions, the gap was above zero in 0 of 1,000 replicates in every scenario. The
+  rule is conservative.
+- **Strata.** The two higher-drift strata met the 15-and-15 rule in every replicate, so the
+  primary estimand was always estimable. The task stratum entered in about 85% of replicates at
+  a 5% drift rate and about 12% at 2%. The result is expected to rest on two strata.
+
+**Is 1,350 turns enough?** It is enough for an effect at the upper end of what the literature
+suggests and not for a moderate one. As a rough orientation only: the Assistant Axis paper's
+r = 0.39–0.52 corresponds to an AUC of about 0.73–0.81 under an equal-variance normal model with
+balanced classes, and that figure is a between-prompt, first-turn statistic, not a within-stratum
+turn-level one. A null from this study therefore rules out a strong advantage for the axis
+(AUC of 0.80 or more) and does **not** rule out a moderate one (0.70). The write-up must say so.
+
+**Limits of the simulation.** The clustering, the correlation among off-target directions and
+the base rates are assumed. Gate 4 replaces the base-rate assumption with a pilot estimate.
+
+**Options at the first review [owner to decide].** (a) Accept the design as it is, with the
+limit above stated in the write-up. (b) Use a one-sided 95% bound for "above zero", since the
+hypothesis is one-sided; this raises power and is not simulated here. (c) Add conversations to
+the two higher-drift strata within the budget cap. Nothing is changed without a decision, and
+any change is made before the pre-registration is marked final.
 
 **Stopping rule.** The sample is 90 conversations. No conversations are added after any rating
 or projection has been examined.
@@ -431,6 +482,7 @@ Decisions the governing plan leaves open, with the proposal made here:
 | Judge minimum | Gwet's AC1 ≥ 0.65 on the drift cut; one clarification allowed | 8 |
 | Disclosure wording | section 3 as written | 3 |
 | Simulated-user and judge models | to be named before the pilot | 6 |
+| Sample size and decision rule | accept as is, or one of the options in section 9 | 9 |
 
 ## 14. Deviations
 
