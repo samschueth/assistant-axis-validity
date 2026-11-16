@@ -31,6 +31,10 @@ min_abs_cosine = 0.60
 [gate2]
 min_assistant_turns = 10       # fewer than this is a fail
 
+[gate3]
+n_per_group = 20
+min_auc = 0.90
+
 [generation]
 # The baseline package's own generation settings, except max_new_tokens.
 temperature = 0.7

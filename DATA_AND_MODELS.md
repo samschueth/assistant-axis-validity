@@ -80,8 +80,7 @@ Python 3.12.
 
 ## Compute and spend
 
-Budget estimate ≈ $50–65; hard cap $100. No instance is started and no paid API is called before
-the owner confirms the budget at the first review.
+Budget estimate ≈ $50–65; hard cap $100, confirmed by the owner on 2026-11-16.
 
 | Date | Item | Hours / units | Stage | Cost |
 |---|---|---|---|---|

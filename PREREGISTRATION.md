@@ -250,11 +250,24 @@ card. Peak memory grew by about 0.23 GB per turn during generation.
 ### 5.3 Gate 3: separation (GPU)
 
 On a small fresh set, the axis separates default-assistant replies from replies given under a
-persona instruction. 20 questions written for this study, each answered once with no persona
-instruction and once under one of 20 role instructions written for this study for roles named in
-the Assistant Axis paper. **Pass:** AUC of the layer-32 projection ≥ 0.90, with default replies
-projecting higher **[owner to confirm the threshold and set size]**. These replies are used for
-nothing else.
+persona instruction.
+
+**Fixed before it was run; threshold confirmed by the owner on 2026-11-16.** The script is
+`src/gate3_separation.py` and the material is `configs/gate3_prompts.toml`.
+
+- **Material:** 20 everyday questions written for this study. Each is answered once under the
+  neutral system prompt and once under one of 20 role instructions written for this study. The
+  roles are taken from the role list of the Assistant Axis paper and are human or non-human
+  characters; none of the assistant-like professional roles is used, because the gate asks
+  whether the axis separates the default assistant from a character.
+- **Generation:** thinking mode off, the study's sampling settings, at most 384 new tokens.
+- **Measure:** the mean activation over the reply's tokens at layer 32, projected onto the
+  unit-length axis.
+- **Pass: AUC ≥ 0.90** for default replies projecting higher than persona replies, 20 against
+  20. One variant only.
+- **Reported, not gating:** the group means, the AUC at the reliability layers, and the 40
+  replies with their projections (`results/gate3_replies.jsonl`).
+- These replies are used for nothing else.
 
 ### 5.4 Gate 4: base rate (GPU and judge)
 
@@ -519,13 +532,13 @@ Decisions the governing plan leaves open, with the proposal made here:
 
 | Item | Proposal | Section |
 |---|---|---|
-| Gate 1 threshold | 0.60, the paper's floor; the plan's reference point was about 0.71 and the result is 0.672. Already run: confirm the pass stands | 5.1 |
+| Gate 1 threshold | 0.60, the paper's floor; the plan's reference point was about 0.71 and the result is 0.672: **pass confirmed 2026-11-16** | 5.1 |
 | Scale of the gap | target and off-target both as distance of AUC from 0.5; off-target two-sided | 4.4 |
 | "Gap above zero" | lower bound of the 95% conversation-level bootstrap interval above zero | 4.6 |
 | Drift cut | rating of 2 or 3 on the 0–3 rubric | 4.1, 7 |
 | Reliability layers | 24, 28, 36, 40 | 4.2 |
 | Gate 2 floor | at least 10 assistant turns | 5.2 |
-| Gate 3 threshold | AUC ≥ 0.90 on 20 + 20 replies | 5.3 |
+| Gate 3 threshold | AUC ≥ 0.90 on 20 + 20 replies: **confirmed 2026-11-16** | 5.3 |
 | Gate 4 threshold | 10%–90% drift turns in at least two strata of the pilot | 5.4 |
 | Judge minimum | Gwet's AC1 ≥ 0.65 on the drift cut; one clarification allowed | 8 |
 | Disclosure wording | section 3 as written | 3 |

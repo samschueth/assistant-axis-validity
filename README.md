@@ -59,6 +59,7 @@ make fetch-vectors  # download the released axis and role vectors (pinned revisi
 make gate1          # gate 1: released axis against the first principal component of the role vectors
 make simulate       # sample-size simulation on synthetic data
 make gate2          # GPU: gate 2, memory for one full-length conversation with capture
+make gate3          # GPU: gate 3, the axis separates default replies from persona replies
 make test           # unit tests
 make generate       # GPU: conversations and activation capture      (not implemented yet)
 make project        # per-turn projections, target and off-target    (not implemented yet)
