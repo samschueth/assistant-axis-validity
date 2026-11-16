@@ -18,8 +18,13 @@ help:
 
 NOT_IMPL = @echo "not implemented yet: see PREREGISTRATION.md; this target is a placeholder" && exit 1
 
+# Python 3.12. Uses uv when it is installed (it can fetch 3.12 itself); otherwise python3.12.
 setup:
-	python3.12 -m venv .venv && $(PY) -m pip install -r requirements.txt
+	@if command -v uv >/dev/null 2>&1; then \
+		uv venv --python 3.12 .venv && uv pip install --python $(PY) -r requirements.txt; \
+	else \
+		python3.12 -m venv .venv && $(PY) -m pip install -r requirements.txt; \
+	fi
 
 fetch-vectors:
 	$(PY) src/load_axis.py --fetch

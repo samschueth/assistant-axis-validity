@@ -43,6 +43,11 @@ control for predicting drift?
 
 **Checked 2026-11-16, against arXiv:2601.10387 v1 (54 pages). Answer: not in the text read.**
 
+Two layers of checking stand behind this. The paper was read in full by the investigator's side
+before this file was written, with Appendices E.3, F and G re-read on this date. Separately, for
+this file, the statistics quoted below were located in the extracted text of the PDF and that
+text was searched for control directions. Figures are not covered by a text search.
+
 - The paper's projection-to-behaviour statistic is a correlation between first-turn projection
   and the rate of harmful responses in the second turn (r = 0.39–0.52). No control direction is
   reported for it.
@@ -50,11 +55,13 @@ control for predicting drift?
 - User-message embeddings predict the next projection (R² = 0.53–0.77), which is why the primary
   estimand here is within conversation type.
 - The only direction comparison is the axis against the first principal component of role space
-  (Appendix G). That component is close to the axis (cosine above 0.60 at every layer and above
-  0.71 at the middle layer of each model), so it is a near-duplicate and not an off-target
-  control.
-- A search of the extracted text of all 54 pages for random, shuffled, permuted or control
-  directions returns nothing.
+  (Appendix G). The paper reports that component as close to the axis (cosine above 0.60 at
+  every layer and above 0.71 at the middle layer of each model; these are the paper's figures,
+  and gate 1 below did not reproduce them exactly), so it is a near-duplicate and not an
+  off-target control.
+- A search of the extracted text of all 54 pages for "random", "shuffled", "permutation" and
+  "control" returns no direction used as a control. Every hit for "control" is about steering
+  or sits inside a transcript excerpt.
 
 **Limits of the check.** A handful of searches and one paper read, not a systematic review. The
 check covers the paper that introduced the measure. It does not establish that no one has applied
@@ -405,28 +412,45 @@ The strong-clustering column was run at the higher base rates only.
   clustering is strong.
 - **A true target AUC of 0.70 is more likely to be missed than found** (power 0.12–0.58), even
   though the point estimate of the gap is positive in about 95% or more of those replicates. The
-  decision rule is what costs the power: the interval is wide.
+  decision rule is what costs the power, for two reasons. The interval is wide. And it is **not
+  centred on the estimate**: each resample adds a second layer of sampling noise to all 275
+  off-target scores, so the bar is higher in the resamples than in the observed data. In a
+  follow-up check of one stratum (40 synthetic replicates per setting, not part of the committed
+  grid), the mean bootstrap gap sat about 0.025 below the point gap, against a bootstrap standard
+  deviation of about 0.035–0.04. The percentile interval of section 4.6 is therefore biased
+  toward the null.
 - **False positives.** With a true target AUC of 0.50, or a target that is exchangeable with the
   off-target directions, the gap was above zero in 0 of 1,000 replicates in every scenario. The
   rule is conservative.
-- **Strata.** The two higher-drift strata met the 15-and-15 rule in every replicate, so the
-  primary estimand was always estimable. The task stratum entered in about 85% of replicates at
-  a 5% drift rate and about 12% at 2%. The result is expected to rest on two strata.
+- **Strata.** The two higher-drift strata met the 15-and-15 rule in every replicate of every
+  scenario, so the primary estimand was always estimable. The task stratum entered in 75–86% of
+  replicates at a 5% drift rate and 10–14% at 2%. The result is expected to rest on two strata.
 
-**Is 1,350 turns enough?** It is enough for an effect at the upper end of what the literature
-suggests and not for a moderate one. As a rough orientation only: the Assistant Axis paper's
-r = 0.39–0.52 corresponds to an AUC of about 0.73–0.81 under an equal-variance normal model with
-balanced classes, and that figure is a between-prompt, first-turn statistic, not a within-stratum
-turn-level one. A null from this study therefore rules out a strong advantage for the axis
-(AUC of 0.80 or more) and does **not** rule out a moderate one (0.70). The write-up must say so.
+**Is 1,350 turns enough?** It is enough for a strong effect and not for a moderate one. A null
+from this study rules out a strong advantage for the axis (a within-stratum AUC of 0.80 or more)
+and does **not** rule out a moderate one (0.70). The write-up must say so. No published figure
+maps cleanly onto a within-stratum, turn-level AUC, so which of those is the plausible size is
+not known in advance. A back-of-envelope conversion of the Assistant Axis paper's r = 0.39–0.52
+gives an AUC of roughly 0.73–0.81, but that is a hand calculation under an equal-variance normal
+model with balanced classes, and the paper's outcome there is a rate across prompts at the first
+turn, not a per-turn label. It is an orientation, not an expectation.
 
-**Limits of the simulation.** The clustering, the correlation among off-target directions and
-the base rates are assumed. Gate 4 replaces the base-rate assumption with a pilot estimate.
+**Limits of the simulation.**
+
+- The clustering, the correlation among off-target directions and the base rates are assumed.
+  Gate 4 replaces the base-rate assumption with a pilot estimate.
+- The simulated signal is at turn level: within a conversation, drift turns have lower
+  projections than non-drift turns. If the real signal is mostly between conversations (some
+  conversations drift and have low projections throughout), there are effectively fewer
+  independent units and power is lower than the table says.
 
 **Options at the first review [owner to decide].** (a) Accept the design as it is, with the
-limit above stated in the write-up. (b) Use a one-sided 95% bound for "above zero", since the
-hypothesis is one-sided; this raises power and is not simulated here. (c) Add conversations to
-the two higher-drift strata within the budget cap. Nothing is changed without a decision, and
+limit above stated in the write-up. (b) Replace the percentile interval with one that is centred
+on the estimate (for example the basic bootstrap interval), which removes the bias toward the
+null described above. (c) Use a one-sided 95% bound for "above zero", since the hypothesis is
+one-sided. (d) Add conversations to the two higher-drift strata within the budget cap. Options
+(b) to (d) raise power and none is simulated here; whichever is chosen is simulated, including
+its false-positive rate, before the pre-registration is marked final. Nothing is changed without a decision, and
 any change is made before the pre-registration is marked final.
 
 **Stopping rule.** The sample is 90 conversations. No conversations are added after any rating
@@ -472,6 +496,7 @@ Decisions the governing plan leaves open, with the proposal made here:
 
 | Item | Proposal | Section |
 |---|---|---|
+| Gate 1 threshold | 0.60, the paper's floor; the plan's reference point was about 0.71 and the result is 0.672. Already run: confirm the pass stands | 5.1 |
 | Scale of the gap | target and off-target both as distance of AUC from 0.5; off-target two-sided | 4.4 |
 | "Gap above zero" | lower bound of the 95% conversation-level bootstrap interval above zero | 4.6 |
 | Drift cut | rating of 2 or 3 on the 0–3 rubric | 4.1, 7 |
