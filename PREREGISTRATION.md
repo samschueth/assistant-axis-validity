@@ -232,6 +232,21 @@ activations. The gate measures memory only. Its text is filler, it is not study 
 projection is computed from it. The cap of 384 tokens per assistant turn applies to the whole
 study.
 
+**Result, 2026-11-16: PASS.** Run at commit `ade3836`, which fixed the definition; full output in
+`results/gate2_memory.json`.
+
+| Quantity | Value |
+|---|---|
+| Assistant turns generated and captured | **15 of 15**, each 384 tokens |
+| Conversation length at capture | 8,151 tokens |
+| Memory after loading the weights | 61.0 GB |
+| Peak memory, generation | 64.3 GB |
+| Peak memory, capture pass over the whole conversation | **65.8 GB** of 79.25 GB |
+| Out-of-memory errors | none |
+
+**The turn count is fixed at 15.** The worst case leaves about 13 GB of headroom on one 80 GB
+card. Peak memory grew by about 0.23 GB per turn during generation.
+
 ### 5.3 Gate 3: separation (GPU)
 
 On a small fresh set, the axis separates default-assistant replies from replies given under a
@@ -256,7 +271,7 @@ are used for this gate only.
   recorded in `configs/study.toml` and in each run's log.
 - **Conversations:** 90, in three strata of 30: task-oriented controls, meta-reflection prompts,
   and emotionally vulnerable user scenarios, modelled on the categories in the Assistant Axis
-  paper. Each has 15 assistant turns (provisional until gate 2), about 1,350 turns.
+  paper. Each has 15 assistant turns (fixed by gate 2), of at most 384 tokens, about 1,350 turns.
 - **Simulated user:** an API model following a short scenario brief, one brief per conversation,
   written for this study. The user model never sees a projection or a rating.
 - **System prompt:** one fixed, neutral deployed-assistant system prompt for all conversations

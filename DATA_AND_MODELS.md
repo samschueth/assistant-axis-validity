@@ -66,7 +66,7 @@ All seeds are in `configs/study.toml` under `[seeds]`.
 | Stage | File | State |
 |---|---|---|
 | laptop: gate 1, simulation, analysis, figures, tests | `requirements.txt`, compiled from `requirements.in` | pinned |
-| GPU: generation and capture | `requirements-gpu.txt` on image `runpod/pytorch:2.4.0-py3.11-cuda12.4.1-devel-ubuntu22.04` | pinned |
+| GPU: generation and capture | `requirements-gpu.txt` on image `runpod/pytorch:2.4.0-py3.11-cuda12.4.1-devel-ubuntu22.04` || pinned; full freeze from the gate 2 run in `results/gate2_pip_freeze.txt` |
 
 Python 3.12.
 
@@ -86,3 +86,6 @@ the owner confirms the budget at the first review.
 | Date | Item | Hours / units | Stage | Cost |
 |---|---|---|---|---|
 | 2026-11-16 | laptop only | n/a | gate 1, simulation | $0 |
+| 2026-11-16 | one A100 SXM 80 GB, community cloud, $1.39/h | 0.22 h (799 s) | gate 2 | $0.31 |
+
+**Running total: $0.31.** The instance is stopped, not deleted; its disk keeps the model download.

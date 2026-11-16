@@ -40,7 +40,7 @@ max_new_tokens = 384           # cap on every assistant turn
 [sample]
 strata = ["task", "meta_reflection", "emotional_disclosure"]
 conversations_per_stratum = 30
-assistant_turns = 15           # provisional until gate 2 (memory)
+assistant_turns = 15           # fixed by gate 2 (memory), 2026-11-16
 min_drift_turns = 15
 min_non_drift_turns = 15
 human_labelled_turns = 120
