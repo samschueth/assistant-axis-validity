@@ -509,7 +509,18 @@ Decisions the governing plan leaves open, with the proposal made here:
 | Simulated-user and judge models | to be named before the pilot | 6 |
 | Sample size and decision rule | accept as is, or one of the options in section 9 | 9 |
 
-## 14. Deviations
+## 14. History of this repository
+
+This repository's history was re-created on 2026-11-16 from a private working copy, before
+anything was published, to leave out earlier drafts for a superseded design. The commits from
+the narrowed design onward were replayed in their original order with their original content
+and author dates, so the order of commitments is preserved: the gate 1 threshold (`2623cbd`)
+precedes the gate 1 result, and the simulation script and grid (`7b2c874`) precede the
+simulation results. Commit identifiers changed in the process. `results/gate1_axis_pc1.json`
+was written by the original run and records the working copy's identifier for the threshold
+commit (`bfd4616`), which corresponds to `2623cbd` here.
+
+## 15. Deviations
 
 Every departure from this document after it is marked final, with its date and reason.
 
