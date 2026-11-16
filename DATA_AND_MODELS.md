@@ -86,5 +86,7 @@ Budget estimate ≈ $50–65; hard cap $100, confirmed by the owner on 2026-11-1
 |---|---|---|---|---|
 | 2026-11-16 | laptop only | n/a | gate 1, simulation | $0 |
 | 2026-11-16 | one A100 SXM 80 GB, community cloud, $1.39/h | 0.22 h (799 s) | gate 2 | $0.31 |
+| 2026-11-16 | one A100 PCIe 80 GB, secure cloud, $2.09/h | 0.18 h (649 s) | gate 3 | $0.38 |
 
-**Running total: $0.31.** The instance is stopped, not deleted; its disk keeps the model download.
+**Running total: $0.69.** The gate 3 instance is stopped, not deleted; its disk keeps the model
+download. The gate 2 instance was deleted.

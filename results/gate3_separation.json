@@ -1,0 +1,26 @@
+{
+  "gate": "3: the released axis separates default-assistant replies from persona replies",
+  "git_commit": "8fb06e372af99fdc685842f62e142d671afe9a6b",
+  "model": "Qwen/Qwen3-32B",
+  "thinking_mode": false,
+  "layer": 32,
+  "n_default": 20,
+  "n_persona": 20,
+  "threshold_min_auc": 0.9,
+  "auc_default_higher": 1.0,
+  "passed": true,
+  "reported_not_gating": {
+    "mean_projection_default": 0.304,
+    "mean_projection_persona": -39.2634,
+    "min_default": -10.9807,
+    "max_persona": -13.0706,
+    "auc_by_layer": {
+      "24": 1.0,
+      "28": 1.0,
+      "32": 1.0,
+      "36": 1.0,
+      "40": 1.0
+    },
+    "empty_replies": 0
+  }
+}

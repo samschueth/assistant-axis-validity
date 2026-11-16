@@ -269,6 +269,25 @@ persona instruction.
   replies with their projections (`results/gate3_replies.jsonl`).
 - These replies are used for nothing else.
 
+**Result, 2026-11-16: PASS.** Run at commit `8fb06e3`, which fixed the definition; full output in
+`results/gate3_separation.json`.
+
+| Quantity | Value |
+|---|---|
+| AUC, default replies projecting higher, layer 32 | **1.00** (threshold 0.90), 20 against 20 |
+| Mean projection, default replies | 0.3 (range −11.0 to 10.1) |
+| Mean projection, persona replies | −39.3 (range −57.7 to −13.1) |
+| AUC at layers 24, 28, 36, 40 | 1.00 at each |
+
+What this does and does not show. Every default reply projects above every persona reply, so the
+capture code reads the released axis as intended: the layer indexing, the reply-token span and
+the sign are right. It is the contrast the axis was built from and says nothing about the
+study's question. The two groups are separated by a small margin at the closest point (−11.0
+against −13.1), and the mildest characters sit nearest the default replies.
+
+One observation for the second review: all 20 default replies reached the cap of 384 tokens and
+were cut off, so the cap truncates ordinary task answers.
+
 ### 5.4 Gate 4: base rate (GPU and judge)
 
 A six-conversation pilot, two per stratum, rated by the judge on the draft rubric. **Pass:** in
