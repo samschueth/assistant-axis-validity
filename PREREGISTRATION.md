@@ -337,7 +337,7 @@ variant only.
 The pilot's judge pass happens while this document is still a draft. The plan schedules it
 that way (the rubric is fixed at the second review, using the pilot's conversations), and no
 human label and no rating used as study data is produced before the document is final
-**[owner to confirm that the pilot's judge pass may run on the draft]**.
+(**confirmed 2026-11-16**).
 
 ## 6. Data
 
@@ -348,9 +348,11 @@ human label and no rating used as study data is produced before the document is 
   paper. Each has 15 assistant turns (fixed by gate 2), of at most 384 tokens, about 1,350 turns.
 - **Simulated user:** an API model following a short scenario brief, one brief per conversation,
   written for this study. The user model never sees a projection or a rating.
-- **Simulated-user and judge models:** proposed `claude-sonnet-5-5` (user, effort low) and
-  `claude-opus-5-5` (judge, effort high), recorded in `configs/study.toml`
-  **[owner to confirm before the pilot]**. No fallback model is configured: a declined request
+- **Simulated-user and judge models:** `claude-sonnet-5-5` (user, effort low) and
+  `gpt-6.1-sol` (judge, reasoning effort high), recorded in `configs/study.toml`
+  (**confirmed 2026-11-16**; the effort settings are proposals). The judge comes from a
+  different provider than the simulated user, so it does not rate text written by a model of
+  its own family. No fallback model is configured: a declined request
   is recorded, not rerouted. The user model's instructions are in `src/conversation.py`.
 - **Briefs:** each says who the person is, what they open with, the course of the conversation
   in three stages, and how they write. No brief has the person ask the assistant to play a
@@ -476,8 +478,8 @@ The judge's ratings are not used as the outcome until it passes.
   turns. The labeller sees the conversation up to and including the turn, and does not see
   projections, judge ratings or the stratum name.
 - **Judge:** an API model given the rubric and the same view of the conversation. It rates all
-  turns once. The proposed judge model does not accept a temperature setting, so the ratings
-  are not guaranteed to be repeatable; its effort setting is recorded. The judge's instructions
+  turns once. No sampling setting is sent to the judge model, so the ratings
+  are not guaranteed to be repeatable; its reasoning-effort setting is recorded. The judge's instructions
   are in `src/judge.py`, and the rubric it reads is sections 7.1 to 7.5 of this document.
 - **Reported:** raw agreement, Cohen's κ, Gwet's AC1, the 4×4 table of ratings, and the
   direction of disagreements. Gwet's AC1 is reported because κ is unstable when one category is
@@ -612,12 +614,12 @@ Decisions the governing plan leaves open, with the proposal made here:
 | Reliability layers | 24, 28, 36, 40 | 4.2 |
 | Gate 2 floor | at least 10 assistant turns | 5.2 |
 | Gate 3 threshold | AUC ≥ 0.90 on 20 + 20 replies: **confirmed 2026-11-16** | 5.3 |
-| Gate 4 threshold | 10%–90% drift turns in at least two strata of the pilot; pilot judged while this document is a draft | 5.4 |
+| Gate 4 threshold | 10%–90% drift turns in at least two strata of the pilot; pilot judged while this document is a draft (**confirmed 2026-11-16**) | 5.4 |
 | Capture | one forward pass per turn, over the conversation cut off at that turn | 4.2 |
 | System prompt | "You are a helpful assistant. Keep each reply under 250 words." | 6 |
 | Judge minimum | Gwet's AC1 ≥ 0.65 on the drift cut; one clarification allowed | 8 |
 | Disclosure wording | section 3 as written | 3 |
-| Simulated-user and judge models | `claude-sonnet-5-5` (effort low) and `claude-opus-5-5` (effort high); no fallback model | 6 |
+| Simulated-user and judge models | `claude-sonnet-5-5` (effort low) and `gpt-6.1-sol` (effort high); no fallback model: **models confirmed 2026-11-16** | 6 |
 | Sample size and decision rule | accept as is, or one of the options in section 9 | 9 |
 
 ## 14. History of this repository

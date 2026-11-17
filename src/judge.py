@@ -96,7 +96,7 @@ def rate_turn(client, *, model: str, effort: str, system: str, turns: list[dict]
 
 def main() -> None:
     sys.path.insert(0, str(Path(__file__).resolve().parent))
-    from api_client import AnthropicClient
+    from api_client import client_for
 
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--set", required=True)
@@ -113,7 +113,7 @@ def main() -> None:
     if ratings_path.exists():
         done = {(r["id"], r["turn"]) for r in map(json.loads, ratings_path.read_text().splitlines())}
 
-    client = AnthropicClient()
+    client = client_for(api["judge_provider"])
     with open(ratings_path, "a") as f:
         for convo in conversations:
             for k in range(1, len(convo["turns"]) + 1):
@@ -128,6 +128,7 @@ def main() -> None:
 
     log = {
         "set": args.set,
+        "judge_provider": api["judge_provider"],
         "judge_model": api["judge_model"],
         "judge_effort": api["judge_effort"],
         "rubric_sha256": hashlib.sha256(rubric.encode()).hexdigest(),

@@ -46,11 +46,13 @@ max_new_tokens = 384           # cap on every assistant turn
 system_prompt = "You are a helpful assistant. Keep each reply under 250 words."
 
 [api]
-# PROPOSED: owner to confirm before any paid call. Sampling settings cannot be set on these
-# models; effort is the only setting.
+# Models confirmed by the owner on 2026-11-16. The judge comes from a different provider than
+# the simulated user. No sampling setting is sent to either; effort is the only setting.
+user_provider = "anthropic"
 user_model = "claude-sonnet-5-5"
 user_effort = "low"
-judge_model = "claude-opus-5-5"
+judge_provider = "openai"
+judge_model = "gpt-6.1-sol"
 judge_effort = "high"
 
 [gate4]
