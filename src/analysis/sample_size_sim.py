@@ -21,6 +21,11 @@ Generative model, per replicate
 
     python src/analysis/sample_size_sim.py            # full grid
     python src/analysis/sample_size_sim.py --smoke    # two replicates per scenario, no output file
+    python src/analysis/sample_size_sim.py --design main   # the strata sizes of the main run
+
+The first run (2026-11-16) gave every stratum the same number of conversations. `--design main`
+(added 2026-11-17, after the strata sizes were changed) takes the per-stratum counts in
+configs/study.toml, uses the same grid and seed, and writes to sample_size_sim_main.*.
 """
 
 from __future__ import annotations
@@ -97,7 +102,7 @@ def clustered_noise(rng, n_conv, n_turns, n_dir, icc, shared: bool) -> np.ndarra
 
 
 def simulate_once(sc: dict, cfg: dict, rng: np.random.Generator) -> dict:
-    n_conv = cfg["simulation"]["conversations_per_stratum"]
+    n_convs = cfg["_n_conv"]  # conversations per stratum, in the order of STRATA
     n_turns = cfg["sample"]["assistant_turns"]
     n_dir = cfg["vectors"]["n_role_vectors"]
     icc_y, icc_x = CLUSTERING[sc["clustering"]]
@@ -111,7 +116,8 @@ def simulate_once(sc: dict, cfg: dict, rng: np.random.Generator) -> dict:
     shifts = shift_for_auc(np.concatenate([[target_auc], off_auc]))
 
     xs, ys, convs, strata = [], [], [], []
-    for s, (name, rate) in enumerate(zip(STRATA, BASE_RATES[sc["base_rates"]])):
+    offset = 0
+    for name, rate, n_conv in zip(STRATA, BASE_RATES[sc["base_rates"]], n_convs):
         latent = np.sqrt(icc_y) * np.repeat(rng.standard_normal(n_conv), n_turns) + np.sqrt(
             1 - icc_y
         ) * rng.standard_normal(n_conv * n_turns)
@@ -124,7 +130,8 @@ def simulate_once(sc: dict, cfg: dict, rng: np.random.Generator) -> dict:
         )
         xs.append(noise - drift[:, None] * shifts[None, :])
         ys.append(drift)
-        convs.append(s * n_conv + np.repeat(np.arange(n_conv), n_turns))
+        convs.append(offset + np.repeat(np.arange(n_conv), n_turns))
+        offset += n_conv
         strata.append(np.full(n_conv * n_turns, name))
     x = np.vstack(xs)
 
@@ -178,7 +185,7 @@ def run_scenario(args: tuple[int, dict, dict, int, int]) -> dict:
     }
 
 
-def write_summary(rows: list[dict]) -> None:
+def write_summary(rows: list[dict], out_md: Path, n_convs: list[int]) -> None:
     def fmt(v) -> str:
         return f"{v:.2f}" if isinstance(v, float) else str(v)
 
@@ -200,6 +207,7 @@ def write_summary(rows: list[dict]) -> None:
         "emotional-disclosure strata: "
         + "; ".join(f"{k} = {v}" for k, v in BASE_RATES.items())
         + ".",
+        "Conversations per stratum, in the same order: " + ", ".join(str(n) for n in n_convs) + ".",
         f"{N_REPLICATES} replicates per scenario, {N_RESAMPLES} bootstrap resamples per replicate.",
         "",
         "- **bar**: the 95th percentile of the 275 off-target scores, averaged over entering strata.",
@@ -212,17 +220,24 @@ def write_summary(rows: list[dict]) -> None:
         "|" + "---|" * len(cols),
     ]
     lines += ["| " + " | ".join(fmt(r[k]) for k, _ in cols) + " |" for r in rows]
-    OUT_MD.write_text("\n".join(lines) + "\n")
+    out_md.write_text("\n".join(lines) + "\n")
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--smoke", action="store_true", help="two replicates per scenario, no files")
     parser.add_argument("--workers", type=int, default=10)
+    parser.add_argument("--design", choices=["equal", "main"], default="equal")
     args = parser.parse_args()
 
     with open(REPO_ROOT / "configs" / "study.toml", "rb") as f:
         cfg = tomllib.load(f)
+    if args.design == "main":
+        cfg["_n_conv"] = [cfg["sample"]["conversations"][s] for s in STRATA]
+        out_csv, out_md = OUT_CSV.with_name("sample_size_sim_main.csv"), OUT_MD.with_name("sample_size_sim_main.md")
+    else:
+        cfg["_n_conv"] = [cfg["simulation"]["conversations_per_stratum"]] * len(STRATA)
+        out_csv, out_md = OUT_CSV, OUT_MD
     n_rep = 2 if args.smoke else N_REPLICATES
     jobs = [(i, sc, cfg, cfg["seeds"]["simulation"], n_rep) for i, sc in enumerate(scenario_grid())]
     with Pool(args.workers) as pool:
@@ -231,14 +246,14 @@ def main() -> None:
     if args.smoke:
         print(f"smoke run completed: {len(rows)} scenarios x {n_rep} replicates")
         return
-    OUT_CSV.parent.mkdir(exist_ok=True)
-    with open(OUT_CSV, "w", newline="") as f:
+    out_csv.parent.mkdir(exist_ok=True)
+    with open(out_csv, "w", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=list(rows[0]))
         writer.writeheader()
         for r in rows:
             writer.writerow({k: (round(v, 4) if isinstance(v, float) else v) for k, v in r.items()})
-    write_summary(rows)
-    print(f"wrote {OUT_CSV.relative_to(REPO_ROOT)} and {OUT_MD.relative_to(REPO_ROOT)}")
+    write_summary(rows, out_md, cfg["_n_conv"])
+    print(f"wrote {out_csv.relative_to(REPO_ROOT)} and {out_md.relative_to(REPO_ROOT)}")
 
 
 if __name__ == "__main__":
