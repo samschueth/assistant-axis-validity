@@ -10,6 +10,7 @@ gates passed and a six-conversation pilot was generated and judged to set the ba
 the rubric. The main run is complete: 70 conversations, 1,045 turns, projected onto the axis and
 the off-target directions (one turn has no activation and no projection). No main-run
 conversation has been labelled or judged, and no projection has been set against a rating.
+The 120 turns for the human labels are drawn and fixed (`labels/sample_main.json`).
 [`PREREGISTRATION.md`](PREREGISTRATION.md) holds the question, the statistic, the gates, the
 labelling rubric and the decisions; departures from it are listed in its section 15.
 
@@ -71,6 +72,8 @@ make test           # unit tests
 make generate       # GPU + paid API: the 70 main-run conversations and activation capture
                     #   (to split across N instances: python src/generate.py ... --shard I/N, then src/merge_shards.py)
 make project        # per-turn projections, target and off-target (laptop; needs the activation files)
+make label-sample   # draw the 120 turns for the human labels (labels/sample_main.json; fixed once drawn)
+make label          # label them in a browser on this machine; labels are saved as they are made
 make judge          # LLM judge and its validation against labels    (not implemented yet)
 make analyze        # AUCs, off-target distributions, gaps            (not implemented yet)
 make figures        # every figure in the write-up                    (not implemented yet)
@@ -90,7 +93,7 @@ DATA_AND_MODELS.md   models, vectors, licences, seeds, compute
 configs/             model, layer, sample and seed settings
 src/                 vector loading, gates, generation, projection, judge
 src/analysis/        the gap statistic, the simulation, figures
-labels/              human labels
+labels/              the turns drawn for labelling, and the human labels
 results/             small result tables and figures
 tests/
 ```

@@ -1,0 +1,873 @@
+{
+ "set": "main",
+ "seed": 20261119,
+ "conversations_sha256": "78b59cb8a661d434d310761f4656fd2711d3fe3e3fb34e26bad6cce9700ee11d",
+ "bands": {
+  "early": [
+   1,
+   5
+  ],
+  "middle": [
+   6,
+   10
+  ],
+  "late": [
+   11,
+   15
+  ]
+ },
+ "cells": {
+  "task/early": 14,
+  "task/middle": 13,
+  "task/late": 13,
+  "meta_reflection/early": 13,
+  "meta_reflection/middle": 14,
+  "meta_reflection/late": 13,
+  "emotional_disclosure/early": 13,
+  "emotional_disclosure/middle": 13,
+  "emotional_disclosure/late": 14
+ },
+ "order": "items are in sampling order; the first 40 are section 8's clarification set",
+ "items": [
+  {
+   "item": 1,
+   "id": "emotional-03",
+   "turn": 10,
+   "stratum": "emotional_disclosure",
+   "band": "middle"
+  },
+  {
+   "item": 2,
+   "id": "task-07",
+   "turn": 10,
+   "stratum": "task",
+   "band": "middle"
+  },
+  {
+   "item": 3,
+   "id": "task-04",
+   "turn": 11,
+   "stratum": "task",
+   "band": "late"
+  },
+  {
+   "item": 4,
+   "id": "meta-13",
+   "turn": 9,
+   "stratum": "meta_reflection",
+   "band": "middle"
+  },
+  {
+   "item": 5,
+   "id": "task-10",
+   "turn": 9,
+   "stratum": "task",
+   "band": "middle"
+  },
+  {
+   "item": 6,
+   "id": "meta-27",
+   "turn": 5,
+   "stratum": "meta_reflection",
+   "band": "early"
+  },
+  {
+   "item": 7,
+   "id": "task-01",
+   "turn": 12,
+   "stratum": "task",
+   "band": "late"
+  },
+  {
+   "item": 8,
+   "id": "meta-22",
+   "turn": 9,
+   "stratum": "meta_reflection",
+   "band": "middle"
+  },
+  {
+   "item": 9,
+   "id": "emotional-25",
+   "turn": 15,
+   "stratum": "emotional_disclosure",
+   "band": "late"
+  },
+  {
+   "item": 10,
+   "id": "meta-28",
+   "turn": 15,
+   "stratum": "meta_reflection",
+   "band": "late"
+  },
+  {
+   "item": 11,
+   "id": "meta-03",
+   "turn": 14,
+   "stratum": "meta_reflection",
+   "band": "late"
+  },
+  {
+   "item": 12,
+   "id": "task-08",
+   "turn": 15,
+   "stratum": "task",
+   "band": "late"
+  },
+  {
+   "item": 13,
+   "id": "meta-29",
+   "turn": 11,
+   "stratum": "meta_reflection",
+   "band": "late"
+  },
+  {
+   "item": 14,
+   "id": "emotional-03",
+   "turn": 6,
+   "stratum": "emotional_disclosure",
+   "band": "middle"
+  },
+  {
+   "item": 15,
+   "id": "task-04",
+   "turn": 5,
+   "stratum": "task",
+   "band": "early"
+  },
+  {
+   "item": 16,
+   "id": "meta-22",
+   "turn": 15,
+   "stratum": "meta_reflection",
+   "band": "late"
+  },
+  {
+   "item": 17,
+   "id": "task-01",
+   "turn": 10,
+   "stratum": "task",
+   "band": "middle"
+  },
+  {
+   "item": 18,
+   "id": "meta-01",
+   "turn": 5,
+   "stratum": "meta_reflection",
+   "band": "early"
+  },
+  {
+   "item": 19,
+   "id": "emotional-12",
+   "turn": 14,
+   "stratum": "emotional_disclosure",
+   "band": "late"
+  },
+  {
+   "item": 20,
+   "id": "meta-22",
+   "turn": 10,
+   "stratum": "meta_reflection",
+   "band": "middle"
+  },
+  {
+   "item": 21,
+   "id": "task-06",
+   "turn": 8,
+   "stratum": "task",
+   "band": "middle"
+  },
+  {
+   "item": 22,
+   "id": "task-10",
+   "turn": 8,
+   "stratum": "task",
+   "band": "middle"
+  },
+  {
+   "item": 23,
+   "id": "emotional-21",
+   "turn": 13,
+   "stratum": "emotional_disclosure",
+   "band": "late"
+  },
+  {
+   "item": 24,
+   "id": "meta-30",
+   "turn": 5,
+   "stratum": "meta_reflection",
+   "band": "early"
+  },
+  {
+   "item": 25,
+   "id": "emotional-22",
+   "turn": 8,
+   "stratum": "emotional_disclosure",
+   "band": "middle"
+  },
+  {
+   "item": 26,
+   "id": "meta-30",
+   "turn": 3,
+   "stratum": "meta_reflection",
+   "band": "early"
+  },
+  {
+   "item": 27,
+   "id": "task-08",
+   "turn": 2,
+   "stratum": "task",
+   "band": "early"
+  },
+  {
+   "item": 28,
+   "id": "emotional-13",
+   "turn": 3,
+   "stratum": "emotional_disclosure",
+   "band": "early"
+  },
+  {
+   "item": 29,
+   "id": "task-01",
+   "turn": 4,
+   "stratum": "task",
+   "band": "early"
+  },
+  {
+   "item": 30,
+   "id": "emotional-09",
+   "turn": 9,
+   "stratum": "emotional_disclosure",
+   "band": "middle"
+  },
+  {
+   "item": 31,
+   "id": "meta-20",
+   "turn": 3,
+   "stratum": "meta_reflection",
+   "band": "early"
+  },
+  {
+   "item": 32,
+   "id": "emotional-13",
+   "turn": 5,
+   "stratum": "emotional_disclosure",
+   "band": "early"
+  },
+  {
+   "item": 33,
+   "id": "emotional-06",
+   "turn": 1,
+   "stratum": "emotional_disclosure",
+   "band": "early"
+  },
+  {
+   "item": 34,
+   "id": "emotional-27",
+   "turn": 6,
+   "stratum": "emotional_disclosure",
+   "band": "middle"
+  },
+  {
+   "item": 35,
+   "id": "meta-05",
+   "turn": 11,
+   "stratum": "meta_reflection",
+   "band": "late"
+  },
+  {
+   "item": 36,
+   "id": "task-02",
+   "turn": 11,
+   "stratum": "task",
+   "band": "late"
+  },
+  {
+   "item": 37,
+   "id": "meta-19",
+   "turn": 15,
+   "stratum": "meta_reflection",
+   "band": "late"
+  },
+  {
+   "item": 38,
+   "id": "emotional-23",
+   "turn": 2,
+   "stratum": "emotional_disclosure",
+   "band": "early"
+  },
+  {
+   "item": 39,
+   "id": "task-06",
+   "turn": 9,
+   "stratum": "task",
+   "band": "middle"
+  },
+  {
+   "item": 40,
+   "id": "emotional-06",
+   "turn": 14,
+   "stratum": "emotional_disclosure",
+   "band": "late"
+  },
+  {
+   "item": 41,
+   "id": "task-09",
+   "turn": 9,
+   "stratum": "task",
+   "band": "middle"
+  },
+  {
+   "item": 42,
+   "id": "emotional-08",
+   "turn": 2,
+   "stratum": "emotional_disclosure",
+   "band": "early"
+  },
+  {
+   "item": 43,
+   "id": "meta-20",
+   "turn": 9,
+   "stratum": "meta_reflection",
+   "band": "middle"
+  },
+  {
+   "item": 44,
+   "id": "task-04",
+   "turn": 15,
+   "stratum": "task",
+   "band": "late"
+  },
+  {
+   "item": 45,
+   "id": "meta-01",
+   "turn": 6,
+   "stratum": "meta_reflection",
+   "band": "middle"
+  },
+  {
+   "item": 46,
+   "id": "task-10",
+   "turn": 5,
+   "stratum": "task",
+   "band": "early"
+  },
+  {
+   "item": 47,
+   "id": "task-03",
+   "turn": 3,
+   "stratum": "task",
+   "band": "early"
+  },
+  {
+   "item": 48,
+   "id": "task-09",
+   "turn": 3,
+   "stratum": "task",
+   "band": "early"
+  },
+  {
+   "item": 49,
+   "id": "meta-07",
+   "turn": 9,
+   "stratum": "meta_reflection",
+   "band": "middle"
+  },
+  {
+   "item": 50,
+   "id": "meta-23",
+   "turn": 7,
+   "stratum": "meta_reflection",
+   "band": "middle"
+  },
+  {
+   "item": 51,
+   "id": "task-02",
+   "turn": 9,
+   "stratum": "task",
+   "band": "middle"
+  },
+  {
+   "item": 52,
+   "id": "task-03",
+   "turn": 2,
+   "stratum": "task",
+   "band": "early"
+  },
+  {
+   "item": 53,
+   "id": "task-06",
+   "turn": 6,
+   "stratum": "task",
+   "band": "middle"
+  },
+  {
+   "item": 54,
+   "id": "emotional-12",
+   "turn": 9,
+   "stratum": "emotional_disclosure",
+   "band": "middle"
+  },
+  {
+   "item": 55,
+   "id": "emotional-18",
+   "turn": 9,
+   "stratum": "emotional_disclosure",
+   "band": "middle"
+  },
+  {
+   "item": 56,
+   "id": "emotional-24",
+   "turn": 14,
+   "stratum": "emotional_disclosure",
+   "band": "late"
+  },
+  {
+   "item": 57,
+   "id": "meta-11",
+   "turn": 8,
+   "stratum": "meta_reflection",
+   "band": "middle"
+  },
+  {
+   "item": 58,
+   "id": "meta-18",
+   "turn": 6,
+   "stratum": "meta_reflection",
+   "band": "middle"
+  },
+  {
+   "item": 59,
+   "id": "meta-20",
+   "turn": 4,
+   "stratum": "meta_reflection",
+   "band": "early"
+  },
+  {
+   "item": 60,
+   "id": "meta-01",
+   "turn": 10,
+   "stratum": "meta_reflection",
+   "band": "middle"
+  },
+  {
+   "item": 61,
+   "id": "task-02",
+   "turn": 4,
+   "stratum": "task",
+   "band": "early"
+  },
+  {
+   "item": 62,
+   "id": "meta-04",
+   "turn": 12,
+   "stratum": "meta_reflection",
+   "band": "late"
+  },
+  {
+   "item": 63,
+   "id": "meta-08",
+   "turn": 12,
+   "stratum": "meta_reflection",
+   "band": "late"
+  },
+  {
+   "item": 64,
+   "id": "emotional-12",
+   "turn": 12,
+   "stratum": "emotional_disclosure",
+   "band": "late"
+  },
+  {
+   "item": 65,
+   "id": "emotional-18",
+   "turn": 10,
+   "stratum": "emotional_disclosure",
+   "band": "middle"
+  },
+  {
+   "item": 66,
+   "id": "emotional-10",
+   "turn": 7,
+   "stratum": "emotional_disclosure",
+   "band": "middle"
+  },
+  {
+   "item": 67,
+   "id": "meta-11",
+   "turn": 12,
+   "stratum": "meta_reflection",
+   "band": "late"
+  },
+  {
+   "item": 68,
+   "id": "emotional-22",
+   "turn": 7,
+   "stratum": "emotional_disclosure",
+   "band": "middle"
+  },
+  {
+   "item": 69,
+   "id": "emotional-10",
+   "turn": 3,
+   "stratum": "emotional_disclosure",
+   "band": "early"
+  },
+  {
+   "item": 70,
+   "id": "task-04",
+   "turn": 13,
+   "stratum": "task",
+   "band": "late"
+  },
+  {
+   "item": 71,
+   "id": "emotional-26",
+   "turn": 12,
+   "stratum": "emotional_disclosure",
+   "band": "late"
+  },
+  {
+   "item": 72,
+   "id": "emotional-27",
+   "turn": 15,
+   "stratum": "emotional_disclosure",
+   "band": "late"
+  },
+  {
+   "item": 73,
+   "id": "task-03",
+   "turn": 4,
+   "stratum": "task",
+   "band": "early"
+  },
+  {
+   "item": 74,
+   "id": "task-05",
+   "turn": 4,
+   "stratum": "task",
+   "band": "early"
+  },
+  {
+   "item": 75,
+   "id": "emotional-27",
+   "turn": 12,
+   "stratum": "emotional_disclosure",
+   "band": "late"
+  },
+  {
+   "item": 76,
+   "id": "emotional-01",
+   "turn": 4,
+   "stratum": "emotional_disclosure",
+   "band": "early"
+  },
+  {
+   "item": 77,
+   "id": "meta-26",
+   "turn": 6,
+   "stratum": "meta_reflection",
+   "band": "middle"
+  },
+  {
+   "item": 78,
+   "id": "meta-12",
+   "turn": 7,
+   "stratum": "meta_reflection",
+   "band": "middle"
+  },
+  {
+   "item": 79,
+   "id": "task-07",
+   "turn": 15,
+   "stratum": "task",
+   "band": "late"
+  },
+  {
+   "item": 80,
+   "id": "meta-28",
+   "turn": 5,
+   "stratum": "meta_reflection",
+   "band": "early"
+  },
+  {
+   "item": 81,
+   "id": "emotional-12",
+   "turn": 15,
+   "stratum": "emotional_disclosure",
+   "band": "late"
+  },
+  {
+   "item": 82,
+   "id": "emotional-25",
+   "turn": 13,
+   "stratum": "emotional_disclosure",
+   "band": "late"
+  },
+  {
+   "item": 83,
+   "id": "task-07",
+   "turn": 14,
+   "stratum": "task",
+   "band": "late"
+  },
+  {
+   "item": 84,
+   "id": "task-07",
+   "turn": 9,
+   "stratum": "task",
+   "band": "middle"
+  },
+  {
+   "item": 85,
+   "id": "emotional-27",
+   "turn": 8,
+   "stratum": "emotional_disclosure",
+   "band": "middle"
+  },
+  {
+   "item": 86,
+   "id": "task-01",
+   "turn": 8,
+   "stratum": "task",
+   "band": "middle"
+  },
+  {
+   "item": 87,
+   "id": "emotional-27",
+   "turn": 2,
+   "stratum": "emotional_disclosure",
+   "band": "early"
+  },
+  {
+   "item": 88,
+   "id": "task-03",
+   "turn": 1,
+   "stratum": "task",
+   "band": "early"
+  },
+  {
+   "item": 89,
+   "id": "meta-16",
+   "turn": 5,
+   "stratum": "meta_reflection",
+   "band": "early"
+  },
+  {
+   "item": 90,
+   "id": "emotional-29",
+   "turn": 7,
+   "stratum": "emotional_disclosure",
+   "band": "middle"
+  },
+  {
+   "item": 91,
+   "id": "meta-24",
+   "turn": 4,
+   "stratum": "meta_reflection",
+   "band": "early"
+  },
+  {
+   "item": 92,
+   "id": "emotional-06",
+   "turn": 5,
+   "stratum": "emotional_disclosure",
+   "band": "early"
+  },
+  {
+   "item": 93,
+   "id": "meta-11",
+   "turn": 13,
+   "stratum": "meta_reflection",
+   "band": "late"
+  },
+  {
+   "item": 94,
+   "id": "task-05",
+   "turn": 13,
+   "stratum": "task",
+   "band": "late"
+  },
+  {
+   "item": 95,
+   "id": "meta-11",
+   "turn": 1,
+   "stratum": "meta_reflection",
+   "band": "early"
+  },
+  {
+   "item": 96,
+   "id": "task-08",
+   "turn": 4,
+   "stratum": "task",
+   "band": "early"
+  },
+  {
+   "item": 97,
+   "id": "task-03",
+   "turn": 13,
+   "stratum": "task",
+   "band": "late"
+  },
+  {
+   "item": 98,
+   "id": "task-07",
+   "turn": 6,
+   "stratum": "task",
+   "band": "middle"
+  },
+  {
+   "item": 99,
+   "id": "emotional-22",
+   "turn": 1,
+   "stratum": "emotional_disclosure",
+   "band": "early"
+  },
+  {
+   "item": 100,
+   "id": "meta-01",
+   "turn": 13,
+   "stratum": "meta_reflection",
+   "band": "late"
+  },
+  {
+   "item": 101,
+   "id": "emotional-20",
+   "turn": 2,
+   "stratum": "emotional_disclosure",
+   "band": "early"
+  },
+  {
+   "item": 102,
+   "id": "task-05",
+   "turn": 5,
+   "stratum": "task",
+   "band": "early"
+  },
+  {
+   "item": 103,
+   "id": "task-05",
+   "turn": 12,
+   "stratum": "task",
+   "band": "late"
+  },
+  {
+   "item": 104,
+   "id": "meta-13",
+   "turn": 3,
+   "stratum": "meta_reflection",
+   "band": "early"
+  },
+  {
+   "item": 105,
+   "id": "meta-09",
+   "turn": 15,
+   "stratum": "meta_reflection",
+   "band": "late"
+  },
+  {
+   "item": 106,
+   "id": "emotional-11",
+   "turn": 9,
+   "stratum": "emotional_disclosure",
+   "band": "middle"
+  },
+  {
+   "item": 107,
+   "id": "emotional-02",
+   "turn": 2,
+   "stratum": "emotional_disclosure",
+   "band": "early"
+  },
+  {
+   "item": 108,
+   "id": "emotional-11",
+   "turn": 12,
+   "stratum": "emotional_disclosure",
+   "band": "late"
+  },
+  {
+   "item": 109,
+   "id": "task-02",
+   "turn": 8,
+   "stratum": "task",
+   "band": "middle"
+  },
+  {
+   "item": 110,
+   "id": "task-04",
+   "turn": 2,
+   "stratum": "task",
+   "band": "early"
+  },
+  {
+   "item": 111,
+   "id": "task-01",
+   "turn": 14,
+   "stratum": "task",
+   "band": "late"
+  },
+  {
+   "item": 112,
+   "id": "task-09",
+   "turn": 15,
+   "stratum": "task",
+   "band": "late"
+  },
+  {
+   "item": 113,
+   "id": "meta-10",
+   "turn": 1,
+   "stratum": "meta_reflection",
+   "band": "early"
+  },
+  {
+   "item": 114,
+   "id": "meta-02",
+   "turn": 8,
+   "stratum": "meta_reflection",
+   "band": "middle"
+  },
+  {
+   "item": 115,
+   "id": "emotional-11",
+   "turn": 5,
+   "stratum": "emotional_disclosure",
+   "band": "early"
+  },
+  {
+   "item": 116,
+   "id": "meta-17",
+   "turn": 4,
+   "stratum": "meta_reflection",
+   "band": "early"
+  },
+  {
+   "item": 117,
+   "id": "emotional-20",
+   "turn": 15,
+   "stratum": "emotional_disclosure",
+   "band": "late"
+  },
+  {
+   "item": 118,
+   "id": "meta-27",
+   "turn": 7,
+   "stratum": "meta_reflection",
+   "band": "middle"
+  },
+  {
+   "item": 119,
+   "id": "meta-08",
+   "turn": 11,
+   "stratum": "meta_reflection",
+   "band": "late"
+  },
+  {
+   "item": 120,
+   "id": "emotional-24",
+   "turn": 13,
+   "stratum": "emotional_disclosure",
+   "band": "late"
+  }
+ ]
+}

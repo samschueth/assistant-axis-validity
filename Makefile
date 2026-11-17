@@ -1,5 +1,5 @@
 # One command per stage. Seeds are fixed in configs/study.toml; see DATA_AND_MODELS.md.
-.PHONY: help setup fetch-vectors gate1 gate2 gate3 pilot judge-pilot gate4 length-probe simulate generate project judge analyze figures test safety-check
+.PHONY: help setup fetch-vectors gate1 gate2 gate3 pilot judge-pilot gate4 length-probe simulate generate project label-sample label judge analyze figures test safety-check
 
 PY = .venv/bin/python
 
@@ -16,6 +16,8 @@ help:
 	@echo "simulate      sample-size simulation on synthetic data"
 	@echo "generate      GPU + paid API: the main run, conversation generation and activation capture"
 	@echo "project       per-turn projections, target and off-target"
+	@echo "label-sample  draw the 120 turns for the human labels (fixed once drawn)"
+	@echo "label         label the drawn turns in a browser on this machine"
 	@echo "judge         LLM judge and its validation against human labels"
 	@echo "analyze       AUCs, off-target distributions, gaps"
 	@echo "figures       regenerate every figure used in WRITEUP.md"
@@ -64,6 +66,10 @@ generate:
 project:
 	$(PY) src/merge_shards.py --briefs configs/main_briefs.toml --set main
 	$(PY) src/project.py --set main
+label-sample:
+	$(PY) src/label.py sample --set main
+label:
+	$(PY) src/label.py serve --set main
 judge:     ; $(NOT_IMPL)
 analyze:   ; $(NOT_IMPL)
 figures:   ; $(NOT_IMPL)
