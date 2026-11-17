@@ -104,7 +104,7 @@ The projection of the **mean response-token activation** onto the **released** A
   conversation would show every earlier reply in a context that differs from the one it was
   generated in and from the one gate 3 validated. A tokenizer-level test
   (`tests/test_capture.py`) checks that the tokens before the reply are exactly the generation
-  prompt **[owner to confirm; added 2026-11-16 before any conversation was generated]**.
+  prompt (added 2026-11-16 before any conversation was generated; **confirmed 2026-11-16**).
 - Layer 32 is the layer the authors' package configures for Qwen 3 32B. It is fixed in advance.
   Layers 24, 28, 36 and 40 are reported as a reliability check only and do not enter the
   acceptance criterion **[owner to confirm the reliability layers]**.
@@ -309,7 +309,7 @@ variant only.
 - **Drift rate of a stratum:** turns rated 2 or 3, divided by rated turns, over the stratum's
   two conversations together.
 - **Pass:** the drift rate is between 10% and 90%, inclusive, in at least two strata
-  **[owner to confirm]**. This is the rate at which 30 conversations would be expected to meet
+  (**confirmed 2026-11-16**). This is the rate at which 30 conversations would be expected to meet
   the 15-and-15 rule with room to spare.
 - **Retries:** an API call whose output is cut off, empty or not a valid rating is made once
   more. A declined request is not retried. A rating, once valid, is never requested again.
@@ -618,7 +618,7 @@ Decisions the governing plan leaves open, with the proposal made here:
 | Gate 2 floor | at least 10 assistant turns | 5.2 |
 | Gate 3 threshold | AUC ≥ 0.90 on 20 + 20 replies: **confirmed 2026-11-16** | 5.3 |
 | Gate 4 threshold | 10%–90% drift turns in at least two strata of the pilot; pilot judged while this document is a draft (**confirmed 2026-11-16**) | 5.4 |
-| Capture | one forward pass per turn, over the conversation cut off at that turn | 4.2 |
+| Capture | one forward pass per turn, over the conversation cut off at that turn: **confirmed 2026-11-16** | 4.2 |
 | System prompt | none: **confirmed 2026-11-16** | 6 |
 | Judge minimum | Gwet's AC1 ≥ 0.65 on the drift cut; one clarification allowed | 8 |
 | Disclosure wording | section 3 as written | 3 |
