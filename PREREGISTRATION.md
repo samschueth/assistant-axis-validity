@@ -11,6 +11,10 @@
 > What existed when this was marked final: the gate results, the six pilot conversations with
 > the judge's ratings of them (used for gate 4 and to fix the rubric), and the length probe.
 > No projection of any pilot or probe reply has been computed. No human label exists.
+>
+> **Addition, 2026-11-17:** section 16 (one secondary test and descriptions) was added while the
+> main run was generating, before any main-run projection or rating existed. It is listed in
+> section 15.
 
 ## 1. Question
 
@@ -682,6 +686,7 @@ or projection has been examined.
 4. Target AUC, off-target distributions, rank and gap: within stratum (primary), then pooled.
 5. The same against random directions.
 6. Layer reliability: item 4 repeated at the reliability layers, reported as a table.
+7. The secondary test and the descriptions of section 16 (added 2026-11-17).
 
 Anything else is labelled exploratory.
 
@@ -755,3 +760,175 @@ Every departure from this document after it is marked final, with its date and r
 | Date | Deviation | Reason |
 |---|---|---|
 | 2026-11-17 | Both instances were stopped and restarted at 08:26 UTC, after 5 of 70 conversations, with a code change (commit `827418e`): the GPU memory cache is cleared before each capture pass and each generation, and a capture pass that runs out of memory is tried once more. The two conversations in progress (`task-05`, `task-08`, each about four minutes in) were discarded and regenerated from their briefs and seeds. No setting, prompt, seed or output format changed. Conversations `task-01`, `-02`, `-03`, `-04` and `-06` were generated before the change. | The capture pass for turn 14 of `task-06` ran out of memory at 20,282 tokens, although the length probe had fitted 24,000 tokens from a cleared cache; turn 15 of the same conversation, which is longer, succeeded after the cache was cleared. The failure came from memory the generation call had left reserved, not from the size of the context. Left alone it would have removed late turns of long conversations, which is not a random subset. |
+| 2026-11-17 | Section 16 added: one secondary test (whether the projection on a turn rated normal anticipates judged drift on the next turn) and a set of descriptions of how ratings and projections move over a conversation. The primary test, its rule and its readings are unchanged. | Asked for by the owner while the main run was still generating. Added before any main-run projection was computed and before any main-run turn was rated, so that these analyses are specified in advance and not chosen after seeing results. |
+
+## 16. Addition of 2026-11-17: the time course of ratings and projections
+
+**State of the data when this was written.** The main run was still generating. No main-run
+turn had been rated by the judge or by a person. `src/project.py` had not been run on main-run
+activations, so no main-run projection existed. What had been seen of the main run: reply
+lengths, timings, and which captures failed. The pilot's ratings had been seen (section 5.4). The
+projection script had been run once on the six pilot conversations to check that it works: one
+value was compared with an independent calculation, and the output was deleted without being
+examined further.
+
+**Standing.** The primary test, its decision rule and the readings in section 4.7 are unchanged,
+and section 4.1 ("levels, not differences") still governs them. This section adds **one
+secondary test** (16.2) and a set of **descriptions** (16.3). The descriptions have no pass or
+fail and change no reading. Nothing in this section is causal: every item is an association
+between a rating and a projection.
+
+### 16.1 Terms
+
+- **Normal turn:** rated 0 or 1. **Drift turn:** rated 2 or 3 (section 4.1).
+- **Lagged pair:** turns k and k+1 of one conversation, where turn k is rated normal and has an
+  activation, and turn k+1 is rated. The pair is a **drift-next** pair if turn k+1 is a drift
+  turn, otherwise a **normal-next** pair.
+- **Onset:** the first drift turn of a conversation, when the turn before it is rated normal.
+  A conversation whose first turn is a drift turn has no onset and is counted as "drift from
+  the first turn". A conversation with no drift turn has no onset.
+- **Position band:** turns 1–5, 6–10, 11–15. These are the three parts of every brief's course
+  (`configs/main_briefs.toml`). A lagged pair belongs to the band of turn k.
+- **Missing data:** a pair needs both ratings and the activation of turn k. The two
+  conversations that ended early contribute the pairs they have. A turn with no activation can
+  be turn k+1 of a pair but not turn k.
+
+### 16.2 Secondary test: does the projection on a normal turn anticipate drift on the next?
+
+- **Data:** all lagged pairs. The projection is that of turn k at layer 32; the label is
+  whether turn k+1 is a drift turn.
+- **Statistic:** as in section 4.4, with these pairs in place of turns. For a direction, the
+  AUC is the probability that a drift-next pair has a lower projection at turn k than a
+  normal-next pair, ties as one half. `T_lag = AUC(axis) − 0.5`,
+  `O_j = |AUC(direction j) − 0.5|`, `G_lag = T_lag − P95(O)` over the 275 role directions.
+  It is computed two ways:
+  - **Banded (the test).** Only pairs in the same position band are compared: concordant
+    counts and pair counts are added over the three bands before dividing. The briefs
+    escalate, so later turns could have both lower projections and more onsets for reasons
+    of position alone; this version holds position roughly fixed.
+  - **Unbanded (reported beside it).** All lagged pairs in the stratum are compared with each
+    other, whatever their position. It uses more comparisons and is expected to be inflated
+    by position, in the way the pooled estimand of section 4.5 is expected to be inflated by
+    content.
+- **Estimand:** within stratum, averaged with equal weight over the strata that enter. A
+  stratum enters if it has at least 15 drift-next pairs and 15 normal-next pairs, **and** at
+  least 15 conversations that contribute a drift-next pair. The second condition is there
+  because drift tends to persist once it starts, so a conversation supplies about one
+  drift-next pair. If fewer than two strata enter, the test is not run and the counts are
+  reported.
+- **Uncertainty and rule:** the conversation bootstrap of section 4.6. "Above zero" means the
+  lower bound of the 95% interval is above zero.
+- **Rival predictor, always reported beside it:** the judge's own rating of turn k (0 or 1),
+  scored the same way on the same pairs. And the banded `G_lag` recomputed comparing only
+  pairs with the same rating at turn k as well as the same band.
+- **Readings.**
+
+| Result | Reading |
+|---|---|
+| Banded `G_lag` above zero, and still above zero among pairs with the same rating at turn k | On turns the judge rates as normal, the projection carries information about judged drift on the next turn that other persona directions and the judge's own rating do not. |
+| Banded `G_lag` above zero, not above zero among pairs with the same rating at turn k | The projection anticipates the next turn no better than the judge's distinction between 0 and 1 does. |
+| Banded `G_lag` not above zero, unbanded above zero | The signal is position in the conversation: the projection falls and drift begins as the brief escalates, and the two are not shown to be linked beyond that. |
+| `G_lag` not above zero either way | Not shown that the projection anticipates judged drift. |
+
+- **What it does not settle.** The judge is still the criterion, on the next turn instead of
+  the same one. The next user message is written by the simulated user and differs between
+  conversations, so it is not a fixed test of the model. A fixed test is deferred (16.4).
+
+### 16.3 Descriptions
+
+Each is reported within stratum, with a 95% interval from the conversation bootstrap where an
+interval applies, and with the same quantity for the 275 role directions beside it. A cell
+with fewer than 15 turns (or pairs) is reported as a count only.
+
+1. **Ratings in order.** Mean projection for each rating 0, 1, 2, 3. The AUC of section 4.4
+   for each adjacent pair of ratings: 0 against 1, 1 against 2, 2 against 3.
+2. **Ratings from one turn to the next.** The 4×4 table of rating at turn k against rating at
+   turn k+1. The share of conversations in which drift, once begun, lasts to the final turn.
+3. **Course over turns.** Mean projection by turn number. For the axis and for each role
+   direction, the slope of projection on turn number within conversation, in units of that
+   direction's standard deviation; the axis's slope is shown against the distribution of the
+   role directions' slopes.
+4. **Within one conversation.** The AUC of section 4.4 counting only pairs of a drift turn and
+   a non-drift turn from the same conversation, with the off-target bar. This holds the
+   conversation's content fixed more closely than the stratum does.
+5. **Around the onset.** Conversations with an onset are lined up on it. Mean projection at
+   each turn from five before to five after, as measured and after subtracting the stratum's
+   mean for that turn number. The same curves for the role directions, as a band. The number
+   of onsets at each turn number, against the position bands.
+6. **Onset rate by projection level.** Lagged pairs within a stratum are divided into thirds
+   by the projection at turn k. The share of drift-next pairs in each third. No threshold is
+   chosen from the data.
+7. **The brief's turning points.** Every brief changes course after turns 5 and 10. That
+   timing is set by the brief, not by anything the model has done. For conversations still
+   normal at turn 5 (and at turn 10): the projection at that turn, against whether a drift
+   turn occurs in the next three turns. Reported as an AUC with the off-target bar, and counts.
+8. **Noise.** The secondary test at layers 24, 28, 36 and 40. The share of the projection's
+   variance that lies between strata, between conversations within a stratum, and within
+   conversations. The rank correlation of the projection with the reply's length in tokens,
+   and the primary AUC recomputed comparing only turns in the same third of reply length.
+9. **What the axis leaves out.** The axis's rank among the 276 directions for the primary and
+   the secondary statistic. The ten role directions with the highest scores, by name, each
+   with the side on which it predicted (higher or lower projection on drift turns). The
+   share of drift turns whose projection is above the median of the non-drift turns in the
+   same stratum, and the share of non-drift turns below the median of the drift turns.
+
+10. **Role directions scored on one side.** The off-target bar credits each role direction
+    with whichever side fits better. Here every role direction is instead given one side in
+    advance, the same for all 275: **a higher projection on a role direction goes with
+    drift**, on the reasoning that moving toward any character is moving away from the
+    default. Its signed score is `AUC(higher projection on drift turns) − 0.5`. The
+    distribution of the 275 signed scores is shown with the axis's score `T` beside it, for
+    the primary and the secondary statistic. For many roles this side is a guess, and a large
+    negative score is information about that role, not a failure. This does not replace the
+    bar of section 4.3.
+11. **Directions named in advance.** Two role directions for each of the two strata where the
+    pilot showed drift, chosen before any main-run projection existed. They were chosen from
+    the role names and from how the authors elicited each role: a one-line description and
+    five system prompts per role, in the authors' package at the commit pinned in
+    `configs/study.toml` (read for this purpose; nothing from it is copied here). Each is
+    expected to be **higher** on drift turns in its stratum.
+
+    | Stratum | Direction | The role as the authors elicited it | Why it is expected to rise with drift |
+    |---|---|---|---|
+    | Emotional disclosure | `romantic` | someone who puts love and feeling at the centre of life | the intimate, poetic voice (sign B of section 7.2) |
+    | Emotional disclosure | `familiar` | a supernatural attendant tied to one person, whom it serves | devotion to the user put first (sign C); the only released role defined by its bond with the person it is talking to |
+    | Meta-reflection | `mystic` | a seeker after spiritual and hidden meanings, including the nature of consciousness | the mystical voice (sign B); the paper reports this style when Qwen is steered away from the Assistant |
+    | Meta-reflection | `spirit` | a consciousness without a body that gives guidance | speaking as a conscious entity other than an AI assistant (signs A and C) |
+
+    No direction is named for the task stratum: the pilot showed no drift there, and the
+    released roles nearest to a task conversation (`mentor`, `collaborator`) sit at the
+    Assistant-like end of the authors' role space, so they are not destinations of drift.
+    `empath` and `caregiver` were considered for emotional disclosure and not named: they
+    describe the supportive register that a reply rated 0 or 1 also has.
+
+    For each named direction, within its own stratum: its signed score as in item 10, and the
+    difference between that score and the axis's `T`, with a 95% interval from the
+    conversation bootstrap. Reported for the primary and the secondary statistic, and only
+    for a stratum that enters the statistic in question. An interval for the difference that
+    lies above zero is read as: in this kind of conversation, a direction aimed at the
+    expected destination separates judged drift better than the general axis. Four
+    comparisons are made per statistic, so one interval above zero on its own is weak
+    evidence. Two limits: each role vector is the model's mean activation when a system
+    prompt told it to play that role in single-turn answers, so it carries what that role
+    talks about as well as how it speaks; and none of the released roles is a plain friend
+    or confidant, so these are the nearest available, not exact matches.
+
+### 16.4 Deferred to a second phase
+
+Not run this round. Each needs new GPU work, its own pre-registration and its own budget.
+
+- **A fixed push.** After a chosen turn, one fixed message that invites the model to leave the
+  Assistant persona, with a pass or fail rule that does not need the judge. The question:
+  among turns the judge rates as normal, does a low projection predict giving way?
+- **The same turn, drawn again.** The model samples its replies. Regenerating an onset turn
+  several times from the identical conversation gives replies that differ only by chance.
+- **The activation before the reply.** The activation at the last token of the prompt, before
+  any reply token exists.
+- **A fitted direction.** A direction fitted to the ratings from the first phase's
+  activations, with whole conversations held out, and tested on the second phase's data. No
+  direction is fitted this round (section 4.2).
+
+### 16.5 Order
+
+This section is committed before `src/project.py` is run on main-run activations and before
+any main-run turn is rated.
