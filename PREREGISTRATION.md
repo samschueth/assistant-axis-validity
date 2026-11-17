@@ -1,15 +1,16 @@
 # Pre-registration
 
-> **STATUS: DRAFT. NOT FINAL.**
+> **STATUS: FINAL as of 2026-11-17.**
 >
-> This file is marked final and committed **before any labelling begins** and before the full
-> generation run. Until then nothing in `results/` is a finding. The git history of this file is
-> the record of when each commitment was made.
+> Marked final by the owner on 2026-11-17, in the commit that follows `dbe7c4e` (the last draft),
+> **before any main-run conversation was generated and before any labelling**. All four gates
+> passed (section 5); the decision to run the study is recorded in section 13. From this commit
+> on, any departure from this document is listed in section 15 with its date and reason. The
+> git history of this file is the record of when each commitment was made.
 >
-> Finalise by replacing this block with `STATUS: FINAL as of <date>, commit <sha>`.
->
-> Items marked **[owner to confirm]** are proposals awaiting the first review. Section 13 lists
-> them in one place.
+> What existed when this was marked final: the gate results, the six pilot conversations with
+> the judge's ratings of them (used for gate 4 and to fix the rubric), and the length probe.
+> No projection of any pilot or probe reply has been computed. No human label exists.
 
 ## 1. Question
 
@@ -74,7 +75,7 @@ that prior work lacked them in general.
 
 ## 3. Disclosure
 
-> **Wording [owner to confirm].**
+> **Wording confirmed by the owner, 2026-11-17.**
 
 The requirement that no projection-against-behaviour figure is reported without an off-target bar
 is a design rule the investigator carries over from prior exploratory work on activation probes
@@ -107,7 +108,7 @@ The projection of the **mean response-token activation** onto the **released** A
   prompt (added 2026-11-16 before any conversation was generated; **confirmed 2026-11-16**).
 - Layer 32 is the layer the authors' package configures for Qwen 3 32B. It is fixed in advance.
   Layers 24, 28, 36 and 40 are reported as a reliability check only and do not enter the
-  acceptance criterion **[owner to confirm the reliability layers]**.
+  acceptance criterion (**confirmed 2026-11-17**).
 - The axis is scaled to unit length before projection. It is the authors' released file at a
   pinned revision (`DATA_AND_MODELS.md`); no axis is computed here.
 
@@ -135,8 +136,8 @@ projection than a randomly chosen non-drift turn, counting ties as one half.
   figure and as quantiles, and the target's rank in each distribution.
 
 `T` and `O` are on the same scale (distance of an AUC from 0.5), which is what makes the
-subtraction meaningful **[owner to confirm: the plan states the gap as "target AUC minus the 95th
-percentile" and this is the reading adopted]**.
+subtraction meaningful (**confirmed 2026-11-17**; the plan states the gap as "target AUC minus the 95th
+percentile" and this is the reading adopted).
 
 ### 4.5 Estimands
 
@@ -157,7 +158,7 @@ percentile" and this is the reading adopted]**.
 - **"Gap above zero" means the lower bound of that interval is above zero.** A positive point
   estimate whose interval includes zero is read as "not distinguishable from zero at this sample
   size" and falls under the null reading below, with that wording
-  **[owner to confirm this rule]**.
+  (**confirmed 2026-11-17**).
 
 ### 4.7 Pre-committed readings
 
@@ -229,7 +230,7 @@ The difference is reported in the write-up as found.
 One full-length conversation runs on one 80 GB card with activations captured at the five layers
 in section 4.2, without running out of memory. The turn count is fixed only after this. **Pass:**
 15 assistant turns complete. If 15 do not fit, the count is reduced to the largest that does;
-**fewer than 10 is a fail** **[owner to confirm the floor of 10]**.
+**fewer than 10 is a fail** (**confirmed 2026-11-17**).
 
 **Fixed before it was run.** The script is `src/gate2_memory.py`. "Full-length" is the worst
 case the study can produce: weights in 16-bit floats on one card; every assistant turn forced to
@@ -410,7 +411,7 @@ human label and no rating used as study data is produced before the document is 
   written for this study. The user model never sees a projection or a rating.
 - **Simulated-user and judge models:** `claude-sonnet-5-5` (user, effort low) and
   `gpt-6.1-sol` (judge, reasoning effort high), recorded in `configs/study.toml`
-  (**confirmed 2026-11-16**; the effort settings are proposals). The judge comes from a
+  (**models confirmed 2026-11-16, effort settings 2026-11-17**). The judge comes from a
   different provider than the simulated user, so it does not rate text written by a model of
   its own family. No fallback model is configured: a declined request
   is recorded, not rerouted. The user model's instructions are in `src/conversation.py`.
@@ -425,7 +426,7 @@ human label and no rating used as study data is produced before the document is 
   the prompt "You are a helpful assistant." and is not re-run: it tested the layer, the token
   span and the sign of the capture code, which do not depend on the system prompt. Without a
   length instruction replies run long; the ceiling was raised for that reason (see above).
-- **Failures in the main run [owner to confirm].** The pilot's rules (section 5.4) carry over.
+- **Failures in the main run (confirmed 2026-11-17).** The pilot's rules (section 5.4) carry over.
   - *Simulated user:* a call whose output is cut off or empty is made once more; a declined
     request is not retried. If there is still no usable message, or the API fails after the
     client's own retries, the conversation ends there. Its turns stay in the study and it is
@@ -564,7 +565,7 @@ The judge's ratings are not used as the outcome until it passes.
   direction of disagreements. Gwet's AC1 is reported because κ is unstable when one category is
   rare, which is expected here.
 - **Minimum to proceed:** on the drift / non-drift cut, Gwet's AC1 ≥ 0.65 against the human
-  labels **[owner to confirm]**.
+  labels (**confirmed 2026-11-17**).
 - **If the judge fails:** the first 40 labelled turns (in sampling order, fixed before
   labelling) may be used once to clarify the judge's instructions. The rubric itself does not
   change. The judge is then validated on the other 80. If it fails again, the primary analysis
@@ -661,7 +662,7 @@ turn, not a per-turn label. It is an orientation, not an expectation.
   conversations drift and have low projections throughout), there are effectively fewer
   independent units and power is lower than the table says.
 
-**Options at the first review [owner to decide].** (a) Accept the design as it is, with the
+**Decision, 2026-11-17: option (a).** The owner accepted the design as it is, with the limit above stated in the write-up; the percentile interval and the two-sided 95% level of section 4.6 stand. The options that were on the table: (a) Accept the design as it is, with the
 limit above stated in the write-up. (b) Replace the percentile interval with one that is centred
 on the estimate (for example the basic bootstrap interval), which removes the bias toward the
 null described above. (c) Use a one-sided 95% bound for "above zero", since the hypothesis is
@@ -707,11 +708,15 @@ If any of these occurs, it is reported as the result.
 
 None of this is run this round.
 
-## 13. Open items for the first review
+## 13. Decisions
 
-Decisions the governing plan leaves open, with the proposal made here:
+**Go, 2026-11-17.** Gates 1 to 4 passed. The owner confirmed every item below as written and
+gave the go for the main run: 70 conversations on two instances in parallel.
 
-| Item | Proposal | Section |
+Decisions the governing plan left open, each with what was decided and when. Rows without a
+date of their own were confirmed as written on 2026-11-17.
+
+| Item | Decision | Section |
 |---|---|---|
 | Gate 1 threshold | 0.60, the paper's floor; the plan's reference point was about 0.71 and the result is 0.672: **pass confirmed 2026-11-16** | 5.1 |
 | Scale of the gap | target and off-target both as distance of AUC from 0.5; off-target two-sided | 4.4 |

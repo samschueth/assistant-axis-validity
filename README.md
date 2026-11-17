@@ -5,10 +5,12 @@ directions do, once conversation type is held fixed?**
 
 ## Status
 
-**Pre-registration in draft. No results.** Nothing has been generated, labelled or judged.
-[`PREREGISTRATION.md`](PREREGISTRATION.md) holds the question, the statistic, the gates and the
-labelling rubric. It is committed before any labelling begins, and nothing in `results/` is a
-finding until that file is marked final.
+**Pre-registration final (2026-11-17). Main run in progress. No results.** The four gates
+passed and a six-conversation pilot was generated and judged to set the base rate and fix the
+rubric. No main-run conversation has been labelled or judged, and no projection has been set
+against a rating. [`PREREGISTRATION.md`](PREREGISTRATION.md) holds the question, the statistic,
+the gates, the labelling rubric and the decisions; departures from it are listed in its
+section 15.
 
 Two things in `results/` exist already and are not findings about the question: a check on the
 released vector files (gate 1) and a sample-size simulation on synthetic data.
