@@ -6,3 +6,4 @@ torch
 huggingface_hub
 matplotlib
 pytest
+anthropic

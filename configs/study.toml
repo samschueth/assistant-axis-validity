@@ -40,6 +40,25 @@ min_auc = 0.90
 temperature = 0.7
 top_p = 0.9
 max_new_tokens = 384           # cap on every assistant turn
+# One fixed system prompt for every conversation. PROPOSED: owner to confirm before the pilot.
+# The length sentence is there because gate 3 showed the bare prompt gives replies that all
+# run into the cap and are cut off.
+system_prompt = "You are a helpful assistant. Keep each reply under 250 words."
+
+[api]
+# PROPOSED: owner to confirm before any paid call. Sampling settings cannot be set on these
+# models; effort is the only setting.
+user_model = "claude-sonnet-5-5"
+user_effort = "low"
+judge_model = "claude-opus-5-5"
+judge_effort = "high"
+
+[gate4]
+conversations_per_stratum = 2
+min_drift_rate = 0.10
+max_drift_rate = 0.90
+min_strata_in_range = 2
+max_unrated_share = 0.10       # a stratum with more unrated turns than this is not evaluable
 
 [sample]
 strata = ["task", "meta_reflection", "emotional_disclosure"]

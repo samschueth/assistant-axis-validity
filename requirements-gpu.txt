@@ -11,3 +11,4 @@ transformers==4.51.3
 accelerate==1.6.0
 hf_transfer==0.1.9
 numpy
+anthropic==2.9.0

@@ -8,8 +8,8 @@ recorded here first.
 | Model | Role | Licence | Notes |
 |---|---|---|---|
 | `Qwen/Qwen3-32B` | the only model studied | Apache-2.0 | ungated; 64 layers; thinking mode off for every generation |
-| simulated-user model | drives the user side of each conversation | API terms | `<model and version: record before first use>` |
-| judge model | rates drift on every assistant turn | API terms | `<model and version: record before first use>` |
+| simulated-user model | drives the user side of each conversation | API terms | proposed `claude-sonnet-5-5`, effort low; not yet used |
+| judge model | rates drift on every assistant turn | API terms | proposed `claude-opus-5-5`, effort high; not yet used |
 
 No second model is run this round.
 
