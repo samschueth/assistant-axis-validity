@@ -425,6 +425,22 @@ human label and no rating used as study data is produced before the document is 
   the prompt "You are a helpful assistant." and is not re-run: it tested the layer, the token
   span and the sign of the capture code, which do not depend on the system prompt. Without a
   length instruction replies run long; the ceiling was raised for that reason (see above).
+- **Failures in the main run [owner to confirm].** The pilot's rules (section 5.4) carry over.
+  - *Simulated user:* a call whose output is cut off or empty is made once more; a declined
+    request is not retried. If there is still no usable message, or the API fails after the
+    client's own retries, the conversation ends there. Its turns stay in the study and it is
+    reported as incomplete. It is not regenerated and not replaced.
+  - *Capture:* a turn whose activation could not be captured (the reply could not be located
+    in the rendered conversation, or the pass ran out of memory) and a turn with an empty reply
+    have no projection and leave every analysis. They are counted in the generation log.
+  - *Instance failure:* if an instance stops in the middle of a conversation, that conversation
+    has no record and is generated again from its brief and seed on restart. The simulated user
+    is not repeatable, so this is a new conversation, not a replay. The number of such restarts
+    is reported. An API failure on a conversation's first message stops the run in the same
+    way, because nothing has been generated and the fault is in the setup.
+  - *Judge:* a call whose output is not a valid rating is made once more; a declined request is
+    not retried. A turn that is still unrated leaves every analysis, as neither drift nor
+    non-drift. The number of unrated turns per stratum is reported.
 - **Recorded before the full run:** every brief, the system prompt, the sampling settings, the
   seeds, and the simulated-user and judge model versions.
 - Nothing from any released transcript is used as data. No production or user data is used.
@@ -600,15 +616,32 @@ The strong-clustering column was run at the higher base rates only.
   scenario, so the primary estimand was always estimable. The task stratum entered in 75–86% of
   replicates at a 5% drift rate and 10–14% at 2%. The result is expected to rest on two strata.
 
-**After the change of 2026-11-17 (section 6).** The simulation above assumed 30 conversations
-in every stratum (1,350 turns). The main run has 30 in each of the two higher-drift strata and
-10 in the task stratum (1,050 turns). The power figures are for the primary estimand, which in
-the simulation rested on the two higher-drift strata in every replicate; those strata are
-unchanged, so the figures stand as an approximation and the simulation is not re-run. Two things
-do change: the task stratum, with 150 turns, is even less likely to enter, and the pooled
-estimand has fewer task turns than was simulated. The pilot's drift rates in the two entering
-strata (53% and 73%) are above the simulation's higher setting (35%), and its drift was
-concentrated by conversation, which is the strong-clustering column.
+**After the change of 2026-11-17 (section 6): simulation re-run.** The table above assumed 30
+conversations in every stratum (1,350 turns). The main run has 10 in the task stratum and 30 in
+each of the other two (1,050 turns). The simulation was run again on 2026-11-17 with those
+counts and the same grid, seed and analysis (`--design main`, script change committed at
+`0a8f3e1` before its output was read; full table in `results/sample_size_sim_main.md`).
+
+| True target AUC, within stratum | Off-target directions carry no signal | Off-target P95 of 0.05 | Off-target P95 of 0.10 | P95 of 0.05, strong clustering |
+|---|---|---|---|---|
+| 0.65 | 0.07–0.31 | 0.05–0.21 | 0.01–0.06 | 0.02 |
+| 0.70 | 0.47–0.84 | 0.39–0.79 | 0.17–0.49 | 0.26 |
+| 0.75 | 0.89–0.98 | 0.87–0.96 | 0.71–0.91 | 0.72 |
+| 0.80 | 0.99–1.00 | 0.99 | 0.98–0.99 | 0.94 |
+
+- **Power is the same or higher than with 30 task conversations**, most clearly at the higher
+  base rates. In the first run the task stratum entered the primary estimand in 75–86% of
+  replicates at a 5% drift rate, with few drift turns and therefore a noisy bar, and it pulled
+  the average gap down. With 10 task conversations it enters in under 14% of replicates, and
+  the estimand rests on the two strata that have the data.
+- **False positives** stay at 0 to 1 in 1,000 in every null scenario.
+- **The reading of the design does not change:** a true AUC of 0.80 is detected almost always,
+  0.75 usually (0.71–0.98), and 0.70 is still missed more often than not unless base rates are
+  high and off-target signal is weak.
+- **Where the pilot points.** Its drift rates in the two entering strata (53% and 73%) are
+  above the simulation's higher setting (35%), and its drift was concentrated by conversation,
+  which is the strong-clustering column: power 0.72 at a true AUC of 0.75 and 0.26 at 0.70.
+  Two pilot conversations per stratum are a weak basis for either statement.
 
 **Is the sample enough?** It is enough for a strong effect and not for a moderate one. A null
 from this study rules out a strong advantage for the axis (a within-stratum AUC of 0.80 or more)
@@ -694,6 +727,7 @@ Decisions the governing plan leaves open, with the proposal made here:
 | Disclosure wording | section 3 as written | 3 |
 | Simulated-user and judge models | `claude-sonnet-5-5` (effort low) and `gpt-6.1-sol` (effort high); no fallback model: **models confirmed 2026-11-16** | 6 |
 | Sample size and decision rule | accept as is, or one of the options in section 9 | 9 |
+| Failures in the main run | the pilot's rules carry over: one retry, none after a refusal; incomplete conversations kept and not replaced; turns without a capture or a rating leave the analysis | 6 |
 | Rubric | fixed without changes at the second review: **confirmed 2026-11-17** | 7 |
 | Length ceiling | 1,536 new tokens per assistant turn (384 for gates 2, 3 and the pilot): **owner's decision 2026-11-17** | 6, 5.2 |
 | Strata sizes | task 10, meta-reflection 30, emotional disclosure 30; 70 conversations: **owner's decision 2026-11-17** | 6, 9 |

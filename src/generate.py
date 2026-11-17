@@ -156,6 +156,11 @@ def main() -> None:
             except UserModelStopped:
                 raise
             except Exception as e:  # an API failure after the client's own retries ends the conversation
+                if last_reply is None:
+                    # Nothing has been generated yet, so this is a fault in the setup (a bad key,
+                    # a rejected request), not something about this conversation. Stop the run
+                    # without writing a record, so that a restart takes the brief up again.
+                    raise
                 raise UserModelStopped(f"API error: {type(e).__name__}") from e
 
         t0 = time.time()
