@@ -1,7 +1,7 @@
 """The conversation loop and the simulated user. No GPU code here, so it is tested on the laptop.
 
-A conversation is a list of {"role", "content"} messages for the model under study: one system
-message, then user and assistant turns in alternation. The simulated user is an API model that
+A conversation is a list of {"role", "content"} messages for the model under study: user and
+assistant turns in alternation, after a system message if one is configured (the study uses none). The simulated user is an API model that
 sees the same conversation with the roles swapped, under a brief written for this study. It
 never sees a projection or a rating.
 """
@@ -90,7 +90,7 @@ def run_conversation(
     else it returns (token counts, flags) is kept per turn. If the user model stops, the
     conversation is returned as far as it got, marked incomplete.
     """
-    messages = [{"role": "system", "content": system_prompt}]
+    messages = [{"role": "system", "content": system_prompt}] if system_prompt else []
     turns, stopped, last = [], None, None
     for _ in range(n_turns):
         try:

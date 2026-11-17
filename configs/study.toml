@@ -40,10 +40,10 @@ min_auc = 0.90
 temperature = 0.7
 top_p = 0.9
 max_new_tokens = 384           # cap on every assistant turn
-# One fixed system prompt for every conversation. PROPOSED: owner to confirm before the pilot.
-# The length sentence is there because gate 3 showed the bare prompt gives replies that all
-# run into the cap and are cut off.
-system_prompt = "You are a helpful assistant. Keep each reply under 250 words."
+# No system prompt: the conversation starts with the user's first message, as in the Assistant
+# Axis paper's drift conversations. Confirmed by the owner on 2026-11-16. An empty string here
+# means no system message is sent at all.
+system_prompt = ""
 
 [api]
 # Models confirmed by the owner on 2026-11-16. The judge comes from a different provider than

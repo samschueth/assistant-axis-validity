@@ -69,3 +69,9 @@ def test_cut_off_user_message_is_retried_once():
     out = run(client, n=1)
     assert out["complete"] and len(client.calls) == 2
     assert out["turns"][0]["user"] == "person message 2"
+
+
+def test_no_system_message_when_the_system_prompt_is_empty():
+    user = SimulatedUser(FakeClient(), model="m", effort="low", brief="A brief.", n_turns=2)
+    out = run_conversation(system_prompt="", n_turns=2, next_user=user.next_message, next_assistant=assistant)
+    assert [m["role"] for m in out["messages"]] == ["user", "assistant", "user", "assistant"]
