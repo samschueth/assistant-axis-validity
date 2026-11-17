@@ -97,7 +97,7 @@ def clustered_noise(rng, n_conv, n_turns, n_dir, icc, shared: bool) -> np.ndarra
 
 
 def simulate_once(sc: dict, cfg: dict, rng: np.random.Generator) -> dict:
-    n_conv = cfg["sample"]["conversations_per_stratum"]
+    n_conv = cfg["simulation"]["conversations_per_stratum"]
     n_turns = cfg["sample"]["assistant_turns"]
     n_dir = cfg["vectors"]["n_role_vectors"]
     icc_y, icc_x = CLUSTERING[sc["clustering"]]

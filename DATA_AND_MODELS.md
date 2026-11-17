@@ -93,3 +93,11 @@ Budget estimate ≈ $50–65; hard cap $100, confirmed by the owner on 2026-11-1
 | 2026-11-17 | one A100 PCIe 80 GB, secure cloud, $2.09/h | 0.51 h | length probe (not study data): 30 pilot turns regenerated, memory at long contexts | $1.06 |
 
 **Running total: about $5.75.** Every instance has been deleted; nothing is billing.
+
+**Projection for the main run (2026-11-17, before it starts).** 70 conversations, 1,050 turns,
+ceiling 1,536 tokens, on two A100 80 GB instances in parallel at $2.09/h each. Generation speed
+in the length probe was 11.2 new tokens per second. If replies average 520 tokens (the probe's
+mean) the GPU time is about 16 h in total, about $33; if they average 700 (the probe's early
+turns), about 21 h, about $44. Simulated user about $5 to $7 with the conversation cached; judge
+about $14 to $19 at the unverified list price. **Projected study total: about $58 to $76**
+against the cap of $100.

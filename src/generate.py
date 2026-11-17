@@ -1,6 +1,7 @@
 """Generate conversations and capture activations. Run on the GPU instance.
 
     python src/generate.py --briefs configs/pilot_briefs.toml --set pilot
+    python src/generate.py --briefs configs/main_briefs.toml --set main --shard 0/2
 
 For each brief: the simulated user (an API model) and the model under study alternate for the
 configured number of assistant turns. After each assistant turn, one forward pass over the
@@ -14,6 +15,11 @@ Outputs
 
 No projection is computed here. A conversation already in conversations.jsonl is skipped, so an
 interrupted run can be restarted.
+
+With --shard I/N the run takes every Nth brief starting at the Ith, so that N instances can
+share the work. Each conversation's seed comes from its position in the whole briefs file, so
+the split does not change any conversation. A shard writes conversations.IofN.jsonl and
+generation_log.IofN.json; merge_shards.py joins them in brief order.
 """
 
 from __future__ import annotations
@@ -43,7 +49,11 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--briefs", required=True, help="TOML file of scenario briefs")
     parser.add_argument("--set", required=True, help="name of this set of conversations, e.g. pilot")
+    parser.add_argument("--shard", default=None, help="I/N: take every Nth brief starting at the Ith (zero-based)")
     args = parser.parse_args()
+    shard_i, shard_n = (int(x) for x in args.shard.split("/")) if args.shard else (0, 1)
+    assert 0 <= shard_i < shard_n
+    tag = f".{shard_i}of{shard_n}" if args.shard else ""
 
     with open(REPO_ROOT / "configs" / "study.toml", "rb") as f:
         cfg = tomllib.load(f)
@@ -57,7 +67,7 @@ def main() -> None:
     act_dir = REPO_ROOT / "data" / "runs" / args.set
     out_dir.mkdir(parents=True, exist_ok=True)
     act_dir.mkdir(parents=True, exist_ok=True)
-    transcripts = out_dir / "conversations.jsonl"
+    transcripts = out_dir / f"conversations{tag}.jsonl"
     done = set()
     if transcripts.exists():
         done = {json.loads(line)["id"] for line in transcripts.read_text().splitlines() if line.strip()}
@@ -87,6 +97,8 @@ def main() -> None:
     t_start = time.time()
 
     for index, brief in enumerate(briefs):
+        if index % shard_n != shard_i:
+            continue
         if brief["id"] in done:
             print(f"skip {brief['id']}: already generated", flush=True)
             continue
@@ -115,8 +127,18 @@ def main() -> None:
                 print(f"capture failed: {e}", flush=True)
                 activations.append(np.full((len(layers), cfg["model"]["hidden_size"]), np.nan, dtype=np.float32))
                 return turn | {"reply_tokens": 0, "matches_generation": None, "capture_failed": True}
-            with torch.no_grad():
-                model(torch.tensor([span["ids"]], device=model.device))
+            out_of_memory = False
+            try:
+                with torch.no_grad():
+                    model(torch.tensor([span["ids"]], device=model.device))
+            except torch.cuda.OutOfMemoryError:
+                out_of_memory = True
+            if out_of_memory:  # keep the conversation; this turn has no activation
+                store.clear()
+                torch.cuda.empty_cache()
+                print(f"capture failed: out of memory at {len(span['ids'])} tokens", flush=True)
+                activations.append(np.full((len(layers), cfg["model"]["hidden_size"]), np.nan, dtype=np.float32))
+                return turn | {"reply_tokens": 0, "matches_generation": None, "capture_failed": True, "out_of_memory": True}
             a, b = span["start"], span["end"]
             activations.append(
                 np.stack([store[layer][a:b].float().mean(dim=0).cpu().numpy() for layer in layers]).astype(np.float32)
@@ -152,7 +174,13 @@ def main() -> None:
         }
         with open(transcripts, "a") as f:
             f.write(json.dumps(record, ensure_ascii=False) + "\n")
-        print(f"{brief['id']}: {len(convo['turns'])} turns in {record['seconds']} s", flush=True)
+        n_new = sum(t["new_tokens"] for t in convo["turns"])
+        n_cap = sum(t["hit_cap"] for t in convo["turns"])
+        print(
+            f"{brief['id']}: {len(convo['turns'])} turns in {record['seconds']} s, {n_new} new tokens, "
+            f"{n_cap} at the ceiling; user model so far: {json.dumps(client.usage.by_model)}",
+            flush=True,
+        )
 
     all_turns = [
         t
@@ -162,10 +190,12 @@ def main() -> None:
     ]
     log = {
         "set": args.set,
+        "shard": args.shard,
         "turns": len(all_turns),
         "turns_hit_cap": sum(t["hit_cap"] for t in all_turns),
         "turns_empty": sum(not t["reply"] for t in all_turns),
         "turns_capture_failed": sum(bool(t.get("capture_failed")) for t in all_turns),
+        "turns_capture_out_of_memory": sum(bool(t.get("out_of_memory")) for t in all_turns),
         "turns_context_differs_from_generation": sum(t["matches_generation"] is False for t in all_turns),
         "git_commit": os.environ.get("STUDY_COMMIT", "unknown"),
         "model": name,
@@ -182,7 +212,7 @@ def main() -> None:
         "gpu": torch.cuda.get_device_name(0),
         "seconds": round(time.time() - t_start),
     }
-    (out_dir / "generation_log.json").write_text(json.dumps(log, indent=2) + "\n")
+    (out_dir / f"generation_log{tag}.json").write_text(json.dumps(log, indent=2) + "\n")
     print(json.dumps(log, indent=2))
 
 

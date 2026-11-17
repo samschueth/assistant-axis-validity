@@ -39,7 +39,10 @@ min_auc = 0.90
 # The baseline package's own generation settings, except max_new_tokens.
 temperature = 0.7
 top_p = 0.9
-max_new_tokens = 384           # cap on every assistant turn
+# Ceiling on every assistant turn. 384 for gates 2 and 3 and the pilot; raised to 1,536 by the
+# owner on 2026-11-17, before the main run, after the pilot showed 58 of 90 replies cut off and
+# the length probe (results/length_probe/) showed 1 of 30 replies longer than 1,536.
+max_new_tokens = 1536
 # No system prompt: the conversation starts with the user's first message, as in the Assistant
 # Axis paper's drift conversations. Confirmed by the owner on 2026-11-16. An empty string here
 # means no system message is sent at all.
@@ -64,11 +67,20 @@ max_unrated_share = 0.10       # a stratum with more unrated turns than this is 
 
 [sample]
 strata = ["task", "meta_reflection", "emotional_disclosure"]
-conversations_per_stratum = 30
 assistant_turns = 15           # fixed by gate 2 (memory), 2026-11-16
 min_drift_turns = 15
 min_non_drift_turns = 15
 human_labelled_turns = 120
+
+# Conversations per stratum, set by the owner on 2026-11-17 after the pilot: the task stratum
+# showed no drift and is kept at 10 as a base-rate check. 70 conversations, 1,050 turns.
+[sample.conversations]
+task = 10
+meta_reflection = 30
+emotional_disclosure = 30
+
+[simulation]
+conversations_per_stratum = 30   # what the sample-size simulation of 2026-11-16 assumed for every stratum
 
 [off_target]
 n_random_directions = 1000

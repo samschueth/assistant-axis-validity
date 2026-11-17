@@ -41,7 +41,7 @@ Assistant Axis.
 - **Acceptance criterion:** the gap between the target and the 95th percentile of the
   role-direction distribution, computed within conversation type. The whole distribution is
   reported with the target's rank in it.
-- **Data:** 90 newly generated conversations of 15 assistant turns, in three strata, with a
+- **Data:** 70 newly generated conversations of 15 assistant turns, in three strata, with a
   simulated user.
 
 The readings of each possible outcome are fixed in advance in the pre-registration. A null is
@@ -65,7 +65,8 @@ make judge-pilot    # paid API: rate every pilot turn on the draft rubric
 make gate4          # gate 4: base rate of judged drift in the pilot
 make length-probe   # GPU: reply lengths without the cap, memory at long contexts (not study data)
 make test           # unit tests
-make generate       # GPU: conversations and activation capture      (not implemented yet)
+make generate       # GPU + paid API: the 70 main-run conversations and activation capture
+                    #   (to split across N instances: python src/generate.py ... --shard I/N, then src/merge_shards.py)
 make project        # per-turn projections, target and off-target    (not implemented yet)
 make judge          # LLM judge and its validation against labels    (not implemented yet)
 make analyze        # AUCs, off-target distributions, gaps            (not implemented yet)

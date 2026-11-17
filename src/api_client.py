@@ -74,6 +74,9 @@ class AnthropicClient:
             system=[{"type": "text", "text": system, "cache_control": {"type": "ephemeral"}}],
             messages=messages,
             output_config=output_config,
+            # Caches the conversation so far, so each request pays full price only for what the
+            # last exchange added. The marker on the system block above keeps its own read point.
+            cache_control={"type": "ephemeral"},
         )
         u = response.usage
         self.usage.add(

@@ -14,7 +14,7 @@ help:
 	@echo "gate4         gate 4: base rate of judged drift in the pilot"
 	@echo "length-probe  GPU: reply lengths with the cap out of the way, and memory at long contexts"
 	@echo "simulate      sample-size simulation on synthetic data"
-	@echo "generate      GPU: conversation generation and activation capture"
+	@echo "generate      GPU + paid API: the main run, conversation generation and activation capture"
 	@echo "project       per-turn projections, target and off-target"
 	@echo "judge         LLM judge and its validation against human labels"
 	@echo "analyze       AUCs, off-target distributions, gaps"
@@ -59,7 +59,8 @@ length-probe:
 simulate:
 	$(PY) src/analysis/sample_size_sim.py
 
-generate:  ; $(NOT_IMPL)
+generate:
+	python src/generate.py --briefs configs/main_briefs.toml --set main
 project:   ; $(NOT_IMPL)
 judge:     ; $(NOT_IMPL)
 analyze:   ; $(NOT_IMPL)

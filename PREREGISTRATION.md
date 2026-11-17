@@ -236,8 +236,8 @@ case the study can produce: weights in 16-bit floats on one card; every assistan
 the cap of 384 new tokens; long filler user turns of about 150 tokens; then one forward pass
 over the whole conversation with hooks on the five layers, which is how the study captures
 activations. The gate measures memory only. Its text is filler, it is not study data, and no
-projection is computed from it. The cap of 384 tokens per assistant turn applies to the whole
-study.
+projection is computed from it. The cap of 384 tokens per assistant turn applied to gates 2 and
+3 and to the pilot; it was raised for the main run (see "Memory at the main run's ceiling" below).
 
 **Result, 2026-11-16: PASS.** Run at commit `ade3836`, which fixed the definition; full output in
 `results/gate2_memory.json`.
@@ -253,6 +253,25 @@ study.
 
 **The turn count is fixed at 15.** The worst case leaves about 13 GB of headroom on one 80 GB
 card. Peak memory grew by about 0.23 GB per turn during generation.
+
+**Memory at the main run's ceiling (added 2026-11-17).** The ceiling for the main run is 1,536
+new tokens per turn (section 6), so conversations can be longer than the one gate 2 tested. The
+length probe (`src/length_probe.py`, `results/length_probe/summary.json`) measured peak memory
+for the two calls the main run makes, at longer contexts, on the same kind of card:
+
+| Context, tokens | Peak, capture pass | Peak, generation |
+|---|---|---|
+| 12,000 | 68.1 GB | 66.7 GB |
+| 16,000 | 70.4 GB | 68.6 GB |
+| 20,000 | 72.7 GB | 70.5 GB |
+| 24,000 | 75.1 GB | 72.4 GB |
+
+No run was out of memory. Fifteen replies all at the ceiling, with the user turns, come to about
+25,500 tokens, for which the table extrapolates to about 76 GB of 79.25 GB. That worst case is
+**extrapolated, not tested**. The model's context window is 40,960 positions. If a capture pass
+does run out of memory, that turn is recorded without an activation and the conversation
+continues; such turns are counted in the generation log and leave the analysis. The turn count
+stays at 15.
 
 ### 5.3 Gate 3: separation (GPU)
 
@@ -366,9 +385,27 @@ human label and no rating used as study data is produced before the document is 
 
 - **Model:** `Qwen/Qwen3-32B`. **Thinking mode off** for every generation; the setting is
   recorded in `configs/study.toml` and in each run's log.
-- **Conversations:** 90, in three strata of 30: task-oriented controls, meta-reflection prompts,
-  and emotionally vulnerable user scenarios, modelled on the categories in the Assistant Axis
-  paper. Each has 15 assistant turns (fixed by gate 2), of at most 384 tokens, about 1,350 turns.
+- **Conversations:** 70, in three strata modelled on the categories in the Assistant Axis paper:
+  10 task-oriented controls, 30 meta-reflection prompts and 30 emotionally vulnerable user
+  scenarios. Each has 15 assistant turns (fixed by gate 2), of at most 1,536 new tokens: 1,050
+  turns. The briefs are in `configs/main_briefs.toml`; their order is fixed, because a
+  conversation's seed is the generation seed plus its position in that file.
+- **Strata sizes (owner's decision, 2026-11-17).** The governing plan had 30 conversations per
+  stratum. The pilot's task stratum showed no drift in 30 turns, so it is not expected to meet
+  the 15-and-15 rule of section 4.5 and would add cost without entering the primary estimand.
+  It is kept at 10 conversations, as a check on the base rate and for the pooled estimand. The
+  two strata the primary estimand rests on are unchanged at 30 each. The decision was made
+  after the pilot's ratings were seen and before any main-run conversation was generated; no
+  pilot projection has been computed.
+- **Length ceiling (owner's decision, 2026-11-17).** 1,536 new tokens per assistant turn,
+  raised from the 384 used for gates 2 and 3 and the pilot, where 58 of 90 replies were cut off.
+  The length probe regenerated 30 pilot turns with a ceiling of 2,048: none reached it, the
+  median was 522 tokens, 2 of 30 were longer than 1,024 and 1 of 30 longer than 1,536
+  (`results/length_probe/`). From turn 2 on, the probe's contexts held the pilot's cut-off
+  replies, so its lengths are a guide, not an estimate; the number of main-run replies that
+  reach the ceiling is reported. **What this changes relative to the pilot:** gate 4's base
+  rates and the owner's reading of the judge against the rubric were both obtained on replies
+  of at most 384 tokens. Neither is re-run.
 - **Simulated user:** an API model following a short scenario brief, one brief per conversation,
   written for this study. The user model never sees a projection or a rating.
 - **Simulated-user and judge models:** `claude-sonnet-5-5` (user, effort low) and
@@ -387,17 +424,17 @@ human label and no rating used as study data is produced before the document is 
   system prompt; this replaces it, before any conversation was generated. Gate 3 was run with
   the prompt "You are a helpful assistant." and is not re-run: it tested the layer, the token
   span and the sign of the capture code, which do not depend on the system prompt. Without a
-  length instruction more replies will reach the 384-token cap; the count is reported.
+  length instruction replies run long; the ceiling was raised for that reason (see above).
 - **Recorded before the full run:** every brief, the system prompt, the sampling settings, the
   seeds, and the simulated-user and judge model versions.
 - Nothing from any released transcript is used as data. No production or user data is used.
 
 ## 7. Labelling rubric
 
-> **Draft for the first review.** It is fixed at the second review, when sample conversations
-> from the pilot can be read against it, and it does not change after labelling starts. The
-> anchor examples were written for this study before any conversation was generated. They are not
-> taken from any transcript.
+> **Fixed at the second review, 2026-11-17.** The owner read the six pilot conversations with
+> the judge's ratings against this rubric and confirmed it without changes. It does not change
+> from here. The anchor examples were written for this study before any conversation was
+> generated. They are not taken from any transcript.
 
 ### 7.1 What is rated
 
@@ -563,7 +600,17 @@ The strong-clustering column was run at the higher base rates only.
   scenario, so the primary estimand was always estimable. The task stratum entered in 75–86% of
   replicates at a 5% drift rate and 10–14% at 2%. The result is expected to rest on two strata.
 
-**Is 1,350 turns enough?** It is enough for a strong effect and not for a moderate one. A null
+**After the change of 2026-11-17 (section 6).** The simulation above assumed 30 conversations
+in every stratum (1,350 turns). The main run has 30 in each of the two higher-drift strata and
+10 in the task stratum (1,050 turns). The power figures are for the primary estimand, which in
+the simulation rested on the two higher-drift strata in every replicate; those strata are
+unchanged, so the figures stand as an approximation and the simulation is not re-run. Two things
+do change: the task stratum, with 150 turns, is even less likely to enter, and the pooled
+estimand has fewer task turns than was simulated. The pilot's drift rates in the two entering
+strata (53% and 73%) are above the simulation's higher setting (35%), and its drift was
+concentrated by conversation, which is the strong-clustering column.
+
+**Is the sample enough?** It is enough for a strong effect and not for a moderate one. A null
 from this study rules out a strong advantage for the axis (a within-stratum AUC of 0.80 or more)
 and does **not** rule out a moderate one (0.70). The write-up must say so. No published figure
 maps cleanly onto a within-stratum, turn-level AUC, so which of those is the plausible size is
@@ -590,7 +637,7 @@ one-sided. (d) Add conversations to the two higher-drift strata within the budge
 its false-positive rate, before the pre-registration is marked final. Nothing is changed without a decision, and
 any change is made before the pre-registration is marked final.
 
-**Stopping rule.** The sample is 90 conversations. No conversations are added after any rating
+**Stopping rule.** The sample is 70 conversations. No conversations are added after any rating
 or projection has been examined.
 
 ## 10. Analyses, in order
@@ -647,6 +694,9 @@ Decisions the governing plan leaves open, with the proposal made here:
 | Disclosure wording | section 3 as written | 3 |
 | Simulated-user and judge models | `claude-sonnet-5-5` (effort low) and `gpt-6.1-sol` (effort high); no fallback model: **models confirmed 2026-11-16** | 6 |
 | Sample size and decision rule | accept as is, or one of the options in section 9 | 9 |
+| Rubric | fixed without changes at the second review: **confirmed 2026-11-17** | 7 |
+| Length ceiling | 1,536 new tokens per assistant turn (384 for gates 2, 3 and the pilot): **owner's decision 2026-11-17** | 6, 5.2 |
+| Strata sizes | task 10, meta-reflection 30, emotional disclosure 30; 70 conversations: **owner's decision 2026-11-17** | 6, 9 |
 
 ## 14. History of this repository
 
