@@ -91,8 +91,22 @@ Budget estimate ≈ $50–65; hard cap $100, confirmed by the owner on 2026-11-1
 | 2026-11-17 | simulated-user API, `claude-sonnet-5-5` | 90 calls, plus 2 in a test | gate 4 pilot | about $1.12 |
 | 2026-11-17 | judge API, `gpt-6.1-sol` | 90 calls, plus 2 in a test | gate 4 pilot | about $0.91 (list price not verified) |
 | 2026-11-17 | one A100 PCIe 80 GB, secure cloud, $2.09/h | 0.51 h | length probe (not study data): 30 pilot turns regenerated, memory at long contexts | $1.06 |
+| 2026-11-17 | two A100 PCIe 80 GB, secure cloud, $2.09/h each | 2 × 7.7 h (06:50 to 14:32 UTC) | main run, first part: 37 complete conversations and 2 cut short | about $32.20 |
+| 2026-11-17 | simulated-user API, `claude-sonnet-5-5` | 581 logged calls | main run, first part | about $7.25 (from logged token counts; price assumed, not verified) |
 
-**Running total: about $5.75.** Every instance has been deleted; nothing is billing.
+**Running total: about $45.** Every instance has been deleted; nothing is billing.
+
+**Main run stopped at 14:27 and 14:30 UTC, 2026-11-17.** The simulated-user account ran out of
+credit. Two conversations were in progress and ended there (`meta-23` after 14 turns,
+`emotional-04` after 11); the next conversation on each instance failed on its first message,
+which stops the run. 31 conversations remain: 3 meta-reflection and 28 emotional disclosure.
+
+**What the projection below got wrong.** Replies in the main run are longer than in the length
+probe, whose contexts held the pilot's cut-off replies: task conversations averaged about 2,060
+seconds each, meta-reflection about 1,110. The first part of the run cost about $39.45 for 39
+conversations. At the meta-reflection rate the remaining 31 need about 10 GPU hours (about $21)
+and about $6 of simulated-user calls; with the judge at about $20 the study total would be about
+$92.
 
 **Projection for the main run (2026-11-17, before it starts).** 70 conversations, 1,050 turns,
 ceiling 1,536 tokens, on two A100 80 GB instances in parallel at $2.09/h each. Generation speed
