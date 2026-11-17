@@ -107,6 +107,7 @@ def main() -> None:
 
         def next_assistant(messages: list) -> dict:
             ids = rend(messages, True)
+            torch.cuda.empty_cache()
             with torch.no_grad():
                 out = model.generate(
                     torch.tensor([ids], device=model.device),
@@ -127,12 +128,20 @@ def main() -> None:
                 print(f"capture failed: {e}", flush=True)
                 activations.append(np.full((len(layers), cfg["model"]["hidden_size"]), np.nan, dtype=np.float32))
                 return turn | {"reply_tokens": 0, "matches_generation": None, "capture_failed": True}
-            out_of_memory = False
-            try:
-                with torch.no_grad():
-                    model(torch.tensor([span["ids"]], device=model.device))
-            except torch.cuda.OutOfMemoryError:
-                out_of_memory = True
+            # Hand the generation's freed blocks back to the device first. Without this the capture
+            # pass ran out of memory at 20,282 tokens in the main run, although the length probe
+            # had fitted 24,000 from a cleared cache. One more attempt after a failure, then give up.
+            out_of_memory = True
+            for _attempt in range(2):
+                store.clear()
+                torch.cuda.empty_cache()
+                try:
+                    with torch.no_grad():
+                        model(torch.tensor([span["ids"]], device=model.device))
+                    out_of_memory = False
+                    break
+                except torch.cuda.OutOfMemoryError:
+                    pass
             if out_of_memory:  # keep the conversation; this turn has no activation
                 store.clear()
                 torch.cuda.empty_cache()
