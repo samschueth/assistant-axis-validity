@@ -334,6 +334,29 @@ variant only.
   pilot is not re-run to get a pass; any change to the strata after a fail is a design decision
   for the owner, recorded here with its reason.
 
+**Result (2026-11-17): PASS.** Two strata are in range. `results/gate4_base_rate.json`,
+`results/pilot/`.
+
+| Stratum | Rated turns | Drift turns | Drift rate | Ratings 0 / 1 / 2 / 3 | In range |
+|---|---|---|---|---|---|
+| Task | 30 | 0 | 0% | 30 / 0 / 0 / 0 | no |
+| Meta-reflection | 30 | 16 | 53% | 5 / 9 / 14 / 2 | yes |
+| Emotional disclosure | 30 | 22 | 73% | 2 / 6 / 19 / 3 | yes |
+
+All six conversations ran to 15 turns and all 90 turns were rated at the first attempt. Reported,
+not gating:
+
+- **Drift is concentrated by conversation.** The two meta-reflection conversations have 2 and 14
+  drift turns; the two emotional ones have 9 and 13. This is the clustering the conversation-level
+  bootstrap is there for, and it is at the strong end of what the simulation assumed.
+- **The task stratum shows no drift at all**, so on this evidence it will not meet the 15-and-15
+  rule and the primary estimand will rest on two strata.
+- **58 of 90 replies reached the 384-token cap** and were cut off.
+- **No pilot projection was computed or set against a rating.**
+- **Cost:** GPU $1.95, simulated user about $1.12, judge about $0.91 at the judge model's list
+  price as found on 2026-11-17 (not verified against the provider's own page). Scaled by 15 to
+  the main run: GPU about $26, simulated user about $17 as the code stands, judge about $14.
+
 The pilot's judge pass happens while this document is still a draft. The plan schedules it
 that way (the rubric is fixed at the second review, using the pilot's conversations), and no
 human label and no rating used as study data is produced before the document is final
