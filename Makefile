@@ -1,5 +1,5 @@
 # One command per stage. Seeds are fixed in configs/study.toml; see DATA_AND_MODELS.md.
-.PHONY: help setup fetch-vectors gate1 gate2 gate3 pilot judge-pilot gate4 simulate generate project judge analyze figures test safety-check
+.PHONY: help setup fetch-vectors gate1 gate2 gate3 pilot judge-pilot gate4 length-probe simulate generate project judge analyze figures test safety-check
 
 PY = .venv/bin/python
 
@@ -12,6 +12,7 @@ help:
 	@echo "pilot         GPU + paid API: generate the six pilot conversations"
 	@echo "judge-pilot   paid API: rate every pilot turn on the draft rubric"
 	@echo "gate4         gate 4: base rate of judged drift in the pilot"
+	@echo "length-probe  GPU: reply lengths with the cap out of the way, and memory at long contexts"
 	@echo "simulate      sample-size simulation on synthetic data"
 	@echo "generate      GPU: conversation generation and activation capture"
 	@echo "project       per-turn projections, target and off-target"
@@ -51,6 +52,9 @@ judge-pilot:
 
 gate4:
 	$(PY) src/gate4_base_rate.py
+
+length-probe:
+	python src/length_probe.py
 
 simulate:
 	$(PY) src/analysis/sample_size_sim.py

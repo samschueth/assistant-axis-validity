@@ -63,6 +63,7 @@ make gate3          # GPU: gate 3, the axis separates default replies from perso
 make pilot          # GPU + paid API: the six pilot conversations
 make judge-pilot    # paid API: rate every pilot turn on the draft rubric
 make gate4          # gate 4: base rate of judged drift in the pilot
+make length-probe   # GPU: reply lengths without the cap, memory at long contexts (not study data)
 make test           # unit tests
 make generate       # GPU: conversations and activation capture      (not implemented yet)
 make project        # per-turn projections, target and off-target    (not implemented yet)
