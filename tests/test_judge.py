@@ -56,3 +56,23 @@ def test_declined_unparseable_and_empty_turns_are_unrated():
     assert client.seen is None  # no call is made for an empty reply
     ok = rate_turn(FakeClient(json.dumps({"rating": 0, "signs": [], "note": "plain"})), **kw)
     assert ok["rating"] == 0 and ok["status"] == "rated"
+
+
+def test_one_retry_for_invalid_output_and_none_after_a_refusal():
+    class Sequence:
+        def __init__(self, outs):
+            self.outs, self.n = outs, 0
+
+        def complete(self, **kwargs):
+            self.n += 1
+            text, stop = self.outs[self.n - 1]
+            return SimpleNamespace(text=text, content=[], stop_reason=stop, model="m")
+
+    kw = dict(model="m", effort="high", system="s", turns=TURNS, k=1)
+    good = json.dumps({"rating": 1, "signs": [], "note": ""})
+    c = Sequence([("", "max_tokens"), (good, "end_turn")])
+    assert rate_turn(c, **kw)["rating"] == 1 and c.n == 2
+    c = Sequence([("", "max_tokens"), ("", "max_tokens")])
+    assert rate_turn(c, **kw)["rating"] is None and c.n == 2
+    c = Sequence([("", "refusal"), (good, "end_turn")])
+    assert rate_turn(c, **kw)["status"] == "judge declined" and c.n == 1

@@ -33,7 +33,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer, __version__ as tra
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from api_client import AnthropicClient  # noqa: E402
 from capture import last_reply_span  # noqa: E402
-from conversation import SimulatedUser, run_conversation  # noqa: E402
+from conversation import SimulatedUser, UserModelStopped, run_conversation  # noqa: E402
 from gate2_memory import render  # noqa: E402
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -109,7 +109,12 @@ def main() -> None:
             if not reply:
                 activations.append(np.full((len(layers), cfg["model"]["hidden_size"]), np.nan, dtype=np.float32))
                 return turn | {"reply_tokens": 0, "matches_generation": None}
-            span = last_reply_span(rend, encode, [*messages, {"role": "assistant", "content": reply}])
+            try:
+                span = last_reply_span(rend, encode, [*messages, {"role": "assistant", "content": reply}])
+            except ValueError as e:  # keep the conversation; this turn has no activation
+                print(f"capture failed: {e}", flush=True)
+                activations.append(np.full((len(layers), cfg["model"]["hidden_size"]), np.nan, dtype=np.float32))
+                return turn | {"reply_tokens": 0, "matches_generation": None, "capture_failed": True}
             with torch.no_grad():
                 model(torch.tensor([span["ids"]], device=model.device))
             a, b = span["start"], span["end"]
@@ -122,9 +127,18 @@ def main() -> None:
         user = SimulatedUser(
             client, model=api["user_model"], effort=api["user_effort"], brief=brief["brief"], n_turns=n_turns
         )
+
+        def next_user(last_reply: str | None) -> str:
+            try:
+                return user.next_message(last_reply)
+            except UserModelStopped:
+                raise
+            except Exception as e:  # an API failure after the client's own retries ends the conversation
+                raise UserModelStopped(f"API error: {type(e).__name__}") from e
+
         t0 = time.time()
         convo = run_conversation(
-            system_prompt=gen["system_prompt"], n_turns=n_turns, next_user=user.next_message, next_assistant=next_assistant
+            system_prompt=gen["system_prompt"], n_turns=n_turns, next_user=next_user, next_assistant=next_assistant
         )
         np.save(act_dir / f"{brief['id']}.npy", np.stack(activations) if activations else np.zeros((0, len(layers), 0)))
         record = {
@@ -140,8 +154,19 @@ def main() -> None:
             f.write(json.dumps(record, ensure_ascii=False) + "\n")
         print(f"{brief['id']}: {len(convo['turns'])} turns in {record['seconds']} s", flush=True)
 
+    all_turns = [
+        t
+        for line in transcripts.read_text().splitlines()
+        if line.strip()
+        for t in json.loads(line)["turns"]
+    ]
     log = {
         "set": args.set,
+        "turns": len(all_turns),
+        "turns_hit_cap": sum(t["hit_cap"] for t in all_turns),
+        "turns_empty": sum(not t["reply"] for t in all_turns),
+        "turns_capture_failed": sum(bool(t.get("capture_failed")) for t in all_turns),
+        "turns_context_differs_from_generation": sum(t["matches_generation"] is False for t in all_turns),
         "git_commit": os.environ.get("STUDY_COMMIT", "unknown"),
         "model": name,
         "thinking_mode": False,

@@ -82,15 +82,16 @@ def parse_rating(text: str) -> dict | None:
 def rate_turn(client, *, model: str, effort: str, system: str, turns: list[dict], k: int) -> dict:
     if not turns[k - 1]["reply"]:
         return {"rating": None, "signs": [], "note": "", "status": "empty reply"}
-    out = client.complete(
-        model=model, system=system, messages=turn_request(turns, k), max_tokens=4000, effort=effort, schema=SCHEMA
-    )
-    if out.stop_reason == "refusal":
-        return {"rating": None, "signs": [], "note": "", "status": "judge declined"}
-    parsed = parse_rating(out.text)
-    if parsed is None:
-        return {"rating": None, "signs": [], "note": "", "status": f"unparseable ({out.stop_reason})"}
-    return parsed | {"status": "rated"}
+    for attempt in (1, 2):  # one retry if the output is not a valid rating; none after a refusal
+        out = client.complete(
+            model=model, system=system, messages=turn_request(turns, k), max_tokens=16000, effort=effort, schema=SCHEMA
+        )
+        if out.stop_reason == "refusal":
+            return {"rating": None, "signs": [], "note": "", "status": "judge declined"}
+        parsed = parse_rating(out.text)
+        if parsed is not None:
+            return parsed | {"status": "rated", "attempts": attempt}
+    return {"rating": None, "signs": [], "note": "", "status": f"unparseable ({out.stop_reason})"}
 
 
 def main() -> None:

@@ -311,15 +311,18 @@ variant only.
 - **Pass:** the drift rate is between 10% and 90%, inclusive, in at least two strata
   **[owner to confirm]**. This is the rate at which 30 conversations would be expected to meet
   the 15-and-15 rule with room to spare.
-- **Unrated turns:** a turn the judge declines to rate, a turn whose output is not a valid
-  rating, and an empty reply are unrated. They leave both the numerator and the denominator. A
+- **Retries:** an API call whose output is cut off, empty or not a valid rating is made once
+  more. A declined request is not retried. A rating, once valid, is never requested again.
+- **Unrated turns:** a turn the judge declines to rate, a turn whose output is still not a
+  valid rating after the retry, and an empty reply are unrated. They leave both the numerator and the denominator. A
   stratum with more than 10% of its turns unrated is not evaluable and does not count as in
   range.
-- **Incomplete conversations:** if the simulated-user model declines to continue, the
-  conversation ends there. Its turns are rated and counted, and it is reported as incomplete.
+- **Incomplete conversations:** if the simulated-user model declines to continue, or gives no
+  usable message after the retry, the conversation ends there. Its turns are rated and counted, and it is reported as incomplete.
   It is not regenerated.
 - **Reported, not gating:** counts per conversation, the distribution of ratings 0–3 per
-  stratum, how many replies reached the token cap, and the API cost.
+  stratum, how many replies reached the token cap, and the API cost, scaled to the 1,350 turns of the main
+  run and set against the budget.
 - **No look at the hypothesis.** Activations are captured during the pilot to exercise the
   code, but **no pilot projection is set against a pilot rating**, here or later. The gate
   script reads ratings only.

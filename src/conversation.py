@@ -49,7 +49,7 @@ class UserModelStopped(Exception):
 class SimulatedUser:
     """One instance per conversation: it keeps the user model's own side of the exchange."""
 
-    def __init__(self, client: Completer, *, model: str, effort: str, brief: str, n_turns: int, max_tokens: int = 4000):
+    def __init__(self, client: Completer, *, model: str, effort: str, brief: str, n_turns: int, max_tokens: int = 16000):
         self.client, self.model, self.effort, self.max_tokens = client, model, effort, max_tokens
         self.n_turns = n_turns
         self.system = USER_SYSTEM_TEMPLATE.format(brief=brief.strip(), n_turns=n_turns)
@@ -62,12 +62,17 @@ class SimulatedUser:
         else:
             incoming = last_assistant_reply + TURN_NOTE.format(k=k, n=self.n_turns)
         self._messages.append({"role": "user", "content": incoming})
-        out = self.client.complete(
-            model=self.model, system=self.system, messages=self._messages, max_tokens=self.max_tokens, effort=self.effort
-        )
-        text = out.text.strip()
-        if out.stop_reason == "refusal" or not text:
-            raise UserModelStopped(out.stop_reason)
+        for attempt in (1, 2):  # one retry if the output was cut off or empty; none after a refusal
+            out = self.client.complete(
+                model=self.model, system=self.system, messages=self._messages, max_tokens=self.max_tokens, effort=self.effort
+            )
+            text = out.text.strip()
+            if out.stop_reason == "refusal":
+                raise UserModelStopped("refusal")
+            if text and out.stop_reason != "max_tokens":
+                break
+            if attempt == 2:
+                raise UserModelStopped(f"no usable message ({out.stop_reason})")
         self._messages.append({"role": "assistant", "content": out.content})
         return text
 

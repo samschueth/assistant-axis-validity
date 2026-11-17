@@ -55,3 +55,17 @@ def test_refusal_ends_the_conversation_and_marks_it_incomplete():
     assert out["complete"] is False
     assert "refusal" in out["stopped"]
     assert out["messages"][-1]["role"] == "assistant"
+
+
+def test_cut_off_user_message_is_retried_once():
+    class CutOffFirst(FakeClient):
+        def complete(self, **kwargs):
+            out = super().complete(**kwargs)
+            if len(self.calls) == 1:
+                out.stop_reason = "max_tokens"
+            return out
+
+    client = CutOffFirst()
+    out = run(client, n=1)
+    assert out["complete"] and len(client.calls) == 2
+    assert out["turns"][0]["user"] == "person message 2"
