@@ -1,0 +1,278 @@
+{
+  "what": "length probe: pilot turns regenerated with a high ceiling; not study data",
+  "git_commit": "fe43a62a24bd2a1f7e06c2045eb366a095a64339",
+  "model": "Qwen/Qwen3-32B",
+  "thinking_mode": false,
+  "generation": {
+    "temperature": 0.7,
+    "top_p": 0.9,
+    "max_new_tokens": 2048
+  },
+  "seed_base": 20262120,
+  "turn_positions": [
+    1,
+    4,
+    8,
+    12,
+    15
+  ],
+  "turns": 30,
+  "turns_hit_ceiling": 0,
+  "new_tokens_per_second": 11.21,
+  "by_turn": {
+    "1": {
+      "n": 6,
+      "lengths": [
+        89,
+        484,
+        576,
+        612,
+        959,
+        1067
+      ],
+      "median": 612,
+      "share_reaching": {
+        "384": 0.833,
+        "512": 0.667,
+        "768": 0.333,
+        "1024": 0.167,
+        "1536": 0.0,
+        "2048": 0.0
+      }
+    },
+    "12": {
+      "n": 6,
+      "lengths": [
+        98,
+        126,
+        263,
+        279,
+        350,
+        670
+      ],
+      "median": 279,
+      "share_reaching": {
+        "384": 0.167,
+        "512": 0.167,
+        "768": 0.0,
+        "1024": 0.0,
+        "1536": 0.0,
+        "2048": 0.0
+      }
+    },
+    "15": {
+      "n": 6,
+      "lengths": [
+        82,
+        130,
+        193,
+        316,
+        735,
+        738
+      ],
+      "median": 316,
+      "share_reaching": {
+        "384": 0.333,
+        "512": 0.333,
+        "768": 0.0,
+        "1024": 0.0,
+        "1536": 0.0,
+        "2048": 0.0
+      }
+    },
+    "4": {
+      "n": 6,
+      "lengths": [
+        301,
+        528,
+        565,
+        922,
+        935,
+        1582
+      ],
+      "median": 922,
+      "share_reaching": {
+        "384": 0.833,
+        "512": 0.833,
+        "768": 0.5,
+        "1024": 0.167,
+        "1536": 0.167,
+        "2048": 0.0
+      }
+    },
+    "8": {
+      "n": 6,
+      "lengths": [
+        343,
+        375,
+        386,
+        522,
+        563,
+        746
+      ],
+      "median": 522,
+      "share_reaching": {
+        "384": 0.667,
+        "512": 0.5,
+        "768": 0.0,
+        "1024": 0.0,
+        "1536": 0.0,
+        "2048": 0.0
+      }
+    }
+  },
+  "by_stratum": {
+    "emotional_disclosure": {
+      "n": 10,
+      "lengths": [
+        82,
+        89,
+        193,
+        279,
+        301,
+        375,
+        386,
+        670,
+        935,
+        959
+      ],
+      "median": 375,
+      "share_reaching": {
+        "384": 0.4,
+        "512": 0.3,
+        "768": 0.2,
+        "1024": 0.0,
+        "1536": 0.0,
+        "2048": 0.0
+      }
+    },
+    "meta_reflection": {
+      "n": 10,
+      "lengths": [
+        126,
+        130,
+        350,
+        484,
+        528,
+        563,
+        612,
+        735,
+        746,
+        1582
+      ],
+      "median": 563,
+      "share_reaching": {
+        "384": 0.7,
+        "512": 0.6,
+        "768": 0.1,
+        "1024": 0.1,
+        "1536": 0.1,
+        "2048": 0.0
+      }
+    },
+    "task": {
+      "n": 10,
+      "lengths": [
+        98,
+        263,
+        316,
+        343,
+        522,
+        565,
+        576,
+        738,
+        922,
+        1067
+      ],
+      "median": 565,
+      "share_reaching": {
+        "384": 0.6,
+        "512": 0.6,
+        "768": 0.2,
+        "1024": 0.1,
+        "1536": 0.0,
+        "2048": 0.0
+      }
+    }
+  },
+  "all": {
+    "n": 30,
+    "lengths": [
+      82,
+      89,
+      98,
+      126,
+      130,
+      193,
+      263,
+      279,
+      301,
+      316,
+      343,
+      350,
+      375,
+      386,
+      484,
+      522,
+      528,
+      563,
+      565,
+      576,
+      612,
+      670,
+      735,
+      738,
+      746,
+      922,
+      935,
+      959,
+      1067,
+      1582
+    ],
+    "median": 522,
+    "share_reaching": {
+      "384": 0.567,
+      "512": 0.5,
+      "768": 0.167,
+      "1024": 0.067,
+      "1536": 0.033,
+      "2048": 0.0
+    }
+  },
+  "max_position_embeddings": 40960,
+  "tokenizer_model_max_length": 131072,
+  "gpu": "NVIDIA A100 80GB PCIe",
+  "gpu_memory_gb": 79.25,
+  "memory_after_load_gb": 61.02,
+  "memory_at_context": [
+    {
+      "context_tokens": 12000,
+      "peak_capture_gb": 68.05,
+      "peak_generation_gb": 66.72,
+      "out_of_memory": false
+    },
+    {
+      "context_tokens": 16000,
+      "peak_capture_gb": 70.39,
+      "peak_generation_gb": 68.62,
+      "out_of_memory": false
+    },
+    {
+      "context_tokens": 20000,
+      "peak_capture_gb": 72.72,
+      "peak_generation_gb": 70.51,
+      "out_of_memory": false
+    },
+    {
+      "context_tokens": 24000,
+      "peak_capture_gb": 75.06,
+      "peak_generation_gb": 72.4,
+      "out_of_memory": false
+    }
+  ],
+  "length_seconds_this_run": 1387,
+  "versions": {
+    "torch": "2.4.1+cu124",
+    "transformers": "4.51.3"
+  }
+}

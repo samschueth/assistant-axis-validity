@@ -90,5 +90,6 @@ Budget estimate ≈ $50–65; hard cap $100, confirmed by the owner on 2026-11-1
 | 2026-11-17 | one A100 PCIe 80 GB, secure cloud, $2.09/h | 0.93 h | gate 4 pilot: six conversations | $1.95 |
 | 2026-11-17 | simulated-user API, `claude-sonnet-5-5` | 90 calls, plus 2 in a test | gate 4 pilot | about $1.12 |
 | 2026-11-17 | judge API, `gpt-6.1-sol` | 90 calls, plus 2 in a test | gate 4 pilot | about $0.91 (list price not verified) |
+| 2026-11-17 | one A100 PCIe 80 GB, secure cloud, $2.09/h | 0.51 h | length probe (not study data): 30 pilot turns regenerated, memory at long contexts | $1.06 |
 
-**Running total: about $4.70.** The gate 3 instance was deleted on 2026-11-17. The pilot instance is stopped, not deleted; its disk keeps the model download and is billed for storage while it exists.
+**Running total: about $5.75.** Every instance has been deleted; nothing is billing.
