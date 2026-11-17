@@ -754,4 +754,4 @@ Every departure from this document after it is marked final, with its date and r
 
 | Date | Deviation | Reason |
 |---|---|---|
-| | | |
+| 2026-11-17 | Both instances were stopped and restarted at 08:26 UTC, after 5 of 70 conversations, with a code change (commit `827418e`): the GPU memory cache is cleared before each capture pass and each generation, and a capture pass that runs out of memory is tried once more. The two conversations in progress (`task-05`, `task-08`, each about four minutes in) were discarded and regenerated from their briefs and seeds. No setting, prompt, seed or output format changed. Conversations `task-01`, `-02`, `-03`, `-04` and `-06` were generated before the change. | The capture pass for turn 14 of `task-06` ran out of memory at 20,282 tokens, although the length probe had fitted 24,000 tokens from a cleared cache; turn 15 of the same conversation, which is longer, succeeded after the cache was cleared. The failure came from memory the generation call had left reserved, not from the size of the context. Left alone it would have removed late turns of long conversations, which is not a random subset. |
