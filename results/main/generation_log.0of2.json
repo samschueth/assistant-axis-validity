@@ -1,0 +1,45 @@
+{
+  "set": "main",
+  "shard": "0/2",
+  "turns": 524,
+  "turns_hit_cap": 32,
+  "turns_empty": 0,
+  "turns_capture_failed": 0,
+  "turns_capture_out_of_memory": 0,
+  "turns_context_differs_from_generation": 0,
+  "git_commit": "247856fee096b28d5fbef161e7ad5d0a43b8e382",
+  "model": "Qwen/Qwen3-32B",
+  "thinking_mode": false,
+  "system_prompt": "",
+  "generation": {
+    "temperature": 0.7,
+    "top_p": 0.9,
+    "max_new_tokens": 1536
+  },
+  "assistant_turns": 15,
+  "layers": [
+    24,
+    28,
+    32,
+    36,
+    40
+  ],
+  "seed_base": 20261120,
+  "user_model": "claude-sonnet-5-5",
+  "user_effort": "low",
+  "user_model_usage": {
+    "claude-sonnet-5-5": {
+      "calls": 271,
+      "input": 1084,
+      "cache_write": 294808,
+      "cache_read": 2138628,
+      "output": 50915
+    }
+  },
+  "versions": {
+    "torch": "2.4.1+cu124",
+    "transformers": "4.51.3"
+  },
+  "gpu": "NVIDIA A100 80GB PCIe",
+  "seconds": 18826
+}

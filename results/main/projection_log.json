@@ -1,0 +1,25 @@
+{
+  "set": "main",
+  "conversations": 70,
+  "turns": 1045,
+  "turns_without_activation": [
+    "task-06 turn 14"
+  ],
+  "turns_by_stratum": {
+    "task": 150,
+    "meta_reflection": 449,
+    "emotional_disclosure": 446
+  },
+  "layers": [
+    24,
+    28,
+    32,
+    36,
+    40
+  ],
+  "target_layer": 32,
+  "role_directions": 275,
+  "random_directions": 1000,
+  "random_seed": 20261116,
+  "vectors_revision": "3b3b788432ad33e3a28d9ff08e88a530c0740814"
+}

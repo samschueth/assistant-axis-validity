@@ -5,12 +5,13 @@ directions do, once conversation type is held fixed?**
 
 ## Status
 
-**Pre-registration final (2026-11-17). Main run in progress. No results.** The four gates
-passed and a six-conversation pilot was generated and judged to set the base rate and fix the
-rubric. No main-run conversation has been labelled or judged, and no projection has been set
-against a rating. [`PREREGISTRATION.md`](PREREGISTRATION.md) holds the question, the statistic,
-the gates, the labelling rubric and the decisions; departures from it are listed in its
-section 15.
+**Pre-registration final (2026-11-17). Main run generated and projected. No results.** The four
+gates passed and a six-conversation pilot was generated and judged to set the base rate and fix
+the rubric. The main run is complete: 70 conversations, 1,045 turns, projected onto the axis and
+the off-target directions (one turn has no activation and no projection). No main-run
+conversation has been labelled or judged, and no projection has been set against a rating.
+[`PREREGISTRATION.md`](PREREGISTRATION.md) holds the question, the statistic, the gates, the
+labelling rubric and the decisions; departures from it are listed in its section 15.
 
 Two things in `results/` exist already and are not findings about the question: a check on the
 released vector files (gate 1) and a sample-size simulation on synthetic data.
@@ -69,7 +70,7 @@ make length-probe   # GPU: reply lengths without the cap, memory at long context
 make test           # unit tests
 make generate       # GPU + paid API: the 70 main-run conversations and activation capture
                     #   (to split across N instances: python src/generate.py ... --shard I/N, then src/merge_shards.py)
-make project        # per-turn projections, target and off-target    (not implemented yet)
+make project        # per-turn projections, target and off-target (laptop; needs the activation files)
 make judge          # LLM judge and its validation against labels    (not implemented yet)
 make analyze        # AUCs, off-target distributions, gaps            (not implemented yet)
 make figures        # every figure in the write-up                    (not implemented yet)

@@ -77,6 +77,7 @@ Python 3.12.
 | released vector files | size; they are the authors' files | `make fetch-vectors` |
 | model weights | size | downloaded on the GPU instance by `make generate` |
 | activation tensors | size | `make generate` |
+| per-turn projections (`results/main/projections.npz`, 25 MB) | size | `make project`, from the activation tensors; `results/main/projection_log.json` records what it held |
 
 ## Compute and spend
 
@@ -93,13 +94,28 @@ Budget estimate ≈ $50–65; hard cap $100, confirmed by the owner on 2026-11-1
 | 2026-11-17 | one A100 PCIe 80 GB, secure cloud, $2.09/h | 0.51 h | length probe (not study data): 30 pilot turns regenerated, memory at long contexts | $1.06 |
 | 2026-11-17 | two A100 PCIe 80 GB, secure cloud, $2.09/h each | 2 × 7.7 h (06:50 to 14:32 UTC) | main run, first part: 37 complete conversations and 2 cut short | about $32.20 |
 | 2026-11-17 | simulated-user API, `claude-sonnet-5-5` | 581 logged calls | main run, first part | about $7.25 (from logged token counts; price assumed, not verified) |
+| 2026-11-17 | two A100 PCIe 80 GB, secure cloud, $2.09/h each | 4.1 h and 6.0 h (16:32 to 20:38 and to 22:32 UTC) | main run, second part: the remaining 31 conversations | about $21.20 |
+| 2026-11-17 | simulated-user API, `claude-sonnet-5-5` | 467 logged calls | main run, second part | about $4.60 (from logged token counts; price assumed, not verified) |
+| 2026-11-17 | laptop only | about 2 s | projections of the 1,045 main-run turns | $0 |
 
-**Running total: about $45.** Every instance has been deleted; nothing is billing.
+**Running total: about $71.** Every instance has been deleted; nothing is billing. The judge
+has not been run on the main-run turns; at about $17 to $20 (list price not verified) the study
+would end at about $88 to $91 against the cap of $100.
+
+**Main run complete, 22:27 UTC, 2026-11-17.** 70 conversations, 1,045 turns: 68 conversations of
+15 turns, and the two that were cut short in the first part and stay as they are (`meta-23`, 14
+turns; `emotional-04`, 11 turns). One turn has no activation (`task-06` turn 14, a capture that
+ran out of memory before the fix in commit `827418e`). 41 turns reached the ceiling of 1,536
+tokens; none was empty. The second part ran at commit `247856f` with no capture failure. The
+`generation_log.*of2.json` files were written by the second part: their turn counts cover the
+whole shard, but the commit, the running time and the simulated-user usage in them are the
+second part's only. The package lists of the two parts are identical.
 
 **Main run stopped at 14:27 and 14:30 UTC, 2026-11-17.** The simulated-user account ran out of
 credit. Two conversations were in progress and ended there (`meta-23` after 14 turns,
 `emotional-04` after 11); the next conversation on each instance failed on its first message,
-which stops the run. 31 conversations remain: 3 meta-reflection and 28 emotional disclosure.
+which stops the run. 31 conversations remained: 3 meta-reflection and 28 emotional disclosure.
+They were generated in the second part, after credit was added.
 
 **What the projection below got wrong.** Replies in the main run are longer than in the length
 probe, whose contexts held the pilot's cut-off replies: task conversations averaged about 2,060
