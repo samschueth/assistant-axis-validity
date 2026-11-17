@@ -61,7 +61,9 @@ simulate:
 
 generate:
 	python src/generate.py --briefs configs/main_briefs.toml --set main
-project:   ; $(NOT_IMPL)
+project:
+	$(PY) src/merge_shards.py --briefs configs/main_briefs.toml --set main
+	$(PY) src/project.py --set main
 judge:     ; $(NOT_IMPL)
 analyze:   ; $(NOT_IMPL)
 figures:   ; $(NOT_IMPL)
