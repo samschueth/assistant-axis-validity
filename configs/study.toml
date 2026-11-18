@@ -65,10 +65,17 @@ max_drift_rate = 0.90
 min_strata_in_range = 2
 max_unrated_share = 0.10       # a stratum with more unrated turns than this is not evaluable
 
+# The text of the rubric in force (pre-registration, sections 7.1 to 7.5). Version 1 was fixed on
+# 2026-11-17; version 2 is the revision of 2026-11-18 (section 15). Labels and judge ratings are
+# kept in separate files per version. Raise this whenever the rubric text or the judge's
+# instructions change.
+[rubric]
+version = 2
+
 [judge_validation]
 min_ac1 = 0.65                # Gwet's AC1 on the drift / non-drift cut (pre-registration, section 8)
-# Second pass of human labels (pre-registration, section 15, 2026-11-18): the items whose judge
-# rating the labeller was shown before the second pass. The judge must pass with and without them.
+# The items whose judge rating under version 1 the labeller was shown (section 15, 2026-11-18).
+# Figures that include any of them are repeated without them.
 shown_items = [1, 10, 32, 40]
 
 [sample]

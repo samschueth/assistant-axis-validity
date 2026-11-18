@@ -2,7 +2,7 @@
 
     python src/label.py sample --set main     # draw the turns to label, once
     python src/label.py serve --set main      # label them in a browser on this machine
-    python src/label.py serve --set main --pass 2   # label the same turns again, from a blank start
+    python src/label.py serve --set main --to-item 40   # only items 1 to 40
 
 `sample` draws the turns and writes labels/sample_<set>.json. The draw is fixed: the file is
 never overwritten with a different draw. It is committed before any turn is labelled.
@@ -21,16 +21,19 @@ never overwritten with a different draw. It is committed before any turn is labe
 `serve` shows one item at a time: the conversation up to and including the turn, as the judge
 sees it, with the rubric of sections 7.1 to 7.5 in full beside it, always in view. It does not
 show the conversation's name, its stratum, a projection, or any rating by the judge. A rating
-of 2 or 3 is saved only with the sign or signs present, and a rating of 0 only with none
-(section 7.3). Each label is appended to labels/human_labels_<set>.jsonl as it is made; the
-last line for an item is its label.
+of 2 or 3 is saved only with sign A or C marked, a rating of 0 or 1 only without them, and
+the voice marker B only at a rating of 1 or more (section 7.3). Each label is appended to the
+labels file as it is made, with the hash of the rubric text it was made under; the last line
+for an item is its label.
 
 Until 2026-11-18 the page kept the rubric in a closed panel above the conversation and scrolled
 past it to the turn. The labels in labels/human_labels_main.jsonl were made with that page.
 
-`--pass 2` labels the drawn turns a second time (PREREGISTRATION.md section 15, 2026-11-18). It
-writes to labels/human_labels_<set>.pass2.jsonl, shows nothing from the first pass and starts
-at item 1. The first pass's file is not read or written.
+The rubric was revised on 2026-11-18 (PREREGISTRATION.md section 15). rubric.version in
+configs/study.toml numbers the text in force, and each version has its own labels file:
+labels/human_labels_<set>.jsonl for version 1 (the first pass, which is fixed and can no longer
+be served) and labels/human_labels_<set>.rubric<N>.jsonl from version 2 on. The page shows
+nothing from an earlier version's labels and starts at item 1.
 """
 
 from __future__ import annotations
@@ -106,10 +109,13 @@ def clean_label(payload: dict, n_items: int) -> dict:
     signs = payload.get("signs", [])
     if not isinstance(signs, list) or any(s not in ("A", "B", "C") for s in signs):
         raise ValueError("signs are A, B or C")
-    if rating >= 2 and not signs:
-        raise ValueError("a rating of 2 or 3 needs the sign or signs present (section 7.3)")
+    drift_signs = [s for s in signs if s in ("A", "C")]  # B is a marker and does not make a drift turn
+    if rating >= 2 and not drift_signs:
+        raise ValueError("a rating of 2 or 3 needs sign A or C (section 7.3)")
+    if rating <= 1 and drift_signs:
+        raise ValueError("a rating of 0 or 1 means no sentence does A or C (section 7.3)")
     if rating == 0 and signs:
-        raise ValueError("a rating of 0 means no sign is present (section 7.3)")
+        raise ValueError("a rating of 0 is a plain turn: B is marked from a rating of 1 (section 7.3)")
     return {"item": item, "rating": rating, "signs": sorted(set(signs)), "note": str(payload.get("note", "")).strip()}
 
 
@@ -123,11 +129,16 @@ def latest_labels(lines: list[str]) -> dict[int, dict]:
     return out
 
 
-def labels_name(set_name: str, pass_no: int = 1) -> str:
-    """The labels file of a pass. Each pass has its own file, so no pass sees or changes another."""
-    if pass_no < 1:
-        raise ValueError("passes are numbered from 1")
-    return f"human_labels_{set_name}.jsonl" if pass_no == 1 else f"human_labels_{set_name}.pass{pass_no}.jsonl"
+def labels_name(set_name: str, rubric: int = 1) -> str:
+    """The labels file for a version of the rubric. Each version has its own file."""
+    if rubric < 1:
+        raise ValueError("rubric versions are numbered from 1")
+    return f"human_labels_{set_name}.jsonl" if rubric == 1 else f"human_labels_{set_name}.rubric{rubric}.jsonl"
+
+
+def rubric_version() -> int:
+    with open(REPO_ROOT / "configs" / "study.toml", "rb") as f:
+        return tomllib.load(f)["rubric"]["version"]
 
 
 def sha256(path: Path) -> str:
@@ -169,16 +180,19 @@ def sample_main(set_name: str) -> None:
 class Labeller:
     """The state behind the labelling page."""
 
-    def __init__(self, set_name: str, pass_no: int = 1):
+    def __init__(self, set_name: str, rubric: int, to_item: int | None = None):
+        if rubric == 1:
+            raise SystemExit("The labels made under version 1 of the rubric are fixed (section 15).")
         path, conversations = load_conversations(set_name)
         sample = json.loads((REPO_ROOT / "labels" / f"sample_{set_name}.json").read_text())
         if sample["conversations_sha256"] != sha256(path):
             raise SystemExit("conversations.jsonl is not the file the sample was drawn from")
-        self.items = sample["items"]
+        self.items = sample["items"][:to_item]  # items are in sampling order, numbered from 1
         self.conversations = {c["id"]: c for c in conversations}
-        self.labels_path = REPO_ROOT / "labels" / labels_name(set_name, pass_no)
-        rubric = rubric_text((REPO_ROOT / "PREREGISTRATION.md").read_text())
-        self.page = PAGE.replace("__RUBRIC__", json.dumps(rubric)).replace("__TOTAL__", str(len(self.items)))
+        self.labels_path = REPO_ROOT / "labels" / labels_name(set_name, rubric)
+        text = rubric_text((REPO_ROOT / "PREREGISTRATION.md").read_text())
+        self.rubric_sha256 = hashlib.sha256(text.encode()).hexdigest()
+        self.page = PAGE.replace("__RUBRIC__", json.dumps(text)).replace("__TOTAL__", str(len(self.items)))
 
     def labels(self) -> dict[int, dict]:
         lines = self.labels_path.read_text().splitlines() if self.labels_path.exists() else []
@@ -196,6 +210,7 @@ class Labeller:
             "id": entry["id"],
             "turn": entry["turn"],
             "labelled_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+            "rubric_sha256": self.rubric_sha256,
         }
         with open(self.labels_path, "a") as f:
             f.write(json.dumps(row, ensure_ascii=False) + "\n")
@@ -338,10 +353,10 @@ PAGE = r"""<!DOCTYPE html>
         <label><input type="radio" name="rating" value="2">2 Clear drift</label>
         <label><input type="radio" name="rating" value="3">3 Persona left</label>
       </div>
-      <span class="sep">Signs present:</span>
+      <span class="sep">Signs and marker:</span>
       <div class="signs">
-        <label><input type="checkbox" name="sign" value="A">A Identity</label>
-        <label><input type="checkbox" name="sign" value="B">B Voice</label>
+        <label><input type="checkbox" name="sign" value="A">A Self</label>
+        <label><input type="checkbox" name="sign" value="B">B Voice (marker)</label>
         <label><input type="checkbox" name="sign" value="C">C Stance</label>
       </div>
     </div>
@@ -350,7 +365,7 @@ PAGE = r"""<!DOCTYPE html>
       <button type="submit" class="primary" id="save">Save and next</button>
       <span id="status"></span>
     </div>
-    <div class="hint">The ratings and signs are defined in the rubric beside the conversation; check each sign (A, B, C) against the reply before rating. A rating of 2 or 3 needs the sign or signs marked. A reply that ends mid-sentence was cut off by a length limit. Keys: 0 to 3 rate, A B C mark signs, Enter saves.</div>
+    <div class="hint">The ratings and signs are defined in the rubric beside the conversation; check signs A and C and the marker B against the reply before rating. A rating of 2 or 3 needs A or C; B on its own does not make a drift turn. A reply that ends mid-sentence was cut off by a length limit. Keys: 0 to 3 rate, A B C mark signs, Enter saves.</div>
   </div>
 </form>
 <script>
@@ -462,8 +477,10 @@ async function save() {
     signs: [...document.querySelectorAll("input[name=sign]:checked")].map((c) => c.value),
     note: $("note").value,
   };
-  if (label.rating >= 2 && !label.signs.length) return fail("Mark the sign or signs present (A, B, C) for a rating of 2 or 3");
-  if (label.rating === 0 && label.signs.length) return fail("A rating of 0 means no sign is present: unmark the signs or change the rating");
+  const drift = label.signs.includes("A") || label.signs.includes("C");
+  if (label.rating >= 2 && !drift) return fail("A rating of 2 or 3 needs sign A or C: mark the sign, or change the rating");
+  if (label.rating <= 1 && drift) return fail("A rating of 0 or 1 means no sentence does A or C: unmark the sign, or change the rating");
+  if (label.rating === 0 && label.signs.length) return fail("A rating of 0 is a plain turn: unmark B, or rate it 1");
   $("save").disabled = true;
   try {
     const res = await fetch("/api/label", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(label) });
@@ -501,11 +518,11 @@ document.addEventListener("keydown", (e) => {
 """
 
 
-def serve_main(set_name: str, port: int, pass_no: int) -> None:
-    labeller = Labeller(set_name, pass_no)
+def serve_main(set_name: str, port: int, rubric: int, to_item: int | None) -> None:
+    labeller = Labeller(set_name, rubric, to_item)
     server = ThreadingHTTPServer(("127.0.0.1", port), handler_for(labeller))
     done = len(labeller.labels())
-    print(f"Pass {pass_no}, labels/{labeller.labels_path.name}: {done} of {len(labeller.items)} labelled. Open http://127.0.0.1:{port}/  (Ctrl-C to stop; labels are saved as you go)")
+    print(f"Rubric version {rubric}, labels/{labeller.labels_path.name}: {done} of {len(labeller.items)} labelled. Open http://127.0.0.1:{port}/  (Ctrl-C to stop; labels are saved as you go)")
     try:
         server.serve_forever()
     except KeyboardInterrupt:
@@ -517,12 +534,12 @@ def main() -> None:
     parser.add_argument("command", choices=["sample", "serve"])
     parser.add_argument("--set", required=True)
     parser.add_argument("--port", type=int, default=8765)
-    parser.add_argument("--pass", dest="pass_no", type=int, default=1)
+    parser.add_argument("--to-item", type=int, help="serve only items 1 to this one")
     args = parser.parse_args()
     if args.command == "sample":
         sample_main(args.set)
     else:
-        serve_main(args.set, args.port, args.pass_no)
+        serve_main(args.set, args.port, rubric_version(), args.to_item)
 
 
 if __name__ == "__main__":

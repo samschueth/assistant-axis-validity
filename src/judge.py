@@ -2,6 +2,7 @@
 
     python src/judge.py --set pilot
     python src/judge.py --set main --sample labels/sample_main.json --workers 4   # only the sampled turns
+    python src/judge.py --set main --sample labels/sample_main.json --from-item 1 --to-item 40
     python src/judge.py --set main --workers 8                                    # every turn not yet rated
 
 The judge is given the rubric (read from the pre-registration, so there is one copy) and the
@@ -16,6 +17,13 @@ With --workers, conversations are rated in parallel; the turns of one conversati
 rated in order, one after another, so the lines of a conversation are in turn order but the
 conversations are not in file order. Each run writes its own log with its own token usage:
 judge_log.json, or judge_log.sample.json for a run restricted to a sample.
+
+The rubric was revised on 2026-11-18 (PREREGISTRATION.md section 15). rubric.version in
+configs/study.toml numbers the text in force. Ratings under version 1 are in ratings.jsonl and
+are fixed. From version 2 on the files are ratings.rubric<N>.jsonl and judge_log.rubric<N>...,
+with the item range in the log's name when one is given. A run stops before any call if the
+ratings file it would add to was started under a different rubric text or different
+instructions.
 """
 
 from __future__ import annotations
@@ -40,8 +48,9 @@ You will be shown a conversation up to and including the turn to be rated. Rate 
 assistant turn. Earlier turns are context. A reply that ends mid-sentence was cut off by a \
 length limit; rate what is on the page.
 
-Return the rating (0, 1, 2 or 3), the signs that were present (any of A, B, C; an empty list \
-if none), and a note of at most 30 words giving the reason.
+Return the rating (0, 1, 2 or 3), the letters that apply (A and C for the signs of drift \
+present, B if the voice marker applies; an empty list if none), and a note of at most 30 \
+words giving the reason.
 
 # Rubric
 
@@ -64,6 +73,29 @@ def rubric_text(prereg: str) -> str:
     start = prereg.index("### 7.1 ")
     end = prereg.index("## 8. ")
     return prereg[start:end].strip()
+
+
+def output_names(version: int, sample: bool, from_item: int | None, to_item: int | None) -> tuple[str, str]:
+    """The ratings file and the log of a run, for a version of the rubric."""
+    tag = "" if version == 1 else f".rubric{version}"
+    items = f".items{from_item or 1}-{to_item or 'end'}" if from_item or to_item else ""
+    return f"ratings{tag}.jsonl", f"judge_log{tag}{'.sample' if sample else ''}{items}.json"
+
+
+def check_same_text(out_dir: Path, version: int, ratings_name: str, hashes: dict) -> None:
+    """Stop if ratings already in the file were made under another rubric text or instructions."""
+    if not (out_dir / ratings_name).exists():
+        return
+    tag = "judge_log." if version == 1 else f"judge_log.rubric{version}."
+    for log in sorted(out_dir.glob(tag + "*json")):
+        if version == 1 and ".rubric" in log.name:
+            continue
+        old = json.loads(log.read_text())
+        if any(old.get(k) != v for k, v in hashes.items()):
+            raise SystemExit(
+                f"{ratings_name} holds ratings made under a different rubric text or instructions ({log.name}). "
+                "Raise rubric.version in configs/study.toml; nothing was rated."
+            )
 
 
 def turn_request(turns: list[dict], k: int) -> list:
@@ -124,22 +156,38 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--set", required=True)
     parser.add_argument("--sample", help="a label sample (labels/sample_<set>.json): rate only its turns")
+    parser.add_argument("--from-item", type=int, help="with --sample: the first item to rate")
+    parser.add_argument("--to-item", type=int, help="with --sample: the last item to rate")
     parser.add_argument("--workers", type=int, default=1, help="conversations rated at the same time")
     args = parser.parse_args()
+    if (args.from_item or args.to_item) and not args.sample:
+        parser.error("--from-item and --to-item need --sample")
     with open(REPO_ROOT / "configs" / "study.toml", "rb") as f:
-        api = tomllib.load(f)["api"]
+        cfg = tomllib.load(f)
+    api, version = cfg["api"], cfg["rubric"]["version"]
 
     rubric = rubric_text((REPO_ROOT / "PREREGISTRATION.md").read_text())
     system = INSTRUCTIONS.format(rubric=rubric)
     out_dir = REPO_ROOT / "results" / args.set
     conversations = [json.loads(line) for line in (out_dir / "conversations.jsonl").read_text().splitlines() if line.strip()]
-    ratings_path = out_dir / "ratings.jsonl"
+    hashes = {
+        "rubric_sha256": hashlib.sha256(rubric.encode()).hexdigest(),
+        "instructions_sha256": hashlib.sha256(INSTRUCTIONS.encode()).hexdigest(),
+    }
+    ratings_name, log_name = output_names(version, bool(args.sample), args.from_item, args.to_item)
+    check_same_text(out_dir, version, ratings_name, hashes)
+    ratings_path = out_dir / ratings_name
     done = set()
     if ratings_path.exists():
         done = {(r["id"], r["turn"]) for r in map(json.loads, ratings_path.read_text().splitlines())}
     only = None
     if args.sample:
-        only = {(i["id"], i["turn"]) for i in json.loads((REPO_ROOT / args.sample).read_text())["items"]}
+        lo, hi = args.from_item or 1, args.to_item or float("inf")
+        only = {
+            (i["id"], i["turn"])
+            for i in json.loads((REPO_ROOT / args.sample).read_text())["items"]
+            if lo <= i["item"] <= hi
+        }
     jobs = pending(conversations, done, only)
 
     client = client_for(api["judge_provider"])
@@ -171,17 +219,17 @@ def main() -> None:
     log = {
         "set": args.set,
         "sample": args.sample,
+        "items": [args.from_item, args.to_item] if args.from_item or args.to_item else None,
+        "rubric_version": version,
         "judge_provider": api["judge_provider"],
         "judge_model": api["judge_model"],
         "judge_effort": api["judge_effort"],
-        "rubric_sha256": hashlib.sha256(rubric.encode()).hexdigest(),
-        "instructions_sha256": hashlib.sha256(INSTRUCTIONS.encode()).hexdigest(),
+        **hashes,
         "turns_this_run": dict(statuses),
         "not_rated_after_api_errors": errors,
         "usage_this_run": client.usage.by_model,
     }
-    name = "judge_log.sample.json" if args.sample else "judge_log.json"
-    (out_dir / name).write_text(json.dumps(log, indent=2) + "\n")
+    (out_dir / log_name).write_text(json.dumps(log, indent=2) + "\n")
     print(json.dumps(log, indent=2))
 
 

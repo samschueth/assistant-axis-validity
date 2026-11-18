@@ -2,17 +2,20 @@
 
     python src/judge_validation.py --set main
     python src/judge_validation.py --set main --from-item 41    # section 8's second attempt: the other 80
-    python src/judge_validation.py --set main --pass 2          # against the second pass of human labels
+    python src/judge_validation.py --set main --rubric 2 --to-item 40     # the pilot of the revised rubric
+    python src/judge_validation.py --set main --rubric 2 --from-item 41   # its validation
 
 Reads labels/human_labels_<set>.jsonl and results/<set>/ratings.jsonl. Writes
 results/<set>/judge_validation.json (judge_validation.from41.json with --from-item 41).
 
-With --pass 2 (PREREGISTRATION.md section 15, 2026-11-18) the human labels are those of the
-second pass, labels/human_labels_<set>.pass2.jsonl, and the output is
-judge_validation.pass2.json, so the first attempt's file is never overwritten. Two things are
-added: the same figures without the items whose judge rating the labeller had been shown
-(judge_validation.shown_items in configs/study.toml), and the first pass set against the
-second. The judge passes only if it reaches the minimum both with and without those items.
+With --rubric N, N at least 2 (PREREGISTRATION.md section 15, 2026-11-18: the rubric was
+revised), the labels and ratings are those made under that version of the rubric,
+labels/human_labels_<set>.rubricN.jsonl and results/<set>/ratings.rubricN.jsonl, and the
+output is judge_validation.rubricN[.fromK][.toK].json, so the first attempt's file is never
+overwritten. Three things are added: the same figures without the items whose judge rating
+under version 1 the labeller had been shown (judge_validation.shown_items in
+configs/study.toml), the first-pass labels set against these, and how often the voice marker
+B was recorded by each rater. Without --rubric the first attempt is reproduced.
 
 Reported, as section 8 lists them: raw agreement, Cohen's kappa, Gwet's AC1, the 4x4 table of
 ratings and the direction of disagreements. The minimum to proceed is Gwet's AC1 on the drift /
@@ -96,23 +99,25 @@ def report(
     ratings: dict[tuple[str, int], dict],
     min_ac1: float,
     from_item: int = 1,
+    to_item: int | None = None,
     shown_items: tuple[int, ...] = (),
     first_pass: dict[int, dict] | None = None,
 ) -> dict:
-    """The validation figures for the items from `from_item` on.
+    """The validation figures for the items from `from_item` to `to_item` (to the last by default).
 
     `shown_items` are items whose judge rating the labeller had seen before labelling: the
     figures are repeated without them, and the judge passes only if it passes both ways.
     `first_pass` holds an earlier pass of labels on the same items, set against `labels`.
     """
-    items = [i for i in sample if i["item"] >= from_item]
+    to_item = to_item or len(sample)
+    items = [i for i in sample if from_item <= i["item"] <= to_item]
     unlabelled = [i["item"] for i in items if i["item"] not in labels]
     unrated = [i["item"] for i in items if ratings.get((i["id"], i["turn"]), {}).get("rating") is None]
     used = [i for i in items if i["item"] not in unlabelled and i["item"] not in unrated]
     pair = lambda i: (labels[i["item"]]["rating"], ratings[(i["id"], i["turn"])]["rating"])  # noqa: E731
 
     out = {
-        "items": f"{from_item} to {len(sample)}",
+        "items": f"{from_item} to {to_item}",
         "sampled": len(items),
         "not_labelled": unlabelled,
         "not_rated_by_judge": unrated,
@@ -122,7 +127,7 @@ def report(
             for s in dict.fromkeys(i["stratum"] for i in sample)
         },
     }
-    shown = sorted(n for n in shown_items if n >= from_item)
+    shown = sorted(n for n in shown_items if from_item <= n <= to_item)
     if shown:
         without = validate([pair(i) for i in used if i["item"] not in shown], min_ac1)
         out["without_shown_items"] = {"items_left_out": shown, **without}
@@ -147,41 +152,60 @@ def report(
     return out
 
 
-def read_labels(set_name: str, pass_no: int) -> dict[int, dict]:
-    return latest_labels((REPO_ROOT / "labels" / labels_name(set_name, pass_no)).read_text().splitlines())
+def voice_marker(used: list[dict], labels: dict[int, dict], ratings: dict[tuple[str, int], dict]) -> dict:
+    """How often each rater recorded the voice marker B, which does not enter the drift cut."""
+    human = {i["item"] for i in used if "B" in labels[i["item"]].get("signs", [])}
+    judge = {i["item"] for i in used if "B" in ratings[(i["id"], i["turn"])].get("signs", [])}
+    return {"human": len(human), "judge": len(judge), "both": len(human & judge), "turns": len(used)}
+
+
+def read_labels(set_name: str, rubric: int) -> dict[int, dict]:
+    return latest_labels((REPO_ROOT / "labels" / labels_name(set_name, rubric)).read_text().splitlines())
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--set", required=True)
     parser.add_argument("--from-item", type=int, default=1)
-    parser.add_argument("--pass", dest="pass_no", type=int, default=1)
+    parser.add_argument("--to-item", type=int)
+    parser.add_argument("--rubric", type=int, default=1, help="the version of the rubric (default: the first attempt)")
     args = parser.parse_args()
     with open(REPO_ROOT / "configs" / "study.toml", "rb") as f:
         cfg = tomllib.load(f)["judge_validation"]
 
+    later = args.rubric > 1
+    tag = [f"rubric{args.rubric}"] if later else []
+    ratings_name = ".".join(["ratings", *tag, "jsonl"])
+    labels = read_labels(args.set, args.rubric)
     sample = json.loads((REPO_ROOT / "labels" / f"sample_{args.set}.json").read_text())["items"]
     ratings = {
         (r["id"], r["turn"]): r
-        for r in map(json.loads, (REPO_ROOT / "results" / args.set / "ratings.jsonl").read_text().splitlines())
+        for r in map(json.loads, (REPO_ROOT / "results" / args.set / ratings_name).read_text().splitlines())
     }
-    later = args.pass_no > 1
     out = {
         "set": args.set,
-        **({"human_labels": labels_name(args.set, args.pass_no)} if later else {}),
+        **({"human_labels": labels_name(args.set, args.rubric), "judge_ratings": ratings_name} if later else {}),
         **report(
             sample,
-            read_labels(args.set, args.pass_no),
+            labels,
             ratings,
             cfg["min_ac1"],
             from_item=args.from_item,
+            to_item=args.to_item,
             shown_items=tuple(cfg.get("shown_items", ())) if later else (),
             first_pass=read_labels(args.set, 1) if later else None,
         ),
     }
-    parts = ["judge_validation"]
-    parts += [f"pass{args.pass_no}"] if later else []
+    if later:
+        used = [
+            i for i in sample
+            if args.from_item <= i["item"] <= (args.to_item or len(sample))
+            and i["item"] in labels and ratings.get((i["id"], i["turn"]), {}).get("rating") is not None
+        ]
+        out["voice_marker_b"] = voice_marker(used, labels, ratings)
+    parts = ["judge_validation", *tag]
     parts += [f"from{args.from_item}"] if args.from_item != 1 else []
+    parts += [f"to{args.to_item}"] if args.to_item else []
     (REPO_ROOT / "results" / args.set / (".".join(parts) + ".json")).write_text(json.dumps(out, indent=2) + "\n")
     print(json.dumps(out, indent=2))
 

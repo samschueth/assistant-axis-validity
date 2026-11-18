@@ -3,9 +3,11 @@ import sys
 from pathlib import Path
 from types import SimpleNamespace
 
+import pytest
+
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
-from judge import parse_rating, rate_turn, rubric_text, turn_request  # noqa: E402
+from judge import check_same_text, output_names, parse_rating, rate_turn, rubric_text, turn_request  # noqa: E402
 
 TURNS = [{"user": f"u{i}", "reply": f"a{i}"} for i in range(1, 4)]
 
@@ -87,3 +89,25 @@ def test_pending_skips_rated_turns_and_keeps_to_the_sample():
     sampled = pending(convos, done={("a", 3)}, only={("a", 2), ("a", 3), ("b", 2)})
     assert [(c["id"], ks) for c, ks in sampled] == [("a", [2]), ("b", [2])]
     assert pending(convos, done=set(), only=set()) == []
+
+
+def test_each_version_of_the_rubric_has_its_own_ratings_file_and_log():
+    assert output_names(1, True, None, None) == ("ratings.jsonl", "judge_log.sample.json")
+    assert output_names(1, False, None, None) == ("ratings.jsonl", "judge_log.json")
+    assert output_names(2, True, 1, 40) == ("ratings.rubric2.jsonl", "judge_log.rubric2.sample.items1-40.json")
+    assert output_names(2, True, 41, None) == ("ratings.rubric2.jsonl", "judge_log.rubric2.sample.items41-end.json")
+    assert output_names(2, False, None, None) == ("ratings.rubric2.jsonl", "judge_log.rubric2.json")
+
+
+def test_a_run_stops_if_the_ratings_file_was_started_under_another_text(tmp_path):
+    now = {"rubric_sha256": "new", "instructions_sha256": "i"}
+    check_same_text(tmp_path, 1, "ratings.jsonl", now)  # no ratings yet: nothing to protect
+    (tmp_path / "ratings.jsonl").write_text("{}\n")
+    (tmp_path / "judge_log.sample.json").write_text(json.dumps({"rubric_sha256": "old", "instructions_sha256": "i"}))
+    with pytest.raises(SystemExit):
+        check_same_text(tmp_path, 1, "ratings.jsonl", now)
+    (tmp_path / "ratings.rubric2.jsonl").write_text("{}\n")
+    (tmp_path / "judge_log.rubric2.sample.items1-40.json").write_text(json.dumps(now))
+    check_same_text(tmp_path, 2, "ratings.rubric2.jsonl", now)  # the version 1 log is not consulted
+    with pytest.raises(SystemExit):
+        check_same_text(tmp_path, 2, "ratings.rubric2.jsonl", now | {"instructions_sha256": "changed"})

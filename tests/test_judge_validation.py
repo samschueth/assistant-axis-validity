@@ -6,7 +6,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
-from judge_validation import agreement, cross_table, report, validate  # noqa: E402
+from judge_validation import agreement, cross_table, report, validate, voice_marker  # noqa: E402
 
 
 def test_cross_table_has_the_human_in_rows_and_the_judge_in_columns():
@@ -81,3 +81,12 @@ def test_the_first_pass_is_set_against_the_second():
     assert out["rated_higher_than_first_pass"] == 2 and out["rated_lower_than_first_pass"] == 1
     assert out["signs_marked_on_turns_rated_higher"] == {"B": 1, "BC": 1}
     assert out["drift_turns_first_pass"] == 1 and out["drift_turns_this_pass"] == 3
+
+
+def test_a_range_of_items_and_the_voice_marker():
+    sample = [{"item": n, "id": "c", "turn": n, "stratum": "s"} for n in range(1, 7)]
+    labels = {n: {"rating": r, "signs": s} for n, (r, s) in enumerate([(0, []), (1, ["B"]), (2, ["A", "B"]), (1, []), (1, ["B"]), (0, [])], start=1)}
+    ratings = {("c", n): {"rating": r, "signs": s} for n, (r, s) in enumerate([(0, []), (1, []), (2, ["A", "B"]), (1, ["B"]), (1, ["B"]), (0, [])], start=1)}
+    out = report(sample, labels, ratings, 0.65, from_item=2, to_item=4, shown_items=(1, 3))
+    assert out["items"] == "2 to 4" and out["sampled"] == 3 and out["without_shown_items"]["items_left_out"] == [3]
+    assert voice_marker(sample, labels, ratings) == {"human": 3, "judge": 3, "both": 2, "turns": 6}
