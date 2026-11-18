@@ -2,6 +2,7 @@
 
     python src/label.py sample --set main     # draw the turns to label, once
     python src/label.py serve --set main      # label them in a browser on this machine
+    python src/label.py serve --set main --pass 2   # label the same turns again, from a blank start
 
 `sample` draws the turns and writes labels/sample_<set>.json. The draw is fixed: the file is
 never overwritten with a different draw. It is committed before any turn is labelled.
@@ -26,6 +27,10 @@ last line for an item is its label.
 
 Until 2026-11-18 the page kept the rubric in a closed panel above the conversation and scrolled
 past it to the turn. The labels in labels/human_labels_main.jsonl were made with that page.
+
+`--pass 2` labels the drawn turns a second time (PREREGISTRATION.md section 15, 2026-11-18). It
+writes to labels/human_labels_<set>.pass2.jsonl, shows nothing from the first pass and starts
+at item 1. The first pass's file is not read or written.
 """
 
 from __future__ import annotations
@@ -118,6 +123,13 @@ def latest_labels(lines: list[str]) -> dict[int, dict]:
     return out
 
 
+def labels_name(set_name: str, pass_no: int = 1) -> str:
+    """The labels file of a pass. Each pass has its own file, so no pass sees or changes another."""
+    if pass_no < 1:
+        raise ValueError("passes are numbered from 1")
+    return f"human_labels_{set_name}.jsonl" if pass_no == 1 else f"human_labels_{set_name}.pass{pass_no}.jsonl"
+
+
 def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
@@ -157,14 +169,14 @@ def sample_main(set_name: str) -> None:
 class Labeller:
     """The state behind the labelling page."""
 
-    def __init__(self, set_name: str):
+    def __init__(self, set_name: str, pass_no: int = 1):
         path, conversations = load_conversations(set_name)
         sample = json.loads((REPO_ROOT / "labels" / f"sample_{set_name}.json").read_text())
         if sample["conversations_sha256"] != sha256(path):
             raise SystemExit("conversations.jsonl is not the file the sample was drawn from")
         self.items = sample["items"]
         self.conversations = {c["id"]: c for c in conversations}
-        self.labels_path = REPO_ROOT / "labels" / f"human_labels_{set_name}.jsonl"
+        self.labels_path = REPO_ROOT / "labels" / labels_name(set_name, pass_no)
         rubric = rubric_text((REPO_ROOT / "PREREGISTRATION.md").read_text())
         self.page = PAGE.replace("__RUBRIC__", json.dumps(rubric)).replace("__TOTAL__", str(len(self.items)))
 
@@ -489,11 +501,11 @@ document.addEventListener("keydown", (e) => {
 """
 
 
-def serve_main(set_name: str, port: int) -> None:
-    labeller = Labeller(set_name)
+def serve_main(set_name: str, port: int, pass_no: int) -> None:
+    labeller = Labeller(set_name, pass_no)
     server = ThreadingHTTPServer(("127.0.0.1", port), handler_for(labeller))
     done = len(labeller.labels())
-    print(f"{done} of {len(labeller.items)} labelled. Open http://127.0.0.1:{port}/  (Ctrl-C to stop; labels are saved as you go)")
+    print(f"Pass {pass_no}, labels/{labeller.labels_path.name}: {done} of {len(labeller.items)} labelled. Open http://127.0.0.1:{port}/  (Ctrl-C to stop; labels are saved as you go)")
     try:
         server.serve_forever()
     except KeyboardInterrupt:
@@ -505,11 +517,12 @@ def main() -> None:
     parser.add_argument("command", choices=["sample", "serve"])
     parser.add_argument("--set", required=True)
     parser.add_argument("--port", type=int, default=8765)
+    parser.add_argument("--pass", dest="pass_no", type=int, default=1)
     args = parser.parse_args()
     if args.command == "sample":
         sample_main(args.set)
     else:
-        serve_main(args.set, args.port)
+        serve_main(args.set, args.port, args.pass_no)
 
 
 if __name__ == "__main__":

@@ -67,6 +67,9 @@ max_unrated_share = 0.10       # a stratum with more unrated turns than this is 
 
 [judge_validation]
 min_ac1 = 0.65                # Gwet's AC1 on the drift / non-drift cut (pre-registration, section 8)
+# Second pass of human labels (pre-registration, section 15, 2026-11-18): the items whose judge
+# rating the labeller was shown before the second pass. The judge must pass with and without them.
+shown_items = [1, 10, 32, 40]
 
 [sample]
 strata = ["task", "meta_reflection", "emotional_disclosure"]

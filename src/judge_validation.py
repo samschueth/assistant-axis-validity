@@ -2,9 +2,17 @@
 
     python src/judge_validation.py --set main
     python src/judge_validation.py --set main --from-item 41    # section 8's second attempt: the other 80
+    python src/judge_validation.py --set main --pass 2          # against the second pass of human labels
 
 Reads labels/human_labels_<set>.jsonl and results/<set>/ratings.jsonl. Writes
 results/<set>/judge_validation.json (judge_validation.from41.json with --from-item 41).
+
+With --pass 2 (PREREGISTRATION.md section 15, 2026-11-18) the human labels are those of the
+second pass, labels/human_labels_<set>.pass2.jsonl, and the output is
+judge_validation.pass2.json, so the first attempt's file is never overwritten. Two things are
+added: the same figures without the items whose judge rating the labeller had been shown
+(judge_validation.shown_items in configs/study.toml), and the first pass set against the
+second. The judge passes only if it reaches the minimum both with and without those items.
 
 Reported, as section 8 lists them: raw agreement, Cohen's kappa, Gwet's AC1, the 4x4 table of
 ratings and the direction of disagreements. The minimum to proceed is Gwet's AC1 on the drift /
@@ -25,7 +33,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from label import latest_labels  # noqa: E402
+from label import labels_name, latest_labels  # noqa: E402
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
@@ -82,29 +90,29 @@ def validate(pairs: list[tuple[int, int]], min_ac1: float) -> dict:
     }
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--set", required=True)
-    parser.add_argument("--from-item", type=int, default=1)
-    args = parser.parse_args()
-    with open(REPO_ROOT / "configs" / "study.toml", "rb") as f:
-        min_ac1 = tomllib.load(f)["judge_validation"]["min_ac1"]
+def report(
+    sample: list[dict],
+    labels: dict[int, dict],
+    ratings: dict[tuple[str, int], dict],
+    min_ac1: float,
+    from_item: int = 1,
+    shown_items: tuple[int, ...] = (),
+    first_pass: dict[int, dict] | None = None,
+) -> dict:
+    """The validation figures for the items from `from_item` on.
 
-    sample = json.loads((REPO_ROOT / "labels" / f"sample_{args.set}.json").read_text())["items"]
-    labels = latest_labels((REPO_ROOT / "labels" / f"human_labels_{args.set}.jsonl").read_text().splitlines())
-    ratings = {
-        (r["id"], r["turn"]): r
-        for r in map(json.loads, (REPO_ROOT / "results" / args.set / "ratings.jsonl").read_text().splitlines())
-    }
-    items = [i for i in sample if i["item"] >= args.from_item]
+    `shown_items` are items whose judge rating the labeller had seen before labelling: the
+    figures are repeated without them, and the judge passes only if it passes both ways.
+    `first_pass` holds an earlier pass of labels on the same items, set against `labels`.
+    """
+    items = [i for i in sample if i["item"] >= from_item]
     unlabelled = [i["item"] for i in items if i["item"] not in labels]
     unrated = [i["item"] for i in items if ratings.get((i["id"], i["turn"]), {}).get("rating") is None]
     used = [i for i in items if i["item"] not in unlabelled and i["item"] not in unrated]
     pair = lambda i: (labels[i["item"]]["rating"], ratings[(i["id"], i["turn"])]["rating"])  # noqa: E731
 
     out = {
-        "set": args.set,
-        "items": f"{args.from_item} to {len(sample)}",
+        "items": f"{from_item} to {len(sample)}",
         "sampled": len(items),
         "not_labelled": unlabelled,
         "not_rated_by_judge": unrated,
@@ -114,8 +122,67 @@ def main() -> None:
             for s in dict.fromkeys(i["stratum"] for i in sample)
         },
     }
-    name = "judge_validation.json" if args.from_item == 1 else f"judge_validation.from{args.from_item}.json"
-    (REPO_ROOT / "results" / args.set / name).write_text(json.dumps(out, indent=2) + "\n")
+    shown = sorted(n for n in shown_items if n >= from_item)
+    if shown:
+        without = validate([pair(i) for i in used if i["item"] not in shown], min_ac1)
+        out["without_shown_items"] = {"items_left_out": shown, **without}
+        out["passes_on_all_items"] = out["passes"]
+        out["passes"] = out["passes"] and without["passes"]
+    if first_pass is not None:
+        both = [i["item"] for i in items if i["item"] in labels and i["item"] in first_pass]
+        table = cross_table([first_pass[n]["rating"] for n in both], [labels[n]["rating"] for n in both], 4)
+        moved_up = [n for n in both if labels[n]["rating"] > first_pass[n]["rating"]]
+        signs: dict[str, int] = {}
+        for n in moved_up:
+            key = "".join(labels[n].get("signs", [])) or "none"
+            signs[key] = signs.get(key, 0) + 1
+        out["first_pass_against_this_pass"] = agreement(table) | {
+            "table_rows_first_pass_cols_this_pass": {"order": [0, 1, 2, 3], "counts": table.tolist()},
+            "rated_higher_than_first_pass": len(moved_up),
+            "rated_lower_than_first_pass": int(np.tril(table, -1).sum()),
+            "signs_marked_on_turns_rated_higher": dict(sorted(signs.items())),
+            "drift_turns_first_pass": int(table[2:].sum()),
+            "drift_turns_this_pass": int(table[:, 2:].sum()),
+        }
+    return out
+
+
+def read_labels(set_name: str, pass_no: int) -> dict[int, dict]:
+    return latest_labels((REPO_ROOT / "labels" / labels_name(set_name, pass_no)).read_text().splitlines())
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    parser.add_argument("--set", required=True)
+    parser.add_argument("--from-item", type=int, default=1)
+    parser.add_argument("--pass", dest="pass_no", type=int, default=1)
+    args = parser.parse_args()
+    with open(REPO_ROOT / "configs" / "study.toml", "rb") as f:
+        cfg = tomllib.load(f)["judge_validation"]
+
+    sample = json.loads((REPO_ROOT / "labels" / f"sample_{args.set}.json").read_text())["items"]
+    ratings = {
+        (r["id"], r["turn"]): r
+        for r in map(json.loads, (REPO_ROOT / "results" / args.set / "ratings.jsonl").read_text().splitlines())
+    }
+    later = args.pass_no > 1
+    out = {
+        "set": args.set,
+        **({"human_labels": labels_name(args.set, args.pass_no)} if later else {}),
+        **report(
+            sample,
+            read_labels(args.set, args.pass_no),
+            ratings,
+            cfg["min_ac1"],
+            from_item=args.from_item,
+            shown_items=tuple(cfg.get("shown_items", ())) if later else (),
+            first_pass=read_labels(args.set, 1) if later else None,
+        ),
+    }
+    parts = ["judge_validation"]
+    parts += [f"pass{args.pass_no}"] if later else []
+    parts += [f"from{args.from_item}"] if args.from_item != 1 else []
+    (REPO_ROOT / "results" / args.set / (".".join(parts) + ".json")).write_text(json.dumps(out, indent=2) + "\n")
     print(json.dumps(out, indent=2))
 
 

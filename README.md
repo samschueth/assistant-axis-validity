@@ -15,9 +15,11 @@ projection has been set against a rating.
 Judge validation, first attempt: on the 120 labelled turns, Gwet's AC1 on the drift cut is 0.48
 against a minimum of 0.65 (`results/main/judge_validation.json`). Every disagreement runs one
 way: the judge rated 38 turns as drift that the labeller rated as not drift, and none the other
-way. The pre-registration allows one clarification of the judge's instructions from the first
-40 labelled turns and a second validation on the other 80 (section 8). The judge has rated only
-the 120 sampled turns.
+way. The labeller then reported that the rubric had been out of view on the labelling page and
+that the voice sign had mostly not been applied. The same 120 turns are being labelled a second
+time with the rubric in view, and the judge's existing ratings will be set against the second
+pass. This is a departure from the pre-registration, recorded with its weaknesses in section 15.
+Both passes are kept and reported. The judge has rated only the 120 sampled turns.
 
 [`PREREGISTRATION.md`](PREREGISTRATION.md) holds the question, the statistic, the gates, the
 labelling rubric and the decisions; departures from it are listed in its section 15.
@@ -81,7 +83,7 @@ make generate       # GPU + paid API: the 70 main-run conversations and activati
                     #   (to split across N instances: python src/generate.py ... --shard I/N, then src/merge_shards.py)
 make project        # per-turn projections, target and off-target (laptop; needs the activation files)
 make label-sample   # draw the 120 turns for the human labels (labels/sample_main.json; fixed once drawn)
-make label          # label them in a browser on this machine; labels are saved as they are made
+make label          # label them in a browser on this machine (second pass); labels are saved as they are made
 make judge          # LLM judge and its validation against labels    (not implemented yet)
 make analyze        # AUCs, off-target distributions, gaps            (not implemented yet)
 make figures        # every figure in the write-up                    (not implemented yet)

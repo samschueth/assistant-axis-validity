@@ -7,7 +7,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
-from label import PAGE, cell_sizes, clean_label, draw_sample, item_view, latest_labels  # noqa: E402
+from label import PAGE, cell_sizes, clean_label, draw_sample, item_view, labels_name, latest_labels  # noqa: E402
 
 STRATA = ["task", "meta_reflection", "emotional_disclosure"]
 
@@ -95,3 +95,10 @@ def test_labels_are_checked_and_the_last_one_written_counts():
             clean_label(bad, 120)
     lines = [json.dumps({"item": 1, "rating": 0}), "", json.dumps({"item": 2, "rating": 3}), json.dumps({"item": 1, "rating": 2})]
     assert {n: row["rating"] for n, row in latest_labels(lines).items()} == {1: 2, 2: 3}
+
+
+def test_each_pass_has_its_own_labels_file():
+    assert labels_name("main") == labels_name("main", 1) == "human_labels_main.jsonl"
+    assert labels_name("main", 2) == "human_labels_main.pass2.jsonl"
+    with pytest.raises(ValueError):
+        labels_name("main", 0)
