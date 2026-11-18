@@ -76,3 +76,14 @@ def test_one_retry_for_invalid_output_and_none_after_a_refusal():
     assert rate_turn(c, **kw)["rating"] is None and c.n == 2
     c = Sequence([("", "refusal"), (good, "end_turn")])
     assert rate_turn(c, **kw)["status"] == "judge declined" and c.n == 1
+
+
+def test_pending_skips_rated_turns_and_keeps_to_the_sample():
+    from judge import pending
+
+    convos = [{"id": "a", "turns": [{}] * 3}, {"id": "b", "turns": [{}] * 2}, {"id": "c", "turns": [{}]}]
+    all_jobs = pending(convos, done={("a", 1), ("c", 1)}, only=None)
+    assert [(c["id"], ks) for c, ks in all_jobs] == [("a", [2, 3]), ("b", [1, 2])]
+    sampled = pending(convos, done={("a", 3)}, only={("a", 2), ("a", 3), ("b", 2)})
+    assert [(c["id"], ks) for c, ks in sampled] == [("a", [2]), ("b", [2])]
+    assert pending(convos, done=set(), only=set()) == []

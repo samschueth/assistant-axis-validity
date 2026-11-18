@@ -1,6 +1,8 @@
 """The LLM judge: one rating per assistant turn, on the rubric in PREREGISTRATION.md section 7.
 
     python src/judge.py --set pilot
+    python src/judge.py --set main --sample labels/sample_main.json --workers 4   # only the sampled turns
+    python src/judge.py --set main --workers 8                                    # every turn not yet rated
 
 The judge is given the rubric (read from the pre-registration, so there is one copy) and the
 conversation up to and including the turn to be rated. It is not given the stratum, the brief,
@@ -10,6 +12,10 @@ A turn the judge declines to rate, or whose output is not a valid rating, is rec
 unrated. Unrated turns are never counted as drift or as non-drift.
 
 Output: results/<set>/ratings.jsonl, one line per turn. Turns already there are skipped.
+With --workers, conversations are rated in parallel; the turns of one conversation are still
+rated in order, one after another, so the lines of a conversation are in turn order but the
+conversations are not in file order. Each run writes its own log with its own token usage:
+judge_log.json, or judge_log.sample.json for a run restricted to a sample.
 """
 
 from __future__ import annotations
@@ -18,7 +24,10 @@ import argparse
 import hashlib
 import json
 import sys
+import threading
 import tomllib
+from collections import Counter
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -94,12 +103,28 @@ def rate_turn(client, *, model: str, effort: str, system: str, turns: list[dict]
     return {"rating": None, "signs": [], "note": "", "status": f"unparseable ({out.stop_reason})"}
 
 
+def pending(conversations: list[dict], done: set, only: set | None) -> list[tuple[dict, list[int]]]:
+    """For each conversation, the turns still to rate, in order. `only` restricts to a sample."""
+    jobs = []
+    for convo in conversations:
+        turns = [
+            k
+            for k in range(1, len(convo["turns"]) + 1)
+            if (convo["id"], k) not in done and (only is None or (convo["id"], k) in only)
+        ]
+        if turns:
+            jobs.append((convo, turns))
+    return jobs
+
+
 def main() -> None:
     sys.path.insert(0, str(Path(__file__).resolve().parent))
     from api_client import client_for
 
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--set", required=True)
+    parser.add_argument("--sample", help="a label sample (labels/sample_<set>.json): rate only its turns")
+    parser.add_argument("--workers", type=int, default=1, help="conversations rated at the same time")
     args = parser.parse_args()
     with open(REPO_ROOT / "configs" / "study.toml", "rb") as f:
         api = tomllib.load(f)["api"]
@@ -112,30 +137,51 @@ def main() -> None:
     done = set()
     if ratings_path.exists():
         done = {(r["id"], r["turn"]) for r in map(json.loads, ratings_path.read_text().splitlines())}
+    only = None
+    if args.sample:
+        only = {(i["id"], i["turn"]) for i in json.loads((REPO_ROOT / args.sample).read_text())["items"]}
+    jobs = pending(conversations, done, only)
 
     client = client_for(api["judge_provider"])
-    with open(ratings_path, "a") as f:
-        for convo in conversations:
-            for k in range(1, len(convo["turns"]) + 1):
-                if (convo["id"], k) in done:
-                    continue
+    lock = threading.Lock()
+    statuses: Counter = Counter()
+
+    errors: list[str] = []
+
+    def rate_conversation(job: tuple[dict, list[int]]) -> None:
+        convo, turns = job
+        for k in turns:
+            try:
                 row = rate_turn(
                     client, model=api["judge_model"], effort=api["judge_effort"], system=system, turns=convo["turns"], k=k
                 )
+            except Exception as err:  # the API failed after the client's own retries: leave the rest for a rerun
+                with lock:
+                    errors.append(f"{convo['id']} turn {k}: {type(err).__name__}")
+                print(f"stopped {convo['id']} at turn {k}: {type(err).__name__}", flush=True)
+                return
+            with lock, open(ratings_path, "a") as f:
                 f.write(json.dumps({"id": convo["id"], "stratum": convo["stratum"], "turn": k, **row}, ensure_ascii=False) + "\n")
-                f.flush()
-            print(f"rated {convo['id']}", flush=True)
+                statuses[row["status"]] += 1
+        print(f"rated {convo['id']} ({len(turns)} turns)", flush=True)
+
+    with ThreadPoolExecutor(max_workers=max(1, args.workers)) as pool:
+        list(pool.map(rate_conversation, jobs))
 
     log = {
         "set": args.set,
+        "sample": args.sample,
         "judge_provider": api["judge_provider"],
         "judge_model": api["judge_model"],
         "judge_effort": api["judge_effort"],
         "rubric_sha256": hashlib.sha256(rubric.encode()).hexdigest(),
         "instructions_sha256": hashlib.sha256(INSTRUCTIONS.encode()).hexdigest(),
+        "turns_this_run": dict(statuses),
+        "not_rated_after_api_errors": errors,
         "usage_this_run": client.usage.by_model,
     }
-    (out_dir / "judge_log.json").write_text(json.dumps(log, indent=2) + "\n")
+    name = "judge_log.sample.json" if args.sample else "judge_log.json"
+    (out_dir / name).write_text(json.dumps(log, indent=2) + "\n")
     print(json.dumps(log, indent=2))
 
 

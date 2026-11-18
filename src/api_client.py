@@ -12,6 +12,7 @@ Two things are deliberate:
 
 from __future__ import annotations
 
+import threading
 from dataclasses import dataclass, field
 
 
@@ -31,19 +32,21 @@ class Usage:
     cache_read_tokens: int = 0
     output_tokens: int = 0
     by_model: dict = field(default_factory=dict)
+    _lock: threading.Lock = field(default_factory=threading.Lock, repr=False, compare=False)
 
     def add(self, model: str, *, input: int, cache_write: int, cache_read: int, output: int) -> None:
         """`input` is uncached input tokens; cached ones are counted separately."""
-        row = self.by_model.setdefault(model, {"calls": 0, "input": 0, "cache_write": 0, "cache_read": 0, "output": 0})
         counts = {"input": input, "cache_write": cache_write, "cache_read": cache_read, "output": output}
-        row["calls"] += 1
-        for k, v in counts.items():
-            row[k] += v
-        self.calls += 1
-        self.input_tokens += counts["input"]
-        self.cache_write_tokens += counts["cache_write"]
-        self.cache_read_tokens += counts["cache_read"]
-        self.output_tokens += counts["output"]
+        with self._lock:  # the judge rates several conversations at once
+            row = self.by_model.setdefault(model, {"calls": 0, "input": 0, "cache_write": 0, "cache_read": 0, "output": 0})
+            row["calls"] += 1
+            for k, v in counts.items():
+                row[k] += v
+            self.calls += 1
+            self.input_tokens += counts["input"]
+            self.cache_write_tokens += counts["cache_write"]
+            self.cache_read_tokens += counts["cache_read"]
+            self.output_tokens += counts["output"]
 
 
 class AnthropicClient:
