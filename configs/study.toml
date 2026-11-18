@@ -49,13 +49,17 @@ max_new_tokens = 1536
 system_prompt = ""
 
 [api]
-# Models confirmed by the owner on 2026-11-16. The judge comes from a different provider than
+# Judge changed by the owner on 2026-11-18, with the revised rubric and before any turn was rated
+# under it (pre-registration, section 15): claude-opus-5-5, from the same provider as the
+# simulated user. Until then the judge was gpt-6.1-sol (provider "openai"), which made every
+# rating under version 1 of the rubric.
+# Models confirmed by the owner on 2026-11-16. The judge then came from a different provider than
 # the simulated user. No sampling setting is sent to either; effort is the only setting.
 user_provider = "anthropic"
 user_model = "claude-sonnet-5-5"
 user_effort = "low"
-judge_provider = "openai"
-judge_model = "gpt-6.1-sol"
+judge_provider = "anthropic"
+judge_model = "claude-opus-5-5"
 judge_effort = "high"
 
 [gate4]

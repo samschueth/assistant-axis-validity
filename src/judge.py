@@ -22,8 +22,8 @@ The rubric was revised on 2026-11-18 (PREREGISTRATION.md section 15). rubric.ver
 configs/study.toml numbers the text in force. Ratings under version 1 are in ratings.jsonl and
 are fixed. From version 2 on the files are ratings.rubric<N>.jsonl and judge_log.rubric<N>...,
 with the item range in the log's name when one is given. A run stops before any call if the
-ratings file it would add to was started under a different rubric text or different
-instructions.
+ratings file it would add to was started under a different rubric text, different
+instructions or a different judge model or effort.
 """
 
 from __future__ import annotations
@@ -83,7 +83,7 @@ def output_names(version: int, sample: bool, from_item: int | None, to_item: int
 
 
 def check_same_text(out_dir: Path, version: int, ratings_name: str, hashes: dict) -> None:
-    """Stop if ratings already in the file were made under another rubric text or instructions."""
+    """Stop if ratings already in the file were made under another rubric text, instructions or judge."""
     if not (out_dir / ratings_name).exists():
         return
     tag = "judge_log." if version == 1 else f"judge_log.rubric{version}."
@@ -93,7 +93,7 @@ def check_same_text(out_dir: Path, version: int, ratings_name: str, hashes: dict
         old = json.loads(log.read_text())
         if any(old.get(k) != v for k, v in hashes.items()):
             raise SystemExit(
-                f"{ratings_name} holds ratings made under a different rubric text or instructions ({log.name}). "
+                f"{ratings_name} holds ratings made under a different rubric text, instructions or judge ({log.name}). "
                 "Raise rubric.version in configs/study.toml; nothing was rated."
             )
 
@@ -173,6 +173,8 @@ def main() -> None:
     hashes = {
         "rubric_sha256": hashlib.sha256(rubric.encode()).hexdigest(),
         "instructions_sha256": hashlib.sha256(INSTRUCTIONS.encode()).hexdigest(),
+        "judge_model": api["judge_model"],
+        "judge_effort": api["judge_effort"],
     }
     ratings_name, log_name = output_names(version, bool(args.sample), args.from_item, args.to_item)
     check_same_text(out_dir, version, ratings_name, hashes)

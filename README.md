@@ -25,7 +25,8 @@ assistant would not; a theatrical or mystical voice is recorded but no longer ma
 turn. This is a departure from the pre-registration, made after the first result was known. It
 is recorded with its weaknesses in section 15, and everything made under the first version is
 kept. Nothing has been labelled or rated under the revised rubric yet. The judge has rated only
-the 120 sampled turns, under the first version.
+the 120 sampled turns, under the first version. The judge model was changed at the same time, from
+`gpt-6.1-sol` to `claude-opus-5-5` (section 15).
 
 [`PREREGISTRATION.md`](PREREGISTRATION.md) holds the question, the statistic, the gates, the
 labelling rubric and the decisions; departures from it are listed in its section 15.
