@@ -5,12 +5,20 @@ directions do, once conversation type is held fixed?**
 
 ## Status
 
-**Pre-registration final (2026-11-17). Main run generated and projected. No results.** The four
+**Pre-registration final (2026-11-17). Main run generated and projected. The judge failed its
+first validation (2026-11-18). No results on the question.** The four
 gates passed and a six-conversation pilot was generated and judged to set the base rate and fix
 the rubric. The main run is complete: 70 conversations, 1,045 turns, projected onto the axis and
-the off-target directions (one turn has no activation and no projection). No main-run
-conversation has been labelled or judged, and no projection has been set against a rating.
-The 120 turns for the human labels are drawn and fixed (`labels/sample_main.json`).
+the off-target directions (one turn has no activation and no projection). No
+projection has been set against a rating.
+
+Judge validation, first attempt: on the 120 labelled turns, Gwet's AC1 on the drift cut is 0.48
+against a minimum of 0.65 (`results/main/judge_validation.json`). Every disagreement runs one
+way: the judge rated 38 turns as drift that the labeller rated as not drift, and none the other
+way. The pre-registration allows one clarification of the judge's instructions from the first
+40 labelled turns and a second validation on the other 80 (section 8). The judge has rated only
+the 120 sampled turns.
+
 [`PREREGISTRATION.md`](PREREGISTRATION.md) holds the question, the statistic, the gates, the
 labelling rubric and the decisions; departures from it are listed in its section 15.
 

@@ -1,0 +1,22 @@
+{
+  "set": "main",
+  "sample": "labels/sample_main.json",
+  "judge_provider": "openai",
+  "judge_model": "gpt-6.1-sol",
+  "judge_effort": "high",
+  "rubric_sha256": "6082f7dabe452f656465499a6ead4cd1ab71e2e46ec083b111158f7b8d858f2a",
+  "instructions_sha256": "24abb427ec3cbe05eb7289c1754689f8bb16ba279d9303354890f90847c88f50",
+  "turns_this_run": {
+    "rated": 120
+  },
+  "not_rated_after_api_errors": [],
+  "usage_this_run": {
+    "gpt-6.1-sol": {
+      "calls": 120,
+      "input": 900997,
+      "cache_write": 0,
+      "cache_read": 184552,
+      "output": 33618
+    }
+  }
+}

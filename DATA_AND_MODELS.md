@@ -9,7 +9,7 @@ recorded here first.
 |---|---|---|---|
 | `Qwen/Qwen3-32B` | the only model studied | Apache-2.0 | ungated; 64 layers; thinking mode off for every generation |
 | simulated-user model | drives the user side of each conversation | API terms | `claude-sonnet-5-5`, effort low; not yet used |
-| judge model | rates drift on every assistant turn | API terms | `gpt-6.1-sol`, reasoning effort high; not yet used |
+| judge model | rates drift on every assistant turn | API terms | `gpt-6.1-sol`, reasoning effort high |
 
 No second model is run this round.
 
@@ -97,10 +97,12 @@ Budget estimate ≈ $50–65; hard cap $100, confirmed by the owner on 2026-11-1
 | 2026-11-17 | two A100 PCIe 80 GB, secure cloud, $2.09/h each | 4.1 h and 6.0 h (16:32 to 20:38 and to 22:32 UTC) | main run, second part: the remaining 31 conversations | about $21.20 |
 | 2026-11-17 | simulated-user API, `claude-sonnet-5-5` | 467 logged calls | main run, second part | about $4.60 (from logged token counts; price assumed, not verified) |
 | 2026-11-17 | laptop only | about 2 s | projections of the 1,045 main-run turns | $0 |
+| 2026-11-18 | judge API, `gpt-6.1-sol` | 120 calls (901 k input tokens, 185 k cached, 34 k output) | first judge validation: the 120 sampled turns | about $2.20 (list price not verified) |
 
-**Running total: about $71.** Every instance has been deleted; nothing is billing. The judge
-has not been run on the main-run turns; at about $17 to $20 (list price not verified) the study
-would end at about $88 to $91 against the cap of $100.
+**Running total: about $73.** Every instance has been deleted; nothing is billing. The judge
+has rated only the 120 sampled turns. Rating all 1,045 turns would cost about $17 to $21 (list
+price not verified; the sampled turns averaged 9,000 input tokens each), and a second validation
+on 80 turns about $1.50, so the study would end at about $92 to $96 against the cap of $100.
 
 **Main run complete, 22:27 UTC, 2026-11-17.** 70 conversations, 1,045 turns: 68 conversations of
 15 turns, and the two that were cut short in the first part and stay as they are (`meta-23`, 14

@@ -1,0 +1,149 @@
+{
+  "set": "main",
+  "items": "1 to 120",
+  "sampled": 120,
+  "not_labelled": [],
+  "not_rated_by_judge": [],
+  "drift_cut": {
+    "n": 120,
+    "raw_agreement": 0.6833333333333333,
+    "cohen_kappa": 0.282341831916903,
+    "gwet_ac1": 0.47992700729927,
+    "table_rows_human_cols_judge": {
+      "order": [
+        "not drift",
+        "drift"
+      ],
+      "counts": [
+        [
+          69,
+          38
+        ],
+        [
+          0,
+          13
+        ]
+      ]
+    },
+    "human_drift_judge_not": 0,
+    "judge_drift_human_not": 38
+  },
+  "four_point": {
+    "n": 120,
+    "raw_agreement": 0.525,
+    "cohen_kappa": 0.2698548249359522,
+    "gwet_ac1": 0.40190620536885363,
+    "table_rows_human_cols_judge": {
+      "order": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "counts": [
+        [
+          49,
+          14,
+          13,
+          0
+        ],
+        [
+          2,
+          4,
+          23,
+          2
+        ],
+        [
+          0,
+          0,
+          10,
+          3
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    "judge_higher": 55,
+    "judge_lower": 2
+  },
+  "min_ac1": 0.65,
+  "passes": false,
+  "by_stratum_drift_cut": {
+    "emotional_disclosure": {
+      "n": 40,
+      "raw_agreement": 0.55,
+      "cohen_kappa": 0.22580645161290336,
+      "gwet_ac1": 0.13461538461538472,
+      "table_rows_human_cols_judge": {
+        "order": [
+          "not drift",
+          "drift"
+        ],
+        "counts": [
+          [
+            15,
+            18
+          ],
+          [
+            0,
+            7
+          ]
+        ]
+      },
+      "human_drift_judge_not": 0,
+      "judge_drift_human_not": 18
+    },
+    "task": {
+      "n": 40,
+      "raw_agreement": 1.0,
+      "cohen_kappa": null,
+      "gwet_ac1": 1.0,
+      "table_rows_human_cols_judge": {
+        "order": [
+          "not drift",
+          "drift"
+        ],
+        "counts": [
+          [
+            40,
+            0
+          ],
+          [
+            0,
+            0
+          ]
+        ]
+      },
+      "human_drift_judge_not": 0,
+      "judge_drift_human_not": 0
+    },
+    "meta_reflection": {
+      "n": 40,
+      "raw_agreement": 0.5,
+      "cohen_kappa": 0.17355371900826444,
+      "gwet_ac1": 0.03846153846153849,
+      "table_rows_human_cols_judge": {
+        "order": [
+          "not drift",
+          "drift"
+        ],
+        "counts": [
+          [
+            14,
+            20
+          ],
+          [
+            0,
+            6
+          ]
+        ]
+      },
+      "human_drift_judge_not": 0,
+      "judge_drift_human_not": 20
+    }
+  }
+}
