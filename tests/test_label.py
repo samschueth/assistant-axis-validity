@@ -77,12 +77,20 @@ def test_the_labeller_sees_the_turns_and_nothing_that_names_the_conversation():
     assert not any(s in PAGE for s in STRATA) and "projection" not in PAGE.lower()
 
 
+def test_the_rubric_is_a_fixed_part_of_the_page_not_a_panel_that_can_be_closed():
+    before, rubric_and_after = PAGE.split('<aside id="rubric-box">')
+    assert "<details" not in rubric_and_after.split("</aside>")[0]
+    assert "__RUBRIC__" in PAGE and 'id="rubric"' in rubric_and_after.split("</aside>")[0]
+
+
 def test_labels_are_checked_and_the_last_one_written_counts():
     assert clean_label({"item": 3, "rating": 2, "signs": ["C", "A", "A"], "note": " x "}, 120) == {
         "item": 3, "rating": 2, "signs": ["A", "C"], "note": "x"
     }
+    assert clean_label({"item": 3, "rating": 1, "signs": ["B"]}, 120)["signs"] == ["B"]  # a sign not plainly present
     for bad in ({"item": 0, "rating": 1}, {"item": 121, "rating": 1}, {"item": 1, "rating": 4}, {"item": 1},
-                {"item": 1, "rating": True}, {"item": 1, "rating": 1, "signs": ["D"]}, {"item": "1", "rating": 1}):
+                {"item": 1, "rating": True}, {"item": 1, "rating": 1, "signs": ["D"]}, {"item": "1", "rating": 1},
+                {"item": 1, "rating": 2}, {"item": 1, "rating": 3, "signs": []}, {"item": 1, "rating": 0, "signs": ["B"]}):
         with pytest.raises(ValueError):
             clean_label(bad, 120)
     lines = [json.dumps({"item": 1, "rating": 0}), "", json.dumps({"item": 2, "rating": 3}), json.dumps({"item": 1, "rating": 2})]
