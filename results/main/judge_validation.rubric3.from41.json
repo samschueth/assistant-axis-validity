@@ -1,0 +1,199 @@
+{
+  "set": "main",
+  "human_labels": "human_labels_main.rubric3.jsonl",
+  "judge_ratings": "ratings.rubric3.jsonl",
+  "items": "41 to 120",
+  "sampled": 80,
+  "not_labelled": [],
+  "not_rated_by_judge": [],
+  "drift_cut": {
+    "n": 80,
+    "raw_agreement": 0.8,
+    "cohen_kappa": 0.3043478260869564,
+    "gwet_ac1": 0.725203950193216,
+    "table_rows_human_cols_judge": {
+      "order": [
+        "not drift",
+        "drift"
+      ],
+      "counts": [
+        [
+          59,
+          15
+        ],
+        [
+          1,
+          5
+        ]
+      ]
+    },
+    "human_drift_judge_not": 1,
+    "judge_drift_human_not": 15
+  },
+  "four_point": {
+    "n": 80,
+    "raw_agreement": 0.625,
+    "cohen_kappa": 0.38048528652555497,
+    "gwet_ac1": 0.5337844400556868,
+    "table_rows_human_cols_judge": {
+      "order": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "counts": [
+        [
+          36,
+          13,
+          5,
+          0
+        ],
+        [
+          0,
+          10,
+          8,
+          2
+        ],
+        [
+          0,
+          1,
+          4,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    "judge_higher": 29,
+    "judge_lower": 1
+  },
+  "min_ac1": 0.65,
+  "passes": true,
+  "by_stratum_drift_cut": {
+    "emotional_disclosure": {
+      "n": 27,
+      "raw_agreement": 0.5555555555555556,
+      "cohen_kappa": 0.08474576271186447,
+      "gwet_ac1": 0.23764705882352943,
+      "table_rows_human_cols_judge": {
+        "order": [
+          "not drift",
+          "drift"
+        ],
+        "counts": [
+          [
+            13,
+            11
+          ],
+          [
+            1,
+            2
+          ]
+        ]
+      },
+      "human_drift_judge_not": 1,
+      "judge_drift_human_not": 11
+    },
+    "task": {
+      "n": 27,
+      "raw_agreement": 1.0,
+      "cohen_kappa": null,
+      "gwet_ac1": 1.0,
+      "table_rows_human_cols_judge": {
+        "order": [
+          "not drift",
+          "drift"
+        ],
+        "counts": [
+          [
+            27,
+            0
+          ],
+          [
+            0,
+            0
+          ]
+        ]
+      },
+      "human_drift_judge_not": 0,
+      "judge_drift_human_not": 0
+    },
+    "meta_reflection": {
+      "n": 26,
+      "raw_agreement": 0.8461538461538461,
+      "cohen_kappa": 0.5229357798165138,
+      "gwet_ac1": 0.7768240343347639,
+      "table_rows_human_cols_judge": {
+        "order": [
+          "not drift",
+          "drift"
+        ],
+        "counts": [
+          [
+            19,
+            4
+          ],
+          [
+            0,
+            3
+          ]
+        ]
+      },
+      "human_drift_judge_not": 0,
+      "judge_drift_human_not": 4
+    }
+  },
+  "first_pass_against_this_pass": {
+    "n": 80,
+    "raw_agreement": 0.8375,
+    "cohen_kappa": 0.6634304207119742,
+    "gwet_ac1": 0.8063855533835986,
+    "table_rows_first_pass_cols_this_pass": {
+      "order": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "counts": [
+        [
+          50,
+          3,
+          1,
+          0
+        ],
+        [
+          3,
+          13,
+          1,
+          0
+        ],
+        [
+          1,
+          4,
+          4,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    "rated_higher_than_first_pass": 5,
+    "rated_lower_than_first_pass": 8,
+    "signs_marked_on_turns_rated_higher": {
+      "A": 2,
+      "none": 3
+    },
+    "drift_turns_first_pass": 9,
+    "drift_turns_this_pass": 6
+  }
+}
