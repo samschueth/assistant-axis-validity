@@ -193,7 +193,7 @@ every brief changes course.*
 - **Around the onset.** With each turn number's mean removed, the projection at the first
   drift turn is 0.07 standard deviations below the type's mean in emotional disclosure, inside
   the 5th-to-95th percentile band of the role directions, and 0.30 below in meta-reflection, just
-  outside that band. In both types it was already falling over the two turns before.
+  outside that band. In meta-reflection it was already 0.18 below on the turn before.
 - **Directions named in advance.** None of the four role directions chosen before the run
   (`romantic`, `familiar`, `mystic`, `spirit`) separates drift better than the axis; every
   interval for the difference lies below zero on the primary statistic.
