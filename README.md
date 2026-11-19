@@ -34,8 +34,11 @@ allowed (version 3, the final text): the voice marker was removed and two rules 
 exact. The judge's validation, on items 41 to 120, met the registered minimum: Gwet's AC1 on the
 drift cut is 0.73 against 0.65. The pass is a weak one. Cohen's kappa is 0.30; the judge marked
 20 of the 80 turns as drift, the owner 6, and they agree on 5; in the emotional-disclosure
-conversations AC1 is 0.24 on 27 turns. The full judge run has not been made. No rating has been
-set against a projection.
+conversations AC1 is 0.24 on 27 turns. The judge then rated all 1,045
+turns, and the registered analyses were run once (`results/main/analysis.json`). The gap within
+conversation type is 0.032, with a 95% interval of -0.029 to 0.067: not distinguishable from zero
+at this sample size. The pooled gap is -0.044. The lagged test is not above zero either way. The
+descriptions of section 16.3 have not been run.
 
 [`PREREGISTRATION.md`](PREREGISTRATION.md) holds the question, the statistic, the gates, the
 labelling rubric and the decisions; departures from it are listed in its section 15.
