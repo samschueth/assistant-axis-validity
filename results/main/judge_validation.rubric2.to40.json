@@ -1,0 +1,282 @@
+{
+  "set": "main",
+  "human_labels": "human_labels_main.rubric2.jsonl",
+  "judge_ratings": "ratings.rubric2.jsonl",
+  "items": "1 to 40",
+  "sampled": 40,
+  "not_labelled": [],
+  "not_rated_by_judge": [],
+  "drift_cut": {
+    "n": 40,
+    "raw_agreement": 0.9,
+    "cohen_kappa": 0.6551724137931034,
+    "gwet_ac1": 0.8594024604569421,
+    "table_rows_human_cols_judge": {
+      "order": [
+        "not drift",
+        "drift"
+      ],
+      "counts": [
+        [
+          31,
+          3
+        ],
+        [
+          1,
+          5
+        ]
+      ]
+    },
+    "human_drift_judge_not": 1,
+    "judge_drift_human_not": 3
+  },
+  "four_point": {
+    "n": 40,
+    "raw_agreement": 0.525,
+    "cohen_kappa": 0.2519685039370078,
+    "gwet_ac1": 0.417624521072797,
+    "table_rows_human_cols_judge": {
+      "order": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "counts": [
+        [
+          16,
+          14,
+          3,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          4,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0
+        ]
+      ]
+    },
+    "judge_higher": 17,
+    "judge_lower": 2
+  },
+  "min_ac1": 0.65,
+  "passes": true,
+  "by_stratum_drift_cut": {
+    "emotional_disclosure": {
+      "n": 13,
+      "raw_agreement": 0.6923076923076923,
+      "cohen_kappa": 0.29729729729729726,
+      "gwet_ac1": 0.4639175257731958,
+      "table_rows_human_cols_judge": {
+        "order": [
+          "not drift",
+          "drift"
+        ],
+        "counts": [
+          [
+            7,
+            3
+          ],
+          [
+            1,
+            2
+          ]
+        ]
+      },
+      "human_drift_judge_not": 1,
+      "judge_drift_human_not": 3
+    },
+    "task": {
+      "n": 13,
+      "raw_agreement": 1.0,
+      "cohen_kappa": null,
+      "gwet_ac1": 1.0,
+      "table_rows_human_cols_judge": {
+        "order": [
+          "not drift",
+          "drift"
+        ],
+        "counts": [
+          [
+            13,
+            0
+          ],
+          [
+            0,
+            0
+          ]
+        ]
+      },
+      "human_drift_judge_not": 0,
+      "judge_drift_human_not": 0
+    },
+    "meta_reflection": {
+      "n": 14,
+      "raw_agreement": 1.0,
+      "cohen_kappa": 1.0,
+      "gwet_ac1": 1.0,
+      "table_rows_human_cols_judge": {
+        "order": [
+          "not drift",
+          "drift"
+        ],
+        "counts": [
+          [
+            11,
+            0
+          ],
+          [
+            0,
+            3
+          ]
+        ]
+      },
+      "human_drift_judge_not": 0,
+      "judge_drift_human_not": 0
+    }
+  },
+  "without_shown_items": {
+    "items_left_out": [
+      1,
+      10,
+      32,
+      40
+    ],
+    "drift_cut": {
+      "n": 36,
+      "raw_agreement": 0.9444444444444444,
+      "cohen_kappa": 0.769230769230769,
+      "gwet_ac1": 0.9269776876267748,
+      "table_rows_human_cols_judge": {
+        "order": [
+          "not drift",
+          "drift"
+        ],
+        "counts": [
+          [
+            30,
+            2
+          ],
+          [
+            0,
+            4
+          ]
+        ]
+      },
+      "human_drift_judge_not": 0,
+      "judge_drift_human_not": 2
+    },
+    "four_point": {
+      "n": 36,
+      "raw_agreement": 0.5555555555555556,
+      "cohen_kappa": 0.2500000000000001,
+      "gwet_ac1": 0.46352064576218566,
+      "table_rows_human_cols_judge": {
+        "order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "counts": [
+          [
+            16,
+            13,
+            2,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            3,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            0
+          ]
+        ]
+      },
+      "judge_higher": 15,
+      "judge_lower": 1
+    },
+    "min_ac1": 0.65,
+    "passes": true
+  },
+  "passes_on_all_items": true,
+  "first_pass_against_this_pass": {
+    "n": 40,
+    "raw_agreement": 0.65,
+    "cohen_kappa": 0.33333333333333326,
+    "gwet_ac1": 0.5834366476568311,
+    "table_rows_first_pass_cols_this_pass": {
+      "order": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "counts": [
+        [
+          22,
+          0,
+          0,
+          0
+        ],
+        [
+          11,
+          1,
+          2,
+          0
+        ],
+        [
+          0,
+          0,
+          3,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    "rated_higher_than_first_pass": 3,
+    "rated_lower_than_first_pass": 11,
+    "signs_marked_on_turns_rated_higher": {
+      "A": 2,
+      "AB": 1
+    },
+    "drift_turns_first_pass": 4,
+    "drift_turns_this_pass": 6
+  },
+  "voice_marker_b": {
+    "human": 1,
+    "judge": 1,
+    "both": 0,
+    "turns": 40
+  }
+}
