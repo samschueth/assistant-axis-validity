@@ -1,0 +1,201 @@
+{
+  "layer": 32,
+  "strata": {
+    "meta_reflection": {
+      "turns": 449,
+      "drift_turns": 101,
+      "spectrum": {
+        "variance_share_first_ten": [
+          0.1534,
+          0.1036,
+          0.0742,
+          0.0583,
+          0.0486,
+          0.0394,
+          0.0262,
+          0.022,
+          0.0217,
+          0.0183
+        ],
+        "participation_ratio": 19.422659428867217
+      },
+      "components": [
+        {
+          "component": 1,
+          "cosine_with_axis": -0.12187311484602148,
+          "auc_distance_from_half": 0.055394332536701896
+        },
+        {
+          "component": 2,
+          "cosine_with_axis": 0.4927303573200346,
+          "auc_distance_from_half": 0.14510071696824856
+        },
+        {
+          "component": 3,
+          "cosine_with_axis": 0.065361528522282,
+          "auc_distance_from_half": 0.09653465346534651
+        },
+        {
+          "component": 4,
+          "cosine_with_axis": -0.05228154208441668,
+          "auc_distance_from_half": 0.08725958802776823
+        },
+        {
+          "component": 5,
+          "cosine_with_axis": 0.08260649291327335,
+          "auc_distance_from_half": 0.015278251963127376
+        },
+        {
+          "component": 6,
+          "cosine_with_axis": -0.21305038865423437,
+          "auc_distance_from_half": 0.024724024126550614
+        },
+        {
+          "component": 7,
+          "cosine_with_axis": -0.06720578317355372,
+          "auc_distance_from_half": 0.05610561056105612
+        },
+        {
+          "component": 8,
+          "cosine_with_axis": 0.045119647840949566,
+          "auc_distance_from_half": 0.0748548992830318
+        },
+        {
+          "component": 9,
+          "cosine_with_axis": 0.23945174947614234,
+          "auc_distance_from_half": 0.05664618185956527
+        },
+        {
+          "component": 10,
+          "cosine_with_axis": -0.00686929219200437,
+          "auc_distance_from_half": 0.021509047456469754
+        }
+      ],
+      "first_component": {
+        "rank_correlation_with_turn_number": 0.11510274154205109,
+        "rank_correlation_with_reply_length": -0.7378782214444796,
+        "rank_correlation_with_axis_projection": -0.4264170378619153,
+        "axis_rank_correlation_with_turn_number": -0.461863797857673,
+        "axis_rank_correlation_with_reply_length": 0.32431169795312326
+      },
+      "random": {
+        "bar_as_registered": 0.14258848298622964,
+        "bar_axis_removed": 0.13804057129850905,
+        "bar_first_1_components_removed": 0.1466143166040742,
+        "bar_first_3_components_removed": 0.1118157505405713,
+        "bar_first_10_components_removed": 0.10307129850916119,
+        "mean_abs_cosine_with_axis": 0.011082227448837294
+      },
+      "roles": {
+        "bar_as_registered": 0.1346278593376579,
+        "bar_first_1_components_removed": 0.16639922612950953,
+        "bar_first_3_components_removed": 0.10226186411744623,
+        "bar_first_10_components_removed": 0.10928644588596792
+      },
+      "axis": {
+        "score_as_registered": 0.12868442016615456,
+        "score_first_1_components_removed": 0.1240184363263912,
+        "score_first_3_components_removed": -0.04594856037327866,
+        "score_first_10_components_removed": -0.0926368498918857
+      }
+    },
+    "emotional_disclosure": {
+      "turns": 446,
+      "drift_turns": 196,
+      "spectrum": {
+        "variance_share_first_ten": [
+          0.2149,
+          0.0765,
+          0.059,
+          0.0525,
+          0.0356,
+          0.0269,
+          0.0252,
+          0.0218,
+          0.021,
+          0.0175
+        ],
+        "participation_ratio": 15.489513196330174
+      },
+      "components": [
+        {
+          "component": 1,
+          "cosine_with_axis": -0.4843368203282963,
+          "auc_distance_from_half": 0.3215714285714286
+        },
+        {
+          "component": 2,
+          "cosine_with_axis": -0.26301657669193307,
+          "auc_distance_from_half": 0.0024693877551020815
+        },
+        {
+          "component": 3,
+          "cosine_with_axis": -0.31797075335103103,
+          "auc_distance_from_half": 0.06677551020408168
+        },
+        {
+          "component": 4,
+          "cosine_with_axis": 0.04346543179058327,
+          "auc_distance_from_half": 0.1322448979591837
+        },
+        {
+          "component": 5,
+          "cosine_with_axis": 0.17374394600099669,
+          "auc_distance_from_half": 0.06797959183673474
+        },
+        {
+          "component": 6,
+          "cosine_with_axis": -0.05327156706181292,
+          "auc_distance_from_half": 0.03173469387755101
+        },
+        {
+          "component": 7,
+          "cosine_with_axis": -0.13195191927979422,
+          "auc_distance_from_half": 0.10144897959183674
+        },
+        {
+          "component": 8,
+          "cosine_with_axis": 0.11779011247402342,
+          "auc_distance_from_half": 0.0010816326530611597
+        },
+        {
+          "component": 9,
+          "cosine_with_axis": 0.05857747914730716,
+          "auc_distance_from_half": 0.08869387755102043
+        },
+        {
+          "component": 10,
+          "cosine_with_axis": 0.05232961090051508,
+          "auc_distance_from_half": 0.01277551020408163
+        }
+      ],
+      "first_component": {
+        "rank_correlation_with_turn_number": 0.6786999066347491,
+        "rank_correlation_with_reply_length": -0.4182900531346681,
+        "rank_correlation_with_axis_projection": -0.759607304605061,
+        "axis_rank_correlation_with_turn_number": -0.6273132416002554,
+        "axis_rank_correlation_with_reply_length": 0.4701041490895282
+      },
+      "random": {
+        "bar_as_registered": 0.24878673469387752,
+        "bar_axis_removed": 0.2370775510204081,
+        "bar_first_1_components_removed": 0.1020948979591837,
+        "bar_first_3_components_removed": 0.10138775510204079,
+        "bar_first_10_components_removed": 0.055765306122448996,
+        "mean_abs_cosine_with_axis": 0.011082227448837294
+      },
+      "roles": {
+        "bar_as_registered": 0.18969591836734695,
+        "bar_first_1_components_removed": 0.1003551020408164,
+        "bar_first_3_components_removed": 0.1193183673469388,
+        "bar_first_10_components_removed": 0.05755510204081633
+      },
+      "axis": {
+        "score_as_registered": 0.26030612244897955,
+        "score_first_1_components_removed": -0.0008571428571428896,
+        "score_first_3_components_removed": -0.11491836734693872,
+        "score_first_10_components_removed": -0.05848979591836734
+      }
+    }
+  }
+}
