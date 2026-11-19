@@ -11,8 +11,8 @@ meta-reflection conversations). It is not shown to do so better than other perso
 The registered statistic, the gap between the axis's score and the 95th percentile of 275
 role-direction scores within conversation type, is 0.032 with a 95% interval of −0.029 to 0.067:
 not distinguishable from zero at this sample size. An unregistered follow-up suggests why the bar
-is high: within a conversation type, the activations vary most along one component that falls as
-the conversation goes on, judged drift rises over the same turns, and any direction that overlaps
+is high in emotional disclosure: the activations there vary most along one component that moves
+with the turn number, judged drift rises over the same turns, and any direction that overlaps
 that component inherits the association.
 
 ## 1. Question and motivation
@@ -128,8 +128,7 @@ The registered reading is the third row of the pre-committed table: the gap is n
 within type or pooled. The point estimate within type is positive, so the wording the
 pre-registration requires is "not distinguishable from zero at this sample size". Against the
 random directions the within-type gap is −0.001 (−0.063 to 0.025). The intervals sit low relative
-to the point estimates because resampling raises the 95th percentile of the off-target scores;
-the same skew appears on pure-noise test data.
+to the point estimates because resampling raises the 95th percentile of the off-target scores.
 
 ![The axis's score against the off-target distributions](results/main/figures/fig1_off_target_distributions.png)
 
@@ -170,7 +169,7 @@ axis again ranks first, and the gap clears zero only when position is not held f
   (0.019 to 0.158) and for turns with C alone 0.045 (−0.014 to 0.088). The author predicted the
   first would be larger. The direction agrees; the difference, 0.063 (−0.012 to 0.121,
   exploratory), includes zero, and the axis barely tells the two kinds apart (AUC 0.58). The
-  projection is low on "always here" turns almost as much as on self-claims.
+  projection is low on turns with C alone almost as much as on turns with sign A.
 
 ### 4.5 Descriptions (coded after the headline was known)
 
@@ -186,13 +185,15 @@ every brief changes course.*
   17% between conversations of one type, and 40% within conversations.
 - **Which ratings it separates.** In both types the axis separates a rating of 0 from 1 far
   better (AUC 0.86) than 1 from 2, the drift cut (0.68 in emotional disclosure, 0.53 in
-  meta-reflection), or 2 from 3 (0.57).
+  meta-reflection). For 2 from 3 the AUC is 0.57 in emotional disclosure; meta-reflection has
+  too few turns rated 3.
 - **Inside one conversation.** Counting only pairs of turns from the same conversation, the gap
   in emotional disclosure is 0.067 (0.028 to 0.094, rank 3) and in meta-reflection 0.017 (−0.061
   to 0.072).
-- **Around the onset.** With each turn number's mean removed, the projection shows no clear
-  step at the first drift turn in emotional disclosure; in meta-reflection it dips by 0.3
-  standard deviations, at the edge of the role directions' range.
+- **Around the onset.** With each turn number's mean removed, the projection at the first
+  drift turn is 0.07 standard deviations below the type's mean in emotional disclosure, inside
+  the 5th-to-95th percentile band of the role directions, and 0.30 below in meta-reflection, just
+  outside that band. In both types it was already falling over the two turns before.
 - **Directions named in advance.** None of the four role directions chosen before the run
   (`romantic`, `familiar`, `mystic`, `spirit`) separates drift better than the axis; every
   interval for the difference lies below zero on the primary statistic.
@@ -204,9 +205,13 @@ percentile (0.249) is above the role directions' (0.190). In that type the activ
 along one principal component (21% of the variance). That component separates judged drift
 better than the axis does (AUC 0.82), has a cosine of −0.48 with the axis, and rises with the
 turn number (rank correlation 0.68). With it removed from every direction, the random bar falls
-to 0.10, the role bar to 0.10, and the axis's own score from 0.26 to 0.00. In meta-reflection,
-removing the first three components takes the axis's score from 0.13 to below zero and lowers
-both bars to about 0.11. This was computed after the results were seen and is
+to 0.10, the role bar to 0.10, and the axis's own score from 0.26 to 0.00. Meta-reflection differs: its
+first component goes with reply length, not turn number, and removing it lowers neither bar; it
+takes the first three components to bring the axis's score from 0.13 to below zero and both bars
+to about 0.11. Two readings fit. The component may be position in the conversation, which the
+briefs tie to drift by design. Or it may be the drift itself, with the axis as a partial proxy
+for it. The component was fitted on the same turns it is scored on, and this study cannot tell
+the two apart. This was computed after the results were seen and is
 a description of this dataset, not a test.
 
 ## 5. Limitations
