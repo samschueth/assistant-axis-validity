@@ -1,0 +1,1397 @@
+{
+  "set": "main",
+  "note": "Coded after the registered tests were run and seen (PREREGISTRATION.md section 15, 2026-11-19).",
+  "target_layer": 32,
+  "strata": {
+    "task": {
+      "item1_ratings_in_order": {
+        "mean_projection_by_rating": {
+          "0": {
+            "turns": 139,
+            "mean": -19.202570551590952,
+            "ci": [
+              -20.68021444949414,
+              -17.664349300211125
+            ]
+          },
+          "1": {
+            "turns": 10
+          },
+          "2": {
+            "turns": 0
+          },
+          "3": {
+            "turns": 0
+          }
+        },
+        "adjacent_ratings": {
+          "0_against_1": {
+            "turns_lower_rating": 139,
+            "turns_higher_rating": 10
+          },
+          "1_against_2": {
+            "turns_lower_rating": 10,
+            "turns_higher_rating": 0
+          },
+          "2_against_3": {
+            "turns_lower_rating": 0,
+            "turns_higher_rating": 0
+          }
+        }
+      },
+      "item2_ratings_from_one_turn_to_the_next": {
+        "table_rows_turn_k_cols_turn_k_plus_1": [
+          [
+            124,
+            6,
+            0,
+            0
+          ],
+          [
+            6,
+            4,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "conversations_with_a_drift_turn": 0,
+        "of_which_drift_lasts_to_the_final_turn": 0
+      },
+      "item3_course_over_turns": {
+        "mean_projection_by_turn_number": {
+          "1": -13.668785285949706,
+          "2": -18.258795547485352,
+          "3": -20.096789932250978,
+          "4": -19.672034645080565,
+          "5": -19.500577545166017,
+          "6": -18.273057460784912,
+          "7": -19.284729385375975,
+          "8": -19.567682647705077,
+          "9": -20.37311363220215,
+          "10": -20.336253261566164,
+          "11": -19.870980262756348,
+          "12": -20.317843627929687,
+          "13": -20.559871101379393,
+          "14": -20.652267773946125,
+          "15": -21.42083559036255
+        },
+        "axis_slope_sd_per_turn": -0.07983742862322588,
+        "axis_slope_ci": [
+          -0.10638174157036187,
+          -0.05426654730705667
+        ],
+        "role_slopes_quantiles": {
+          "5": -0.05380686154089908,
+          "25": -0.03074292818951608,
+          "50": 0.0034613979797011897,
+          "75": 0.02973799356202482,
+          "95": 0.051275799035781604
+        },
+        "axis_rank_by_absolute_slope": 3
+      },
+      "item5_around_the_onset": {
+        "conversations_with_an_onset": 0,
+        "conversations_drifting_from_the_first_turn": 0,
+        "onsets_by_turn_number": {},
+        "onsets_by_band_of_the_turn_before": [
+          0,
+          0,
+          0
+        ],
+        "turns_from_onset": {
+          "-5": {
+            "conversations": 0
+          },
+          "-4": {
+            "conversations": 0
+          },
+          "-3": {
+            "conversations": 0
+          },
+          "-2": {
+            "conversations": 0
+          },
+          "-1": {
+            "conversations": 0
+          },
+          "0": {
+            "conversations": 0
+          },
+          "1": {
+            "conversations": 0
+          },
+          "2": {
+            "conversations": 0
+          },
+          "3": {
+            "conversations": 0
+          },
+          "4": {
+            "conversations": 0
+          },
+          "5": {
+            "conversations": 0
+          }
+        }
+      },
+      "item7_turning_points": {
+        "turn_5": {
+          "conversations_still_normal": 10,
+          "drift_in_the_next_three_turns": 0,
+          "no_drift_in_the_next_three_turns": 10
+        },
+        "turn_10": {
+          "conversations_still_normal": 10,
+          "drift_in_the_next_three_turns": 0,
+          "no_drift_in_the_next_three_turns": 10
+        }
+      },
+      "item8_noise": {
+        "rank_correlation_of_axis_projection_with_reply_tokens": -0.4800177233690508
+      },
+      "item6_onset_rate_by_projection_level": {
+        "pairs": 139,
+        "axis_share_drift_next_and_pairs_lowest_middle_highest_third": [
+          [
+            0.0,
+            46
+          ],
+          [
+            0.0,
+            46
+          ],
+          [
+            0.0,
+            47
+          ]
+        ],
+        "axis_lowest_minus_highest": 0.0,
+        "roles_lowest_minus_highest_quantiles": {
+          "5": 0.0,
+          "25": 0.0,
+          "50": 0.0,
+          "75": 0.0,
+          "95": 0.0
+        },
+        "axis_rank_by_absolute_difference": 276
+      }
+    },
+    "meta_reflection": {
+      "item1_ratings_in_order": {
+        "mean_projection_by_rating": {
+          "0": {
+            "turns": 82,
+            "mean": -35.333181491712246,
+            "ci": [
+              -37.977219376415015,
+              -32.601261584119555
+            ]
+          },
+          "1": {
+            "turns": 266,
+            "mean": -47.881525426878966,
+            "ci": [
+              -49.6935654257312,
+              -45.84773963389889
+            ]
+          },
+          "2": {
+            "turns": 91,
+            "mean": -48.93076416686341,
+            "ci": [
+              -52.200817693619754,
+              -45.90223431615173
+            ]
+          },
+          "3": {
+            "turns": 10
+          }
+        },
+        "adjacent_ratings": {
+          "0_against_1": {
+            "turns_lower_rating": 82,
+            "turns_higher_rating": 266,
+            "target_auc": 0.8605354850540987,
+            "bar": 0.30002750779387494,
+            "gap": 0.06050797726022378,
+            "rank": 1,
+            "ci_low": -0.008155805197060578,
+            "ci_high": 0.11448487502080584
+          },
+          "1_against_2": {
+            "turns_lower_rating": 266,
+            "turns_higher_rating": 91,
+            "target_auc": 0.5330909691811947,
+            "bar": 0.09948773031479796,
+            "gap": -0.06639676113360327,
+            "rank": 182,
+            "ci_low": -0.2805034184250525,
+            "ci_high": 0.02700856830249618
+          },
+          "2_against_3": {
+            "turns_lower_rating": 91,
+            "turns_higher_rating": 10
+          }
+        }
+      },
+      "item2_ratings_from_one_turn_to_the_next": {
+        "table_rows_turn_k_cols_turn_k_plus_1": [
+          [
+            43,
+            30,
+            6,
+            0
+          ],
+          [
+            24,
+            177,
+            40,
+            5
+          ],
+          [
+            1,
+            38,
+            42,
+            3
+          ],
+          [
+            0,
+            6,
+            2,
+            2
+          ]
+        ],
+        "conversations_with_a_drift_turn": 25,
+        "of_which_drift_lasts_to_the_final_turn": 1
+      },
+      "item3_course_over_turns": {
+        "mean_projection_by_turn_number": {
+          "1": -30.662704769770304,
+          "2": -39.107110277811685,
+          "3": -40.60344975789388,
+          "4": -41.81846803029378,
+          "5": -44.20028012593587,
+          "6": -48.22281125386556,
+          "7": -47.62933031717936,
+          "8": -48.63945770263672,
+          "9": -48.78825759887695,
+          "10": -49.80511665344238,
+          "11": -49.762820688883465,
+          "12": -49.20041097005208,
+          "13": -50.77729034423828,
+          "14": -48.76614481608073,
+          "15": -50.586224917707774
+        },
+        "axis_slope_sd_per_turn": -0.11464630826947474,
+        "axis_slope_ci": [
+          -0.14022086755284144,
+          -0.09235845956180158
+        ],
+        "role_slopes_quantiles": {
+          "5": -0.05480291372613504,
+          "25": -0.01615485599285589,
+          "50": -0.0017286846066128729,
+          "75": 0.021854275296198527,
+          "95": 0.046062915171842606
+        },
+        "axis_rank_by_absolute_slope": 2
+      },
+      "item5_around_the_onset": {
+        "conversations_with_an_onset": 24,
+        "conversations_drifting_from_the_first_turn": 1,
+        "onsets_by_turn_number": {
+          "2": 3,
+          "3": 3,
+          "4": 2,
+          "5": 3,
+          "6": 3,
+          "7": 2,
+          "8": 1,
+          "9": 3,
+          "10": 2,
+          "13": 2
+        },
+        "onsets_by_band_of_the_turn_before": [
+          14,
+          8,
+          2
+        ],
+        "turns_from_onset": {
+          "-5": {
+            "conversations": 13
+          },
+          "-4": {
+            "conversations": 16,
+            "axis_mean_in_its_own_units": -40.58321404457092,
+            "axis_sd_units": 0.5741054094865266,
+            "axis_sd_units_turn_mean_removed": 0.0650363661632278,
+            "roles_sd_units_5_to_95": [
+              -0.3268064629697647,
+              0.39075849044822786
+            ],
+            "roles_sd_units_turn_mean_removed_5_to_95": [
+              -0.2929974675980506,
+              0.2931964674849624
+            ]
+          },
+          "-3": {
+            "conversations": 18,
+            "axis_mean_in_its_own_units": -42.00846513112386,
+            "axis_sd_units": 0.42003995887453965,
+            "axis_sd_units_turn_mean_removed": 0.07013854349517865,
+            "roles_sd_units_5_to_95": [
+              -0.4111686403169209,
+              0.44284977655263275
+            ],
+            "roles_sd_units_turn_mean_removed_5_to_95": [
+              -0.32294399880433555,
+              0.32518655749524455
+            ]
+          },
+          "-2": {
+            "conversations": 21,
+            "axis_mean_in_its_own_units": -44.49291574387323,
+            "axis_sd_units": 0.15147815472099335,
+            "axis_sd_units_turn_mean_removed": -0.2088189290155435,
+            "roles_sd_units_5_to_95": [
+              -0.2463870451641088,
+              0.3008046001837847
+            ],
+            "roles_sd_units_turn_mean_removed_5_to_95": [
+              -0.16885717683091428,
+              0.17261624327627528
+            ]
+          },
+          "-1": {
+            "conversations": 24,
+            "axis_mean_in_its_own_units": -44.76539850234985,
+            "axis_sd_units": 0.12202356993605591,
+            "axis_sd_units_turn_mean_removed": -0.17937946573600275,
+            "roles_sd_units_5_to_95": [
+              -0.12994003050458638,
+              0.19395399586154857
+            ],
+            "roles_sd_units_turn_mean_removed_5_to_95": [
+              -0.07080764091338455,
+              0.11152830497122454
+            ]
+          },
+          "0": {
+            "conversations": 24,
+            "axis_mean_in_its_own_units": -48.28692388534546,
+            "axis_sd_units": -0.2586429667125489,
+            "axis_sd_units_turn_mean_removed": -0.303665257042486,
+            "roles_sd_units_5_to_95": [
+              -0.1719674480014393,
+              0.2388262744377036
+            ],
+            "roles_sd_units_turn_mean_removed_5_to_95": [
+              -0.25618395715981473,
+              0.3009642926595881
+            ]
+          },
+          "1": {
+            "conversations": 24,
+            "axis_mean_in_its_own_units": -47.36813545227051,
+            "axis_sd_units": -0.1593246393705715,
+            "axis_sd_units_turn_mean_removed": -0.09490948140464595,
+            "roles_sd_units_5_to_95": [
+              -0.3154926704357435,
+              0.24475757117906008
+            ],
+            "roles_sd_units_turn_mean_removed_5_to_95": [
+              -0.19706136482126838,
+              0.18170252162954054
+            ]
+          },
+          "2": {
+            "conversations": 24,
+            "axis_mean_in_its_own_units": -48.94429143269857,
+            "axis_sd_units": -0.3297024651800083,
+            "axis_sd_units_turn_mean_removed": -0.15814328414520348,
+            "roles_sd_units_5_to_95": [
+              -0.3201509172590455,
+              0.3251254161264055
+            ],
+            "roles_sd_units_turn_mean_removed_5_to_95": [
+              -0.2147545361620236,
+              0.22673058443661878
+            ]
+          },
+          "3": {
+            "conversations": 22,
+            "axis_mean_in_its_own_units": -48.72683438387784,
+            "axis_sd_units": -0.30619599777127526,
+            "axis_sd_units_turn_mean_removed": -0.04250380370501048,
+            "roles_sd_units_5_to_95": [
+              -0.22767758646935346,
+              0.2441858982622064
+            ],
+            "roles_sd_units_turn_mean_removed_5_to_95": [
+              -0.16711350790308108,
+              0.18646918263503243
+            ]
+          },
+          "4": {
+            "conversations": 22,
+            "axis_mean_in_its_own_units": -49.67680549621582,
+            "axis_sd_units": -0.4088850810293676,
+            "axis_sd_units_turn_mean_removed": -0.06723659186760689,
+            "roles_sd_units_5_to_95": [
+              -0.2395611041961066,
+              0.31100984860832975
+            ],
+            "roles_sd_units_turn_mean_removed_5_to_95": [
+              -0.19143751832536657,
+              0.23669962548413567
+            ]
+          },
+          "5": {
+            "conversations": 22,
+            "axis_mean_in_its_own_units": -49.502519607543945,
+            "axis_sd_units": -0.39004528906086267,
+            "axis_sd_units_turn_mean_removed": -0.035965579342974015,
+            "roles_sd_units_5_to_95": [
+              -0.21376344005753423,
+              0.2821103545559039
+            ],
+            "roles_sd_units_turn_mean_removed_5_to_95": [
+              -0.14292998909037755,
+              0.20302675245283058
+            ]
+          }
+        }
+      },
+      "item7_turning_points": {
+        "turn_5": {
+          "conversations_still_normal": 18,
+          "drift_in_the_next_three_turns": 6,
+          "no_drift_in_the_next_three_turns": 12
+        },
+        "turn_10": {
+          "conversations_still_normal": 7,
+          "drift_in_the_next_three_turns": 2,
+          "no_drift_in_the_next_three_turns": 5
+        }
+      },
+      "item8_noise": {
+        "rank_correlation_of_axis_projection_with_reply_tokens": 0.29329289668161324,
+        "primary_within_thirds_of_reply_length": {
+          "target_auc": 0.6350077147265558,
+          "bar": 0.15346305503171614,
+          "gap": -0.018455340305160328,
+          "rank": 21,
+          "ci_low": -0.13775948029613583,
+          "ci_high": 0.05459189996639858
+        }
+      },
+      "item6_onset_rate_by_projection_level": {
+        "pairs": 325,
+        "axis_share_drift_next_and_pairs_lowest_middle_highest_third": [
+          [
+            0.17592592592592593,
+            108
+          ],
+          [
+            0.19444444444444445,
+            108
+          ],
+          [
+            0.10091743119266056,
+            109
+          ]
+        ],
+        "axis_lowest_minus_highest": 0.07500849473326537,
+        "roles_lowest_minus_highest_quantiles": {
+          "5": -0.10009344206591915,
+          "25": -0.04455487597689434,
+          "50": 0.010618416581719331,
+          "75": 0.0475705062861026,
+          "95": 0.08443764865783213
+        },
+        "axis_rank_by_absolute_difference": 64
+      },
+      "item4_within_one_conversation": {
+        "pairs": 860,
+        "conversations_with_both_kinds": 25,
+        "target_auc": 0.6825581395348838,
+        "bar": 0.16546511627906976,
+        "gap": 0.017093023255813994,
+        "rank": 6,
+        "ci_low": -0.06121030595538573,
+        "ci_high": 0.07198447905683351
+      },
+      "item9_what_the_axis_leaves_out": {
+        "primary_axis_rank_of_276": 17,
+        "primary_top_ten_roles": [
+          {
+            "role": "alien",
+            "score": 0.19045180380106974,
+            "side": "lower on drift"
+          },
+          {
+            "role": "virus",
+            "score": 0.18746443609878227,
+            "side": "lower on drift"
+          },
+          {
+            "role": "parasite",
+            "score": 0.18308296346876063,
+            "side": "lower on drift"
+          },
+          {
+            "role": "writer",
+            "score": 0.16891430522362583,
+            "side": "higher on drift"
+          },
+          {
+            "role": "counselor",
+            "score": 0.16865824513485833,
+            "side": "higher on drift"
+          },
+          {
+            "role": "immigrant",
+            "score": 0.16854444065096164,
+            "side": "higher on drift"
+          },
+          {
+            "role": "therapist",
+            "score": 0.16598383976328668,
+            "side": "higher on drift"
+          },
+          {
+            "role": "refugee",
+            "score": 0.15474564697849097,
+            "side": "higher on drift"
+          },
+          {
+            "role": "blogger",
+            "score": 0.15389211334926595,
+            "side": "higher on drift"
+          },
+          {
+            "role": "homunculus",
+            "score": 0.14683623534767265,
+            "side": "lower on drift"
+          }
+        ],
+        "share_of_drift_turns_above_the_non_drift_median": 0.31683168316831684,
+        "share_of_non_drift_turns_below_the_drift_median": 0.3649425287356322,
+        "secondary_axis_rank_of_276": 70,
+        "secondary_top_ten_roles": [
+          {
+            "role": "blogger",
+            "score": 0.13181431005110733,
+            "side": "higher on drift"
+          },
+          {
+            "role": "alien",
+            "score": 0.13160136286201018,
+            "side": "lower on drift"
+          },
+          {
+            "role": "virus",
+            "score": 0.1301107325383305,
+            "side": "lower on drift"
+          },
+          {
+            "role": "podcaster",
+            "score": 0.12840715502555367,
+            "side": "higher on drift"
+          },
+          {
+            "role": "parasite",
+            "score": 0.127129471890971,
+            "side": "lower on drift"
+          },
+          {
+            "role": "crystalline",
+            "score": 0.12414821124361164,
+            "side": "lower on drift"
+          },
+          {
+            "role": "graduate",
+            "score": 0.12031516183986374,
+            "side": "higher on drift"
+          },
+          {
+            "role": "parent",
+            "score": 0.11903747870528109,
+            "side": "higher on drift"
+          },
+          {
+            "role": "veteran",
+            "score": 0.11328790459965926,
+            "side": "higher on drift"
+          },
+          {
+            "role": "chef",
+            "score": 0.11115843270868825,
+            "side": "higher on drift"
+          }
+        ]
+      },
+      "item10_roles_scored_on_one_side": {
+        "primary": {
+          "axis_T": 0.12868442016615456,
+          "role_signed_score_quantiles": {
+            "5": -0.08378001593262775,
+            "25": -0.04151018550130875,
+            "50": -0.0037555479685900117,
+            "75": 0.03980311824285876,
+            "95": 0.12079207920792083
+          },
+          "share_of_roles_above_zero": 0.4618181818181818,
+          "roles_with_signed_score_above_axis_T": 12
+        },
+        "secondary": {
+          "axis_T": 0.06154173764906301,
+          "role_signed_score_quantiles": {
+            "5": -0.07012350936967629,
+            "25": -0.042908858603066424,
+            "50": -0.016183986371379855,
+            "75": 0.03907580919931858,
+            "95": 0.09488926746166951
+          },
+          "share_of_roles_above_zero": 0.41454545454545455,
+          "roles_with_signed_score_above_axis_T": 47
+        }
+      },
+      "item11_named_directions": {
+        "primary": {
+          "mystic": {
+            "signed_score": 0.007880960509844104,
+            "axis_T": 0.12868442016615456,
+            "difference_from_axis_T": -0.12080345965631045,
+            "ci_low": -0.2120768543867372,
+            "ci_high": -0.041342987305320385,
+            "above_zero": false
+          },
+          "spirit": {
+            "signed_score": 0.023045407989074784,
+            "axis_T": 0.12868442016615456,
+            "difference_from_axis_T": -0.10563901217707977,
+            "ci_low": -0.18808206987248335,
+            "ci_high": -0.03148426081058291,
+            "above_zero": false
+          }
+        },
+        "secondary": {
+          "mystic": {
+            "signed_score": -0.030238500851788808,
+            "axis_T": 0.06154173764906301,
+            "difference_from_axis_T": -0.09178023850085182,
+            "ci_low": -0.20153962264150943,
+            "ci_high": 0.008014743947336249,
+            "above_zero": false
+          },
+          "spirit": {
+            "signed_score": -0.022146507666098825,
+            "axis_T": 0.06154173764906301,
+            "difference_from_axis_T": -0.08368824531516184,
+            "ci_low": -0.19512169933104176,
+            "ci_high": 0.01958201534332543,
+            "above_zero": false
+          }
+        }
+      }
+    },
+    "emotional_disclosure": {
+      "item1_ratings_in_order": {
+        "mean_projection_by_rating": {
+          "0": {
+            "turns": 57,
+            "mean": -20.168777256681206,
+            "ci": [
+              -23.101321240253615,
+              -17.174769211957283
+            ]
+          },
+          "1": {
+            "turns": 193,
+            "mean": -36.94810320799832,
+            "ci": [
+              -39.39707750470411,
+              -34.28516886435328
+            ]
+          },
+          "2": {
+            "turns": 140,
+            "mean": -44.18570662225996,
+            "ci": [
+              -46.39760687320816,
+              -41.838865323298506
+            ]
+          },
+          "3": {
+            "turns": 56,
+            "mean": -46.12618024008615,
+            "ci": [
+              -48.044371520983034,
+              -43.9262323370434
+            ]
+          }
+        },
+        "adjacent_ratings": {
+          "0_against_1": {
+            "turns_lower_rating": 57,
+            "turns_higher_rating": 193,
+            "target_auc": 0.8623761476229433,
+            "bar": 0.30200890828106536,
+            "gap": 0.06036723934187799,
+            "rank": 1,
+            "ci_low": -0.025574071712018073,
+            "ci_high": 0.13019073764156047
+          },
+          "1_against_2": {
+            "turns_lower_rating": 193,
+            "turns_higher_rating": 140,
+            "target_auc": 0.678978534418949,
+            "bar": 0.13260177646188012,
+            "gap": 0.04637675795706883,
+            "rank": 1,
+            "ci_low": -0.018573721871343124,
+            "ci_high": 0.1034777102184203
+          },
+          "2_against_3": {
+            "turns_lower_rating": 140,
+            "turns_higher_rating": 56,
+            "target_auc": 0.5686224489795918,
+            "bar": 0.1342219387755102,
+            "gap": -0.0655994897959184,
+            "rank": 98,
+            "ci_low": -0.2135219804661906,
+            "ci_high": -0.016702722796083643
+          }
+        }
+      },
+      "item2_ratings_from_one_turn_to_the_next": {
+        "table_rows_turn_k_cols_turn_k_plus_1": [
+          [
+            28,
+            25,
+            4,
+            0
+          ],
+          [
+            7,
+            116,
+            50,
+            9
+          ],
+          [
+            1,
+            33,
+            68,
+            23
+          ],
+          [
+            0,
+            11,
+            17,
+            24
+          ]
+        ],
+        "conversations_with_a_drift_turn": 30,
+        "of_which_drift_lasts_to_the_final_turn": 6
+      },
+      "item3_course_over_turns": {
+        "mean_projection_by_turn_number": {
+          "1": -13.77838610013326,
+          "2": -22.748347187042235,
+          "3": -26.3062580426534,
+          "4": -30.592119884490966,
+          "5": -36.55247821807861,
+          "6": -41.55094223022461,
+          "7": -43.43941713968913,
+          "8": -44.43995056152344,
+          "9": -44.50292555491129,
+          "10": -45.019317690531416,
+          "11": -44.98224143981933,
+          "12": -45.47771006617053,
+          "13": -45.21328386767157,
+          "14": -44.76995244519464,
+          "15": -44.96311299554233
+        },
+        "axis_slope_sd_per_turn": -0.1585932642819233,
+        "axis_slope_ci": [
+          -0.17556877554319736,
+          -0.14255481898313127
+        ],
+        "role_slopes_quantiles": {
+          "5": -0.07983778923880366,
+          "25": -0.03898906586283645,
+          "50": -0.0034557344961700306,
+          "75": 0.03202371155565265,
+          "95": 0.08263001270874523
+        },
+        "axis_rank_by_absolute_slope": 1
+      },
+      "item5_around_the_onset": {
+        "conversations_with_an_onset": 29,
+        "conversations_drifting_from_the_first_turn": 1,
+        "onsets_by_turn_number": {
+          "3": 2,
+          "5": 1,
+          "6": 9,
+          "7": 6,
+          "8": 6,
+          "9": 2,
+          "10": 1,
+          "11": 2
+        },
+        "onsets_by_band_of_the_turn_before": [
+          12,
+          17,
+          0
+        ],
+        "turns_from_onset": {
+          "-5": {
+            "conversations": 26,
+            "axis_mean_in_its_own_units": -22.42230376830468,
+            "axis_sd_units": 1.3003175554430428,
+            "axis_sd_units_turn_mean_removed": 0.0512340893934681,
+            "roles_sd_units_5_to_95": [
+              -0.6544764413485322,
+              0.5982811578807814
+            ],
+            "roles_sd_units_turn_mean_removed_5_to_95": [
+              -0.13836794620213905,
+              0.14322101502778004
+            ]
+          },
+          "-4": {
+            "conversations": 27,
+            "axis_mean_in_its_own_units": -27.32538452854863,
+            "axis_sd_units": 0.8969453243953628,
+            "axis_sd_units_turn_mean_removed": 0.07207120562173709,
+            "roles_sd_units_5_to_95": [
+              -0.5887657429907814,
+              0.505704116936719
+            ],
+            "roles_sd_units_turn_mean_removed_5_to_95": [
+              -0.13133298492275627,
+              0.0968162545705503
+            ]
+          },
+          "-3": {
+            "conversations": 27,
+            "axis_mean_in_its_own_units": -31.4652681350708,
+            "axis_sd_units": 0.5563606658311264,
+            "axis_sd_units_turn_mean_removed": 0.08602067619620503,
+            "roles_sd_units_5_to_95": [
+              -0.5304753294999612,
+              0.5210861238239837
+            ],
+            "roles_sd_units_turn_mean_removed_5_to_95": [
+              -0.20842469218134452,
+              0.15969450347958528
+            ]
+          },
+          "-2": {
+            "conversations": 29,
+            "axis_mean_in_its_own_units": -33.20997369700465,
+            "axis_sd_units": 0.412825241992108,
+            "axis_sd_units_turn_mean_removed": 0.1561639333203628,
+            "roles_sd_units_5_to_95": [
+              -0.31116327272644523,
+              0.3079864556051215
+            ],
+            "roles_sd_units_turn_mean_removed_5_to_95": [
+              -0.19939839620232278,
+              0.1641621345150923
+            ]
+          },
+          "-1": {
+            "conversations": 29,
+            "axis_mean_in_its_own_units": -37.747763732383994,
+            "axis_sd_units": 0.03950516424861525,
+            "axis_sd_units_turn_mean_removed": 0.12408338802189807,
+            "roles_sd_units_5_to_95": [
+              -0.2540273436872315,
+              0.3235873602074666
+            ],
+            "roles_sd_units_turn_mean_removed_5_to_95": [
+              -0.1432257742708218,
+              0.16110571696075096
+            ]
+          },
+          "0": {
+            "conversations": 29,
+            "axis_mean_in_its_own_units": -42.74136523542733,
+            "axis_sd_units": -0.37131413034228583,
+            "axis_sd_units_turn_mean_removed": -0.07123446298424502,
+            "roles_sd_units_5_to_95": [
+              -0.43063073956026704,
+              0.5146906318774876
+            ],
+            "roles_sd_units_turn_mean_removed_5_to_95": [
+              -0.14863807957308622,
+              0.16112439056689323
+            ]
+          },
+          "1": {
+            "conversations": 29,
+            "axis_mean_in_its_own_units": -43.796345875181004,
+            "axis_sd_units": -0.45810647890404466,
+            "axis_sd_units_turn_mean_removed": -0.04757579034179623,
+            "roles_sd_units_5_to_95": [
+              -0.3323880905191797,
+              0.4271074405052874
+            ],
+            "roles_sd_units_turn_mean_removed_5_to_95": [
+              -0.07819607833622998,
+              0.10030196137642777
+            ]
+          },
+          "2": {
+            "conversations": 29,
+            "axis_mean_in_its_own_units": -44.645499459628404,
+            "axis_sd_units": -0.5279656129077114,
+            "axis_sd_units_turn_mean_removed": -0.04315820730626886,
+            "roles_sd_units_5_to_95": [
+              -0.33149570119353866,
+              0.38082034885906446
+            ],
+            "roles_sd_units_turn_mean_removed_5_to_95": [
+              -0.13105961768356872,
+              0.17577494421342466
+            ]
+          },
+          "3": {
+            "conversations": 29,
+            "axis_mean_in_its_own_units": -44.95402053306843,
+            "axis_sd_units": -0.553347375885757,
+            "axis_sd_units_turn_mean_removed": -0.028029568655085078,
+            "roles_sd_units_5_to_95": [
+              -0.3215320867254795,
+              0.37442815391451134
+            ],
+            "roles_sd_units_turn_mean_removed_5_to_95": [
+              -0.0796282484985702,
+              0.09233288393415616
+            ]
+          },
+          "4": {
+            "conversations": 29,
+            "axis_mean_in_its_own_units": -45.30943094450852,
+            "axis_sd_units": -0.5825866843145725,
+            "axis_sd_units_turn_mean_removed": -0.027050725801357842,
+            "roles_sd_units_5_to_95": [
+              -0.38956020290801924,
+              0.38691295676135706
+            ],
+            "roles_sd_units_turn_mean_removed_5_to_95": [
+              -0.19482872735227177,
+              0.20318011110873932
+            ]
+          },
+          "5": {
+            "conversations": 27,
+            "axis_mean_in_its_own_units": -45.76092232598199,
+            "axis_sd_units": -0.6197304913920418,
+            "axis_sd_units_turn_mean_removed": -0.0553230387707361,
+            "roles_sd_units_5_to_95": [
+              -0.4322832033177488,
+              0.3939903906102937
+            ],
+            "roles_sd_units_turn_mean_removed_5_to_95": [
+              -0.167081896709957,
+              0.14710179222909647
+            ]
+          }
+        }
+      },
+      "item7_turning_points": {
+        "turn_5": {
+          "conversations_still_normal": 26,
+          "drift_in_the_next_three_turns": 21,
+          "no_drift_in_the_next_three_turns": 5
+        },
+        "turn_10": {
+          "conversations_still_normal": 2,
+          "drift_in_the_next_three_turns": 2,
+          "no_drift_in_the_next_three_turns": 0
+        }
+      },
+      "item8_noise": {
+        "rank_correlation_of_axis_projection_with_reply_tokens": 0.4504082994425918,
+        "primary_within_thirds_of_reply_length": {
+          "target_auc": 0.7406312877263581,
+          "bar": 0.17559104627766603,
+          "gap": 0.06504024144869208,
+          "rank": 1,
+          "ci_low": -0.004799574708345415,
+          "ci_high": 0.11242821980474099
+        }
+      },
+      "item6_onset_rate_by_projection_level": {
+        "pairs": 239,
+        "axis_share_drift_next_and_pairs_lowest_middle_highest_third": [
+          [
+            0.5,
+            80
+          ],
+          [
+            0.21518987341772153,
+            79
+          ],
+          [
+            0.075,
+            80
+          ]
+        ],
+        "axis_lowest_minus_highest": 0.425,
+        "roles_lowest_minus_highest_quantiles": {
+          "5": -0.26625,
+          "25": -0.11875000000000001,
+          "50": 0.012500000000000011,
+          "75": 0.15,
+          "95": 0.22499999999999998
+        },
+        "axis_rank_by_absolute_difference": 1
+      },
+      "item4_within_one_conversation": {
+        "pairs": 1526,
+        "conversations_with_both_kinds": 30,
+        "target_auc": 0.8302752293577982,
+        "bar": 0.26297509829619925,
+        "gap": 0.06730013106159893,
+        "rank": 3,
+        "ci_low": 0.027835315149048502,
+        "ci_high": 0.09367532763333085
+      },
+      "item9_what_the_axis_leaves_out": {
+        "primary_axis_rank_of_276": 1,
+        "primary_top_ten_roles": [
+          {
+            "role": "composer",
+            "score": 0.24540816326530612,
+            "side": "lower on drift"
+          },
+          {
+            "role": "sommelier",
+            "score": 0.23657142857142854,
+            "side": "lower on drift"
+          },
+          {
+            "role": "evangelist",
+            "score": 0.23044897959183674,
+            "side": "higher on drift"
+          },
+          {
+            "role": "chef",
+            "score": 0.2301632653061224,
+            "side": "lower on drift"
+          },
+          {
+            "role": "martyr",
+            "score": 0.2252857142857143,
+            "side": "higher on drift"
+          },
+          {
+            "role": "guardian",
+            "score": 0.21569387755102043,
+            "side": "higher on drift"
+          },
+          {
+            "role": "navigator",
+            "score": 0.20761224489795915,
+            "side": "lower on drift"
+          },
+          {
+            "role": "spy",
+            "score": 0.20495918367346944,
+            "side": "lower on drift"
+          },
+          {
+            "role": "cosmopolitan",
+            "score": 0.20246938775510204,
+            "side": "lower on drift"
+          },
+          {
+            "role": "merchant",
+            "score": 0.20222448979591834,
+            "side": "lower on drift"
+          }
+        ],
+        "share_of_drift_turns_above_the_non_drift_median": 0.0663265306122449,
+        "share_of_non_drift_turns_below_the_drift_median": 0.232,
+        "secondary_axis_rank_of_276": 1,
+        "secondary_top_ten_roles": [
+          {
+            "role": "vigilante",
+            "score": 0.12889431887599268,
+            "side": "higher on drift"
+          },
+          {
+            "role": "narcissist",
+            "score": 0.11056811240073305,
+            "side": "higher on drift"
+          },
+          {
+            "role": "soldier",
+            "score": 0.1084300549786194,
+            "side": "higher on drift"
+          },
+          {
+            "role": "crystalline",
+            "score": 0.10293219303604151,
+            "side": "lower on drift"
+          },
+          {
+            "role": "prisoner",
+            "score": 0.1026267562614539,
+            "side": "higher on drift"
+          },
+          {
+            "role": "rebel",
+            "score": 0.10109957238851558,
+            "side": "higher on drift"
+          },
+          {
+            "role": "naturalist",
+            "score": 0.0983506414172266,
+            "side": "lower on drift"
+          },
+          {
+            "role": "cynic",
+            "score": 0.09773976786805133,
+            "side": "higher on drift"
+          },
+          {
+            "role": "fixer",
+            "score": 0.09560171044593768,
+            "side": "higher on drift"
+          },
+          {
+            "role": "provocateur",
+            "score": 0.09407452657299936,
+            "side": "higher on drift"
+          }
+        ]
+      },
+      "item10_roles_scored_on_one_side": {
+        "primary": {
+          "axis_T": 0.26030612244897955,
+          "role_signed_score_quantiles": {
+            "5": -0.15688571428571427,
+            "25": -0.08007142857142857,
+            "50": -0.008122448979591801,
+            "75": 0.06732653061224492,
+            "95": 0.1643928571428572
+          },
+          "share_of_roles_above_zero": 0.4690909090909091,
+          "roles_with_signed_score_above_axis_T": 0
+        },
+        "secondary": {
+          "axis_T": 0.17959682345754424,
+          "role_signed_score_quantiles": {
+            "5": -0.06686010995723887,
+            "25": -0.04001221747098349,
+            "50": -0.016188149053146028,
+            "75": 0.0328344532681735,
+            "95": 0.08109346365302382
+          },
+          "share_of_roles_above_zero": 0.41454545454545455,
+          "roles_with_signed_score_above_axis_T": 0
+        }
+      },
+      "item11_named_directions": {
+        "primary": {
+          "romantic": {
+            "signed_score": 0.12508163265306121,
+            "axis_T": 0.26030612244897955,
+            "difference_from_axis_T": -0.13522448979591833,
+            "ci_low": -0.19025439508417333,
+            "ci_high": -0.07586436761726162,
+            "above_zero": false
+          },
+          "familiar": {
+            "signed_score": -0.05338775510204086,
+            "axis_T": 0.26030612244897955,
+            "difference_from_axis_T": -0.3136938775510204,
+            "ci_low": -0.38966469516139995,
+            "ci_high": -0.2493089756217682,
+            "above_zero": false
+          }
+        },
+        "secondary": {
+          "romantic": {
+            "signed_score": 0.012217470983506395,
+            "axis_T": 0.17959682345754424,
+            "difference_from_axis_T": -0.16737935247403785,
+            "ci_low": -0.2674744649783336,
+            "ci_high": -0.07088054441219989,
+            "above_zero": false
+          },
+          "familiar": {
+            "signed_score": -0.045204642638973724,
+            "axis_T": 0.17959682345754424,
+            "difference_from_axis_T": -0.22480146609651797,
+            "ci_low": -0.361149841903473,
+            "ci_high": -0.09786034481150717,
+            "above_zero": false
+          }
+        }
+      }
+    }
+  },
+  "item8_noise_all_strata": {
+    "variance_shares_of_the_axis_projection": {
+      "between_strata": 0.4250429971988649,
+      "between_conversations_within_stratum": 0.173505461685545,
+      "within_conversations": 0.40145154111559006
+    },
+    "lagged_test_at_reliability_layers": {
+      "24": {
+        "n_strata_entering": 2,
+        "banded": {
+          "strata": [
+            "emotional_disclosure",
+            "meta_reflection"
+          ],
+          "gap": 0.033667002629774165,
+          "ci_low": -0.06570276048840135,
+          "ci_high": 0.0602097441351103,
+          "above_zero": false
+        },
+        "unbanded": {
+          "strata": [
+            "emotional_disclosure",
+            "meta_reflection"
+          ],
+          "gap": 0.047917187500968114,
+          "ci_low": -0.03289023518678029,
+          "ci_high": 0.08068838050031414,
+          "above_zero": false
+        },
+        "banded_same_rating_at_turn_k": {
+          "strata": [
+            "emotional_disclosure",
+            "meta_reflection"
+          ],
+          "gap": 0.023173803877471484,
+          "ci_low": -0.09159853805601517,
+          "ci_high": 0.052058888859882406,
+          "above_zero": false
+        },
+        "reading": "G_lag not above zero either way."
+      },
+      "28": {
+        "n_strata_entering": 2,
+        "banded": {
+          "strata": [
+            "emotional_disclosure",
+            "meta_reflection"
+          ],
+          "gap": 0.034849971745797514,
+          "ci_low": -0.06951215996504632,
+          "ci_high": 0.07047889088579802,
+          "above_zero": false
+        },
+        "unbanded": {
+          "strata": [
+            "emotional_disclosure",
+            "meta_reflection"
+          ],
+          "gap": 0.04543848478342897,
+          "ci_low": -0.036809186089287634,
+          "ci_high": 0.09069228650003798,
+          "above_zero": false
+        },
+        "banded_same_rating_at_turn_k": {
+          "strata": [
+            "emotional_disclosure",
+            "meta_reflection"
+          ],
+          "gap": 0.017051671874997995,
+          "ci_low": -0.11096935874657324,
+          "ci_high": 0.05936595138104304,
+          "above_zero": false
+        },
+        "reading": "G_lag not above zero either way."
+      },
+      "36": {
+        "n_strata_entering": 2,
+        "banded": {
+          "strata": [
+            "emotional_disclosure",
+            "meta_reflection"
+          ],
+          "gap": 0.011882531201901525,
+          "ci_low": -0.08609259742447022,
+          "ci_high": 0.05689065707431494,
+          "above_zero": false
+        },
+        "unbanded": {
+          "strata": [
+            "emotional_disclosure",
+            "meta_reflection"
+          ],
+          "gap": 0.03665847698291875,
+          "ci_low": -0.03917187857893812,
+          "ci_high": 0.0817363065882974,
+          "above_zero": false
+        },
+        "banded_same_rating_at_turn_k": {
+          "strata": [
+            "emotional_disclosure",
+            "meta_reflection"
+          ],
+          "gap": 0.004434528760136731,
+          "ci_low": -0.11611460234610249,
+          "ci_high": 0.04803072660737955,
+          "above_zero": false
+        },
+        "reading": "G_lag not above zero either way."
+      },
+      "40": {
+        "n_strata_entering": 2,
+        "banded": {
+          "strata": [
+            "emotional_disclosure",
+            "meta_reflection"
+          ],
+          "gap": 0.015359775381691865,
+          "ci_low": -0.08837300748288009,
+          "ci_high": 0.054427040691107556,
+          "above_zero": false
+        },
+        "unbanded": {
+          "strata": [
+            "emotional_disclosure",
+            "meta_reflection"
+          ],
+          "gap": 0.025681373246046933,
+          "ci_low": -0.0551596731758029,
+          "ci_high": 0.06457467840309596,
+          "above_zero": false
+        },
+        "banded_same_rating_at_turn_k": {
+          "strata": [
+            "emotional_disclosure",
+            "meta_reflection"
+          ],
+          "gap": 2.454568937779178e-05,
+          "ci_low": -0.12306168117762274,
+          "ci_high": 0.041387496454675474,
+          "above_zero": false
+        },
+        "reading": "G_lag not above zero either way."
+      }
+    }
+  }
+}
