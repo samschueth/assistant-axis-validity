@@ -71,7 +71,8 @@ label-sample:
 label:
 	$(PY) src/label.py serve --set main --from-item 41
 judge:     ; $(NOT_IMPL)
-analyze:   ; $(NOT_IMPL)
+analyze:
+	$(PY) src/analysis/analyse_main.py --set main > /dev/null
 figures:   ; $(NOT_IMPL)
 
 test:

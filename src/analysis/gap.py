@@ -19,6 +19,7 @@ from dataclasses import dataclass
 import numpy as np
 
 CHUNK = 48  # directions per block when counting pairs, to bound memory
+RESAMPLE_CHUNK = 250  # resamples per block when reweighting, to bound memory
 
 
 @dataclass(frozen=True)
@@ -34,12 +35,19 @@ class PairCounts:
     n_non_drift: np.ndarray  # (n_conversations,)
 
 
-def pair_counts(x: np.ndarray, drift: np.ndarray, conversation: np.ndarray) -> PairCounts:
-    """Count ordered pairs. x is (n_turns, n_directions); drift is boolean (n_turns,)."""
+def pair_counts(x: np.ndarray, drift: np.ndarray, conversation: np.ndarray, n_conv: int | None = None) -> PairCounts:
+    """Count ordered pairs. x is (n_turns, n_directions); drift is boolean (n_turns,).
+
+    With `n_conv`, `conversation` holds integer indices from 0 to n_conv - 1 that are kept as
+    they are, so that counts made on different subsets of the turns share one conversation
+    index and can be reweighted by the same bootstrap draw."""
     x = np.asarray(x, dtype=np.float64)
     drift = np.asarray(drift, dtype=bool)
-    _, conv = np.unique(conversation, return_inverse=True)
-    n_conv = int(conv.max()) + 1
+    if n_conv is None:
+        _, conv = np.unique(conversation, return_inverse=True)
+        n_conv = int(conv.max()) + 1
+    else:
+        conv = np.asarray(conversation, dtype=int)
     onehot = np.zeros((n_conv, len(conv)), dtype=np.float32)
     onehot[conv, np.arange(len(conv))] = 1.0
     a = onehot[:, drift]  # (C, n_drift_turns)
@@ -56,17 +64,33 @@ def pair_counts(x: np.ndarray, drift: np.ndarray, conversation: np.ndarray) -> P
     return PairCounts(m=m, n_drift=a.sum(axis=1).astype(np.float64), n_non_drift=b.sum(axis=1).astype(np.float64))
 
 
+def auc_cells(cells: list[PairCounts], weights: np.ndarray | None = None) -> np.ndarray:
+    """AUC per direction when only pairs inside the same cell are compared: the concordant
+    counts and the pair counts are added over the cells before dividing. The cells must share
+    one conversation index. With weights of shape (n_resamples, n_conversations), one row per
+    resample; a resample with no pair to compare gives NaN."""
+    if weights is None:
+        num = sum(pc.m.sum(axis=(1, 2)) for pc in cells)
+        den = sum(pc.n_drift.sum() * pc.n_non_drift.sum() for pc in cells)
+        return num / den if den > 0 else np.full(cells[0].m.shape[0], np.nan)
+    w_all = np.asarray(weights, dtype=np.float64)
+    rows = []
+    for start in range(0, len(w_all), RESAMPLE_CHUNK):
+        w = w_all[start : start + RESAMPLE_CHUNK]
+        num, den = 0.0, 0.0
+        for pc in cells:
+            wm = np.tensordot(w, pc.m, axes=(1, 1))  # (B, n_directions, C)
+            num = num + (wm * w[:, None, :]).sum(axis=2)
+            den = den + (w @ pc.n_drift) * (w @ pc.n_non_drift)
+        with np.errstate(invalid="ignore", divide="ignore"):
+            rows.append(num / np.where(den > 0, den, np.nan)[:, None])
+    return np.concatenate(rows, axis=0)
+
+
 def auc_lower(pc: PairCounts, weights: np.ndarray | None = None) -> np.ndarray:
     """AUC per direction. With weights of shape (n_resamples, n_conversations), one row per
     resample; a resample with no drift turn or no non-drift turn gives NaN."""
-    if weights is None:
-        return pc.m.sum(axis=(1, 2)) / (pc.n_drift.sum() * pc.n_non_drift.sum())
-    w = np.asarray(weights, dtype=np.float64)
-    wm = np.tensordot(w, pc.m, axes=(1, 1))  # (B, n_directions, C)
-    num = (wm * w[:, None, :]).sum(axis=2)
-    den = (w @ pc.n_drift) * (w @ pc.n_non_drift)
-    with np.errstate(invalid="ignore", divide="ignore"):
-        return num / np.where(den > 0, den, np.nan)[:, None]
+    return auc_cells([pc], weights)
 
 
 def gap_from_auc(auc: np.ndarray, percentile: float = 95.0) -> dict[str, np.ndarray]:
@@ -118,9 +142,14 @@ def analyse(
                 "gap": float(g["gap"]),
                 "rank": int(1 + (g["off_scores"] >= g["target_score"]).sum()),
                 "n_off_target": int(g["off_scores"].size),
+                "off_score_quantiles": {
+                    str(q): float(np.percentile(g["off_scores"], q)) for q in (5, 25, 50, 75, 90, 95, 99, 100)
+                },
             }
             w = resample_weights(len(pc.n_drift), n_resamples, rng)
             boot_gaps.append(gap_from_auc(auc_lower(pc, w), percentile)["gap"])
+            s_ci = np.nanpercentile(boot_gaps[-1], [lo, hi])  # this stratum alone, from the same draws
+            row |= {"ci_low": float(s_ci[0]), "ci_high": float(s_ci[1])}
             entering.append(s)
         out["strata"][s] = row
 
