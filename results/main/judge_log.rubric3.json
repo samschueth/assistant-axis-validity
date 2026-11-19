@@ -1,0 +1,52 @@
+{
+  "set": "main",
+  "sample": null,
+  "items": null,
+  "rubric_version": 3,
+  "judge_provider": "anthropic",
+  "judge_model": "claude-opus-5-5",
+  "judge_effort": "high",
+  "rubric_sha256": "c8ab59be3f1321af507b46479742e4e8c181c243d47009912a9a7bfbc658d288",
+  "instructions_sha256": "c53a946126fede65c5623ace909f85588832fe9474547c8376f324510c5895e0",
+  "turns_this_run": {
+    "rated": 893
+  },
+  "not_rated_after_api_errors": [],
+  "usage_this_run": {
+    "claude-opus-5-5": {
+      "calls": 893,
+      "input": 3572,
+      "cache_write": 1078651,
+      "cache_read": 11434976,
+      "output": 297308
+    }
+  },
+  "cost_this_run_usd": 13.64,
+  "earlier_runs": [
+    {
+      "set": "main",
+      "sample": null,
+      "items": null,
+      "rubric_version": 3,
+      "judge_provider": "anthropic",
+      "judge_model": "claude-opus-5-5",
+      "judge_effort": "high",
+      "rubric_sha256": "c8ab59be3f1321af507b46479742e4e8c181c243d47009912a9a7bfbc658d288",
+      "instructions_sha256": "c53a946126fede65c5623ace909f85588832fe9474547c8376f324510c5895e0",
+      "turns_this_run": {
+        "rated": 72
+      },
+      "not_rated_after_api_errors": [],
+      "usage_this_run": {
+        "claude-opus-5-5": {
+          "calls": 72,
+          "input": 288,
+          "cache_write": 196499,
+          "cache_read": 1229983,
+          "output": 6561
+        }
+      },
+      "cost_this_run_usd": 1.36
+    }
+  ]
+}
