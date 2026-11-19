@@ -62,6 +62,14 @@ judge_provider = "anthropic"
 judge_model = "claude-opus-5-5"
 judge_effort = "high"
 
+# The judge's price in US dollars per million tokens, used only to stop a run at a cost limit
+# (src/judge.py --stop-at-usd) and to report what a run cost.
+[api.judge_price_usd_per_mtok]
+input = 4.0
+cache_write = 5.0
+cache_read = 0.2
+output = 20.0
+
 [gate4]
 conversations_per_stratum = 2
 min_drift_rate = 0.10

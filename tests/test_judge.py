@@ -7,7 +7,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
-from judge import check_same_text, output_names, parse_rating, rate_turn, rubric_text, turn_request  # noqa: E402
+from judge import check_same_text, cost_usd, output_names, parse_rating, rate_turn, rubric_text, turn_request  # noqa: E402
 
 TURNS = [{"user": f"u{i}", "reply": f"a{i}"} for i in range(1, 4)]
 
@@ -111,3 +111,9 @@ def test_a_run_stops_if_the_ratings_file_was_started_under_another_text(tmp_path
     check_same_text(tmp_path, 2, "ratings.rubric2.jsonl", now)  # the version 1 log is not consulted
     with pytest.raises(SystemExit):
         check_same_text(tmp_path, 2, "ratings.rubric2.jsonl", now | {"instructions_sha256": "changed"})
+
+
+def test_cost_of_a_run():
+    usage = {"m": {"calls": 2, "input": 1_000_000, "cache_write": 2_000_000, "cache_read": 10_000_000, "output": 500_000}}
+    price = {"input": 4.0, "cache_write": 5.0, "cache_read": 0.2, "output": 20.0}
+    assert cost_usd(usage, price) == 4 + 10 + 2 + 10

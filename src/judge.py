@@ -134,6 +134,11 @@ def rate_turn(client, *, model: str, effort: str, system: str, turns: list[dict]
     return {"rating": None, "signs": [], "note": "", "status": f"unparseable ({out.stop_reason})"}
 
 
+def cost_usd(usage: dict, price: dict) -> float:
+    """What the calls counted in `usage` (by model) cost, at `price` in US dollars per million tokens."""
+    return sum(row.get(kind, 0) * price[kind] for row in usage.values() for kind in price) / 1e6
+
+
 def pending(conversations: list[dict], done: set, only: set | None) -> list[tuple[dict, list[int]]]:
     """For each conversation, the turns still to rate, in order. `only` restricts to a sample."""
     jobs = []
@@ -158,6 +163,8 @@ def main() -> None:
     parser.add_argument("--from-item", type=int, help="with --sample: the first item to rate")
     parser.add_argument("--to-item", type=int, help="with --sample: the last item to rate")
     parser.add_argument("--workers", type=int, default=1, help="conversations rated at the same time")
+    parser.add_argument("--max-conversations", type=int, help="rate at most this many conversations, then stop")
+    parser.add_argument("--stop-at-usd", type=float, help="start no further turn once this run has cost this much")
     args = parser.parse_args()
     if (args.from_item or args.to_item) and not args.sample:
         parser.error("--from-item and --to-item need --sample")
@@ -189,7 +196,10 @@ def main() -> None:
             for i in json.loads((REPO_ROOT / args.sample).read_text())["items"]
             if lo <= i["item"] <= hi
         }
-    jobs = pending(conversations, done, only)
+    jobs = pending(conversations, done, only)[: args.max_conversations]
+    price = api.get("judge_price_usd_per_mtok", {})
+    if args.stop_at_usd is not None and not price:
+        raise SystemExit("--stop-at-usd needs api.judge_price_usd_per_mtok in configs/study.toml")
 
     client = client_for(api["judge_provider"])
     lock = threading.Lock()
@@ -200,6 +210,10 @@ def main() -> None:
     def rate_conversation(job: tuple[dict, list[int]]) -> None:
         convo, turns = job
         for k in turns:
+            if args.stop_at_usd is not None and cost_usd(client.usage.by_model, price) >= args.stop_at_usd:
+                with lock:
+                    statuses["not started: cost limit"] += 1
+                continue
             try:
                 row = rate_turn(
                     client, model=api["judge_model"], effort=api["judge_effort"], system=system, turns=convo["turns"], k=k
@@ -229,7 +243,12 @@ def main() -> None:
         "turns_this_run": dict(statuses),
         "not_rated_after_api_errors": errors,
         "usage_this_run": client.usage.by_model,
+        **({"cost_this_run_usd": round(cost_usd(client.usage.by_model, price), 2)} if price else {}),
     }
+    log_path = out_dir / log_name
+    if log_path.exists():  # a run made in stages: the earlier stages are kept, oldest first
+        old = json.loads(log_path.read_text())
+        log["earlier_runs"] = old.pop("earlier_runs", []) + [old]
     (out_dir / log_name).write_text(json.dumps(log, indent=2) + "\n")
     print(json.dumps(log, indent=2))
 
