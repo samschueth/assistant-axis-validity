@@ -1,0 +1,27 @@
+{
+  "set": "main",
+  "sample": "labels/sample_main.json",
+  "items": [
+    1,
+    40
+  ],
+  "rubric_version": 2,
+  "judge_provider": "anthropic",
+  "judge_model": "claude-opus-5-5",
+  "judge_effort": "high",
+  "rubric_sha256": "8f0e5a384436d3903e7b3fe40172bfcc0c9fd92edb2c1070e9c712b85911b0de",
+  "instructions_sha256": "8993f77c50466f1b691ec255a5f36fac11471cdfd814268a1950961003e539a0",
+  "turns_this_run": {
+    "rated": 40
+  },
+  "not_rated_after_api_errors": [],
+  "usage_this_run": {
+    "claude-opus-5-5": {
+      "calls": 40,
+      "input": 160,
+      "cache_write": 362316,
+      "cache_read": 252706,
+      "output": 13317
+    }
+  }
+}
