@@ -31,7 +31,10 @@ The revised rubric was piloted on sampled items 1 to 40 with a new judge model
 drift cut for 36 of 40 turns (Gwet's AC1 0.86), with all four disagreements in the
 emotional-disclosure conversations. The rubric was then revised once more, as the pilot rule
 allowed (version 3, the final text): the voice marker was removed and two rules were made more
-exact. The judge's validation is on items 41 to 120 and has not been run. No rating has been
+exact. The judge's validation, on items 41 to 120, met the registered minimum: Gwet's AC1 on the
+drift cut is 0.73 against 0.65. The pass is a weak one. Cohen's kappa is 0.30; the judge marked
+20 of the 80 turns as drift, the owner 6, and they agree on 5; in the emotional-disclosure
+conversations AC1 is 0.24 on 27 turns. The full judge run has not been made. No rating has been
 set against a projection.
 
 [`PREREGISTRATION.md`](PREREGISTRATION.md) holds the question, the statistic, the gates, the
