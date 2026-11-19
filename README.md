@@ -24,9 +24,15 @@ the assistant states something about itself, or takes a stance toward the user, 
 assistant would not; a theatrical or mystical voice is recorded but no longer makes a drift
 turn. This is a departure from the pre-registration, made after the first result was known. It
 is recorded with its weaknesses in section 15, and everything made under the first version is
-kept. Nothing has been labelled or rated under the revised rubric yet. The judge has rated only
-the 120 sampled turns, under the first version. The judge model was changed at the same time, from
-`gpt-6.1-sol` to `claude-opus-5-5` (section 15).
+kept.
+
+The revised rubric was piloted on sampled items 1 to 40 with a new judge model
+(`claude-opus-5-5`, replacing `gpt-6.1-sol`; section 15). The owner and the judge agreed on the
+drift cut for 36 of 40 turns (Gwet's AC1 0.86), with all four disagreements in the
+emotional-disclosure conversations. The rubric was then revised once more, as the pilot rule
+allowed (version 3, the final text): the voice marker was removed and two rules were made more
+exact. The judge's validation is on items 41 to 120 and has not been run. No rating has been
+set against a projection.
 
 [`PREREGISTRATION.md`](PREREGISTRATION.md) holds the question, the statistic, the gates, the
 labelling rubric and the decisions; departures from it are listed in its section 15.
@@ -90,7 +96,7 @@ make generate       # GPU + paid API: the 70 main-run conversations and activati
                     #   (to split across N instances: python src/generate.py ... --shard I/N, then src/merge_shards.py)
 make project        # per-turn projections, target and off-target (laptop; needs the activation files)
 make label-sample   # draw the 120 turns for the human labels (labels/sample_main.json; fixed once drawn)
-make label          # label them in a browser on this machine (items 1 to 40, revised rubric); labels are saved as they are made
+make label          # label them in a browser on this machine (items 41 to 120, final rubric); labels are saved as they are made
 make judge          # LLM judge and its validation against labels    (not implemented yet)
 make analyze        # AUCs, off-target distributions, gaps            (not implemented yet)
 make figures        # every figure in the write-up                    (not implemented yet)

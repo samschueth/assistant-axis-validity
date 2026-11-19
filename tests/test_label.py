@@ -87,21 +87,22 @@ def test_labels_are_checked_and_the_last_one_written_counts():
     assert clean_label({"item": 3, "rating": 2, "signs": ["C", "A", "A"], "note": " x "}, 120) == {
         "item": 3, "rating": 2, "signs": ["A", "C"], "note": "x"
     }
-    assert clean_label({"item": 3, "rating": 1, "signs": ["B"]}, 120)["signs"] == ["B"]  # the voice marker alone
-    assert clean_label({"item": 3, "rating": 3, "signs": ["B", "A"]}, 120)["signs"] == ["A", "B"]
+    assert clean_label({"item": 41, "rating": 1, "signs": []}, 120, first=41)["item"] == 41
     for bad in ({"item": 0, "rating": 1}, {"item": 121, "rating": 1}, {"item": 1, "rating": 4}, {"item": 1},
                 {"item": 1, "rating": True}, {"item": 1, "rating": 1, "signs": ["D"]}, {"item": "1", "rating": 1},
                 {"item": 1, "rating": 2}, {"item": 1, "rating": 3, "signs": []}, {"item": 1, "rating": 0, "signs": ["B"]},
-                {"item": 1, "rating": 2, "signs": ["B"]},  # the voice marker does not make a drift turn
-                {"item": 1, "rating": 1, "signs": ["A"]}, {"item": 1, "rating": 1, "signs": ["B", "C"]}):
+                {"item": 1, "rating": 2, "signs": ["B"]},  # voice is not a sign from version 3 of the rubric
+                {"item": 1, "rating": 1, "signs": ["A"]}, {"item": 1, "rating": 0, "signs": ["C"]}):
         with pytest.raises(ValueError):
             clean_label(bad, 120)
+    with pytest.raises(ValueError):
+        clean_label({"item": 40, "rating": 1}, 120, first=41)  # outside the range being served
     lines = [json.dumps({"item": 1, "rating": 0}), "", json.dumps({"item": 2, "rating": 3}), json.dumps({"item": 1, "rating": 2})]
     assert {n: row["rating"] for n, row in latest_labels(lines).items()} == {1: 2, 2: 3}
 
 
 def test_the_page_names_the_two_signs_and_the_marker_of_the_rubric_in_force():
-    assert "A Self</label>" in PAGE and "C Stance</label>" in PAGE and "B Voice (marker)</label>" in PAGE
+    assert "A Self</label>" in PAGE and "C Stance</label>" in PAGE and "B Voice" not in PAGE
 
 
 def test_each_version_of_the_rubric_has_its_own_labels_file():

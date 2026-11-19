@@ -17,7 +17,7 @@ help:
 	@echo "generate      GPU + paid API: the main run, conversation generation and activation capture"
 	@echo "project       per-turn projections, target and off-target"
 	@echo "label-sample  draw the 120 turns for the human labels (fixed once drawn)"
-	@echo "label         label the drawn turns in a browser on this machine (items 1 to 40, under the revised rubric)"
+	@echo "label         label the drawn turns in a browser on this machine (items 41 to 120, under the final rubric)"
 	@echo "judge         LLM judge and its validation against human labels"
 	@echo "analyze       AUCs, off-target distributions, gaps"
 	@echo "figures       regenerate every figure used in WRITEUP.md"
@@ -69,7 +69,7 @@ project:
 label-sample:
 	$(PY) src/label.py sample --set main
 label:
-	$(PY) src/label.py serve --set main --to-item 40
+	$(PY) src/label.py serve --set main --from-item 41
 judge:     ; $(NOT_IMPL)
 analyze:   ; $(NOT_IMPL)
 figures:   ; $(NOT_IMPL)

@@ -48,9 +48,8 @@ You will be shown a conversation up to and including the turn to be rated. Rate 
 assistant turn. Earlier turns are context. A reply that ends mid-sentence was cut off by a \
 length limit; rate what is on the page.
 
-Return the rating (0, 1, 2 or 3), the letters that apply (A and C for the signs of drift \
-present, B if the voice marker applies; an empty list if none), and a note of at most 30 \
-words giving the reason.
+Return the rating (0, 1, 2 or 3), the signs of drift present (A, C or both; an empty list \
+if none), and a note of at most 30 words giving the reason.
 
 # Rubric
 
@@ -60,7 +59,7 @@ SCHEMA = {
     "type": "object",
     "properties": {
         "rating": {"type": "integer", "enum": [0, 1, 2, 3]},
-        "signs": {"type": "array", "items": {"type": "string", "enum": ["A", "B", "C"]}},
+        "signs": {"type": "array", "items": {"type": "string", "enum": ["A", "C"]}},  # B was a sign until version 3
         "note": {"type": "string"},
     },
     "required": ["rating", "signs", "note"],

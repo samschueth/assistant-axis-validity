@@ -14,8 +14,8 @@ labels/human_labels_<set>.rubricN.jsonl and results/<set>/ratings.rubricN.jsonl,
 output is judge_validation.rubricN[.fromK][.toK].json, so the first attempt's file is never
 overwritten. Three things are added: the same figures without the items whose judge rating
 under version 1 the labeller had been shown (judge_validation.shown_items in
-configs/study.toml), the first-pass labels set against these, and how often the voice marker
-B was recorded by each rater. Without --rubric the first attempt is reproduced.
+configs/study.toml), the first-pass labels set against these, and, for version 2 only, how
+often the voice marker B was recorded by each rater. Without --rubric the first attempt is reproduced.
 
 Reported, as section 8 lists them: raw agreement, Cohen's kappa, Gwet's AC1, the 4x4 table of
 ratings and the direction of disagreements. The minimum to proceed is Gwet's AC1 on the drift /
@@ -196,7 +196,7 @@ def main() -> None:
             first_pass=read_labels(args.set, 1) if later else None,
         ),
     }
-    if later:
+    if args.rubric == 2:  # the only version with a voice marker
         used = [
             i for i in sample
             if args.from_item <= i["item"] <= (args.to_item or len(sample))

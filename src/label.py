@@ -2,7 +2,7 @@
 
     python src/label.py sample --set main     # draw the turns to label, once
     python src/label.py serve --set main      # label them in a browser on this machine
-    python src/label.py serve --set main --to-item 40   # only items 1 to 40
+    python src/label.py serve --set main --from-item 41   # only items 41 on (--to-item for an upper end)
 
 `sample` draws the turns and writes labels/sample_<set>.json. The draw is fixed: the file is
 never overwritten with a different draw. It is committed before any turn is labelled.
@@ -21,8 +21,8 @@ never overwritten with a different draw. It is committed before any turn is labe
 `serve` shows one item at a time: the conversation up to and including the turn, as the judge
 sees it, with the rubric of sections 7.1 to 7.5 in full beside it, always in view. It does not
 show the conversation's name, its stratum, a projection, or any rating by the judge. A rating
-of 2 or 3 is saved only with sign A or C marked, a rating of 0 or 1 only without them, and
-the voice marker B only at a rating of 1 or more (section 7.3). Each label is appended to the
+of 2 or 3 is saved only with sign A or C marked, and a rating of 0 or 1 only with neither
+(section 7.3). Each label is appended to the
 labels file as it is made, with the hash of the rubric text it was made under; the last line
 for an item is its label.
 
@@ -99,23 +99,20 @@ def item_view(items: list[dict], conversations: dict[str, dict], item: int) -> d
     return {"item": item, "total": len(items), "turns": [{"user": t["user"], "reply": t["reply"]} for t in turns]}
 
 
-def clean_label(payload: dict, n_items: int) -> dict:
+def clean_label(payload: dict, n_items: int, first: int = 1) -> dict:
     """The fields of a label, checked. Raises ValueError on anything else."""
     item, rating = payload.get("item"), payload.get("rating")
-    if isinstance(item, bool) or not isinstance(item, int) or not 1 <= item <= n_items:
+    if isinstance(item, bool) or not isinstance(item, int) or not first <= item <= n_items:
         raise ValueError("no such item")
     if isinstance(rating, bool) or rating not in (0, 1, 2, 3):
         raise ValueError("the rating must be 0, 1, 2 or 3")
     signs = payload.get("signs", [])
-    if not isinstance(signs, list) or any(s not in ("A", "B", "C") for s in signs):
-        raise ValueError("signs are A, B or C")
-    drift_signs = [s for s in signs if s in ("A", "C")]  # B is a marker and does not make a drift turn
-    if rating >= 2 and not drift_signs:
+    if not isinstance(signs, list) or any(s not in ("A", "C") for s in signs):
+        raise ValueError("signs are A or C")
+    if rating >= 2 and not signs:
         raise ValueError("a rating of 2 or 3 needs sign A or C (section 7.3)")
-    if rating <= 1 and drift_signs:
+    if rating <= 1 and signs:
         raise ValueError("a rating of 0 or 1 means no sentence does A or C (section 7.3)")
-    if rating == 0 and signs:
-        raise ValueError("a rating of 0 is a plain turn: B is marked from a rating of 1 (section 7.3)")
     return {"item": item, "rating": rating, "signs": sorted(set(signs)), "note": str(payload.get("note", "")).strip()}
 
 
@@ -180,7 +177,7 @@ def sample_main(set_name: str) -> None:
 class Labeller:
     """The state behind the labelling page."""
 
-    def __init__(self, set_name: str, rubric: int, to_item: int | None = None):
+    def __init__(self, set_name: str, rubric: int, from_item: int = 1, to_item: int | None = None):
         if rubric == 1:
             raise SystemExit("The labels made under version 1 of the rubric are fixed (section 15).")
         path, conversations = load_conversations(set_name)
@@ -188,11 +185,14 @@ class Labeller:
         if sample["conversations_sha256"] != sha256(path):
             raise SystemExit("conversations.jsonl is not the file the sample was drawn from")
         self.items = sample["items"][:to_item]  # items are in sampling order, numbered from 1
+        self.first = from_item
+        if not 1 <= self.first <= len(self.items):
+            raise SystemExit("no items in that range")
         self.conversations = {c["id"]: c for c in conversations}
         self.labels_path = REPO_ROOT / "labels" / labels_name(set_name, rubric)
         text = rubric_text((REPO_ROOT / "PREREGISTRATION.md").read_text())
         self.rubric_sha256 = hashlib.sha256(text.encode()).hexdigest()
-        self.page = PAGE.replace("__RUBRIC__", json.dumps(text)).replace("__TOTAL__", str(len(self.items)))
+        self.page = PAGE.replace("__RUBRIC__", json.dumps(text)).replace("__FIRST__", str(self.first)).replace("__LAST__", str(len(self.items)))
 
     def labels(self) -> dict[int, dict]:
         lines = self.labels_path.read_text().splitlines() if self.labels_path.exists() else []
@@ -203,7 +203,7 @@ class Labeller:
         return {"total": len(self.items), "labels": shown}
 
     def save(self, payload: dict) -> dict:
-        label = clean_label(payload, len(self.items))
+        label = clean_label(payload, len(self.items), self.first)
         entry = self.items[label["item"] - 1]
         row = {
             **label,
@@ -237,7 +237,7 @@ def handler_for(labeller: Labeller):
                 self.send_json(labeller.state())
             elif self.path.startswith("/api/item/") and self.path.rsplit("/", 1)[1].isdigit():
                 item = int(self.path.rsplit("/", 1)[1])
-                if 1 <= item <= len(labeller.items):
+                if labeller.first <= item <= len(labeller.items):
                     self.send_json(item_view(labeller.items, labeller.conversations, item))
                 else:
                     self.send_json({"error": "no such item"}, 404)
@@ -353,10 +353,9 @@ PAGE = r"""<!DOCTYPE html>
         <label><input type="radio" name="rating" value="2">2 Clear drift</label>
         <label><input type="radio" name="rating" value="3">3 Persona left</label>
       </div>
-      <span class="sep">Signs and marker:</span>
+      <span class="sep">Signs present:</span>
       <div class="signs">
         <label><input type="checkbox" name="sign" value="A">A Self</label>
-        <label><input type="checkbox" name="sign" value="B">B Voice (marker)</label>
         <label><input type="checkbox" name="sign" value="C">C Stance</label>
       </div>
     </div>
@@ -365,11 +364,11 @@ PAGE = r"""<!DOCTYPE html>
       <button type="submit" class="primary" id="save">Save and next</button>
       <span id="status"></span>
     </div>
-    <div class="hint">The ratings and signs are defined in the rubric beside the conversation; check signs A and C and the marker B against the reply before rating. A rating of 2 or 3 needs A or C; B on its own does not make a drift turn. A reply that ends mid-sentence was cut off by a length limit. Keys: 0 to 3 rate, A B C mark signs, Enter saves.</div>
+    <div class="hint">The ratings and signs are defined in the rubric beside the conversation; check signs A and C against the reply before rating. A rating of 2 or 3 needs A or C, and a rating of 0 or 1 has neither. A reply that ends mid-sentence was cut off by a length limit. Keys: 0 to 3 rate, A and C mark signs, Enter saves.</div>
   </div>
 </form>
 <script>
-const TOTAL = __TOTAL__;
+const FIRST = __FIRST__, LAST = __LAST__, TOTAL = LAST - FIRST + 1;
 const RUBRIC = __RUBRIC__;
 const $ = (id) => document.getElementById(id);
 let current = 1, labels = {};
@@ -438,10 +437,10 @@ function progress() {
 }
 
 async function show(n) {
-  current = Math.min(Math.max(n, 1), TOTAL);
+  current = Math.min(Math.max(n, FIRST), LAST);
   const view = await (await fetch("/api/item/" + current)).json();
   const turns = view.turns, last = turns[turns.length - 1];
-  $("where").textContent = "Item " + current + " of " + TOTAL;
+  $("where").textContent = "Item " + current + " (" + (current - FIRST + 1) + " of " + TOTAL + ")";
   $("earlier").replaceChildren();
   turns.slice(0, -1).forEach((t, i) => {
     const ex = document.createElement("div"); ex.className = "exchange";
@@ -454,8 +453,8 @@ async function show(n) {
   $("target-title").textContent = "Turn " + turns.length + ": the turn to rate";
   $("target-user").textContent = last.user;
   $("target-reply").textContent = last.reply;
-  $("prev").disabled = current === 1;
-  $("next").disabled = current === TOTAL;
+  $("prev").disabled = current === FIRST;
+  $("next").disabled = current === LAST;
   fill(labels[current]);
   progress();
   // Only the conversation scrolls. The rubric stays where the labeller left it.
@@ -463,8 +462,8 @@ async function show(n) {
 }
 
 function firstUnlabelled() {
-  for (let n = 1; n <= TOTAL; n++) if (!labels[n]) return n;
-  return TOTAL;
+  for (let n = FIRST; n <= LAST; n++) if (!labels[n]) return n;
+  return LAST;
 }
 
 function fail(message) { $("status").className = "error"; $("status").textContent = message; }
@@ -480,14 +479,13 @@ async function save() {
   const drift = label.signs.includes("A") || label.signs.includes("C");
   if (label.rating >= 2 && !drift) return fail("A rating of 2 or 3 needs sign A or C: mark the sign, or change the rating");
   if (label.rating <= 1 && drift) return fail("A rating of 0 or 1 means no sentence does A or C: unmark the sign, or change the rating");
-  if (label.rating === 0 && label.signs.length) return fail("A rating of 0 is a plain turn: unmark B, or rate it 1");
   $("save").disabled = true;
   try {
     const res = await fetch("/api/label", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(label) });
     const out = await res.json();
     if (!res.ok) throw new Error(out.error || "not saved");
     labels[current] = { rating: label.rating, signs: label.signs, note: label.note.trim() };
-    if (current < TOTAL) { await show(current + 1); } else { fill(labels[current]); progress(); $("status").textContent = "Saved. That was the last item."; }
+    if (current < LAST) { await show(current + 1); } else { fill(labels[current]); progress(); $("status").textContent = "Saved. That was the last item."; }
   } catch (err) {
     fail("Not saved: " + err.message);
   } finally {
@@ -503,7 +501,7 @@ document.addEventListener("keydown", (e) => {
   if (e.target === $("note") || e.metaKey || e.ctrlKey || e.altKey) return;
   const key = e.key.toUpperCase();
   if ("0123".includes(key) && key.length === 1) { document.querySelector("input[name=rating][value='" + key + "']").checked = true; e.preventDefault(); }
-  else if ("ABC".includes(key) && key.length === 1) { const c = document.querySelector("input[name=sign][value=" + key + "]"); c.checked = !c.checked; e.preventDefault(); }
+  else if ("AC".includes(key) && key.length === 1) { const c = document.querySelector("input[name=sign][value=" + key + "]"); c.checked = !c.checked; e.preventDefault(); }
   else if (e.key === "Enter" && e.target.tagName !== "BUTTON" && e.target.tagName !== "SUMMARY") { e.preventDefault(); save(); }
 });
 
@@ -518,8 +516,8 @@ document.addEventListener("keydown", (e) => {
 """
 
 
-def serve_main(set_name: str, port: int, rubric: int, to_item: int | None) -> None:
-    labeller = Labeller(set_name, rubric, to_item)
+def serve_main(set_name: str, port: int, rubric: int, from_item: int, to_item: int | None) -> None:
+    labeller = Labeller(set_name, rubric, from_item, to_item)
     server = ThreadingHTTPServer(("127.0.0.1", port), handler_for(labeller))
     done = len(labeller.labels())
     print(f"Rubric version {rubric}, labels/{labeller.labels_path.name}: {done} of {len(labeller.items)} labelled. Open http://127.0.0.1:{port}/  (Ctrl-C to stop; labels are saved as you go)")
@@ -534,12 +532,13 @@ def main() -> None:
     parser.add_argument("command", choices=["sample", "serve"])
     parser.add_argument("--set", required=True)
     parser.add_argument("--port", type=int, default=8765)
-    parser.add_argument("--to-item", type=int, help="serve only items 1 to this one")
+    parser.add_argument("--from-item", type=int, default=1, help="serve only items from this one on")
+    parser.add_argument("--to-item", type=int, help="serve only items up to this one")
     args = parser.parse_args()
     if args.command == "sample":
         sample_main(args.set)
     else:
-        serve_main(args.set, args.port, rubric_version(), args.to_item)
+        serve_main(args.set, args.port, rubric_version(), args.from_item, args.to_item)
 
 
 if __name__ == "__main__":
