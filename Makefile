@@ -73,7 +73,9 @@ label:
 judge:     ; $(NOT_IMPL)
 analyze:
 	$(PY) src/analysis/analyse_main.py --set main > /dev/null
-figures:   ; $(NOT_IMPL)
+figures:
+	$(PY) src/analysis/descriptions.py --set main > /dev/null
+	$(PY) src/analysis/figures.py --set main
 
 test:
 	$(PY) -m pytest -q tests/
