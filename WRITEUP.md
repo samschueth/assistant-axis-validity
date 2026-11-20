@@ -28,8 +28,10 @@ changes during conversations.
 - **A possible reason (exploratory).** In emotional disclosure the largest single pattern in the
   activations, 21% of their variance, follows the turn number, and the judge rates more turns as
   drift later in a conversation. Directions that overlap this pattern separate drift turns too,
-  whether or not they measure the assistant persona. The study cannot say whether the pattern is
-  position in the conversation, the drift itself, or both.
+  whether or not they measure the assistant persona. Most of that separation goes with the turn
+  number: compared only at the same turn number, the pattern's AUC falls from 0.82 to 0.60 (0.51
+  to 0.68) and the axis's from 0.76 to 0.54 (0.45 to 0.63). The study cannot say whether the
+  pattern is position in the conversation, the drift itself, or both.
 
 **What it does not show.** That the axis carries no information about behaviour; that random
 directions match it in general; or that position in a conversation accounts for persona drift.
@@ -290,11 +292,32 @@ Two readings fit:
    axis as a partial proxy for it. Then removing it removes the signal the axis is meant to
    measure.
 
-This analysis cannot tell the two apart, and the component was fitted on the same turns it is
-scored on. It does not show that the axis is uninformative, or that turn number causes drift. It
-shows why a correlation with judged drift is not enough to establish the axis as a distinctive
-monitor of drift. It was computed after the results were seen and is a description of this
-dataset, not a test.
+The removal analysis cannot tell the two apart. It does not show that the axis is
+uninformative, or that turn number causes drift. It shows why a correlation with judged drift is
+not enough to establish the axis as a distinctive monitor of drift.
+
+**A check at a fixed turn number.** If the component were only position, it should not separate
+drift among turns at the same turn number. The design of this check was committed before it was
+run. The component was fitted on the other conversations, and only a drift turn and a non-drift
+turn with the same turn number were compared (1,867 pairs, nearly all from turns 6 to 15).
+
+| Emotional disclosure | All pairs | Same turn number |
+|---|---|---|
+| First component, AUC | 0.82 (0.79 to 0.86) | 0.60 (0.51 to 0.68) |
+| Axis, AUC | 0.76 (0.72 to 0.81) | 0.54 (0.45 to 0.63) |
+| Role-direction bar | 0.19 | 0.10 |
+
+By the reading fixed in advance, the component is not only the turn number, though most of its
+separation went with it. The evidence is thin. The lower bound is 0.506; a five-fold version
+with fewer pairs gives 0.62 (0.46 to 0.76); and at a fixed turn number the component does not
+clear the off-target bar (rank 18 against the 275 role directions). On the same pairs the axis
+is not distinguishable from 0.5, and the component is not shown to be better than the axis
+(difference 0.05, −0.06 to 0.17). Matching on the turn number also removes the drift that the
+briefs tie to the turn, so an AUC near 0.5 here would not show that either is only position.
+In meta-reflection the same check gives 0.55 (0.42 to 0.67) for the component.
+
+Both analyses in this section were made after the registered results were seen and describe
+this dataset; neither is a test.
 
 ## 5. Limitations
 
@@ -326,7 +349,8 @@ Designed, not run:
 - **Content held fixed.** A crossed design in which the conversation is the same and the
   persona pressure varies, and the reverse. The exploratory result in 4.6 makes this the most
   useful next experiment: it would show whether the axis carries anything once the dominant
-  component of a conversation's course is controlled.
+  component of a conversation's course is controlled. The fixed-turn check in 4.6 is a weak
+  version of it on the existing data.
 - **More raters.** A multi-rater study of perceived persona, so that the criterion does not
   rest on one person.
 - **A second model family**, and the same measurement across languages. Validating measures
