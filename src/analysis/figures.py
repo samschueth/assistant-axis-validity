@@ -69,16 +69,24 @@ def figure1(set_name: str, analysis: dict, out: Path) -> None:
             ax = axes[row, col]
             ax.hist(g["off_scores"], bins=np.arange(0, 0.36, 0.0125), color=NEUTRAL, edgecolor=SURFACE, linewidth=0.6)
             top = ax.get_ylim()[1]
-            ax.axvline(g["bar"], color=MUTED, linewidth=1.2, linestyle=(0, (4, 2)))
-            ax.axvline(g["target_score"], color=BLUE, linewidth=2)
-            ax.text(g["bar"] - 0.004, top * 1.02, f"95th pct. {g['bar']:.2f}", color=MUTED, ha="right", va="bottom", fontsize=8)
-            ax.text(g["target_score"] + 0.004, top * 1.16, f"axis {g['target_score']:.2f}", color=INK, ha="left", va="bottom", fontsize=8)
+            bar_line = ax.axvline(g["bar"], color=MUTED, linewidth=1.2, linestyle=(0, (4, 2)))
+            axis_line = ax.axvline(g["target_score"], color=BLUE, linewidth=2)
+            # each value is written on the outer side of its own line, so the two never meet
+            for value, colour, height in ((g["bar"], MUTED, 1.02), (g["target_score"], INK, 1.16)):
+                left = value < max(g["bar"], g["target_score"])
+                ax.text(value + (-0.005 if left else 0.005), top * height, f"{value:.3f}", color=colour,
+                        ha="right" if left else "left", va="bottom", fontsize=8)  # fmt: skip
             ax.set_ylim(0, top * 1.32)
             ax.set_title(f"{NAMES[s]}: {label}" if row == 0 else label, fontsize=9)
             ax.set_ylabel("directions")
             if row == len(bars) - 1:
                 ax.set_xlabel("score: distance of the AUC from 0.5")
-    fig.tight_layout()
+    fig.legend(
+        [axis_line, bar_line],
+        ["Assistant Axis score", "95th percentile of the off-target scores (the bar to clear)"],
+        loc="lower center", ncol=2, frameon=False, fontsize=8,
+    )  # fmt: skip
+    fig.tight_layout(rect=(0, 0.06, 1, 1))
     fig.savefig(out / "fig1_off_target_distributions.png", dpi=200)
     plt.close(fig)
 

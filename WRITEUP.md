@@ -132,8 +132,9 @@ to the point estimates because resampling raises the 95th percentile of the off-
 
 ![The axis's score against the off-target distributions](results/main/figures/fig1_off_target_distributions.png)
 
-*Figure 1. Scores of the off-target directions in the two types that enter, with their 95th
-percentile (dashed) and the axis's score (blue).*
+*Figure 1. Scores of the off-target directions in the two types that enter (grey), the 95th
+percentile of those scores (dashed), which is the bar the axis must clear, and the axis's score
+(blue). The dashed line is not a confidence interval; the intervals are in Figure 2.*
 
 ![Gaps with intervals](results/main/figures/fig2_gaps.png)
 
