@@ -307,13 +307,17 @@ turn with the same turn number were compared (1,867 pairs, nearly all from turns
 | Axis, AUC | 0.76 (0.72 to 0.81) | 0.54 (0.45 to 0.63) |
 | Role-direction bar | 0.19 | 0.10 |
 
-By the reading fixed in advance, the component is not only the turn number, though most of its
-separation went with it. The evidence is thin. The lower bound is 0.506; a five-fold version
-with fewer pairs gives 0.62 (0.46 to 0.76); and at a fixed turn number the component does not
-clear the off-target bar (rank 18 against the 275 role directions). On the same pairs the axis
-is not distinguishable from 0.5, and the component is not shown to be better than the axis
-(difference 0.05, −0.06 to 0.17). Matching on the turn number also removes the drift that the
-briefs tie to the turn, so an AUC near 0.5 here would not show that either is only position.
+The interval for the component narrowly excludes chance, with a lower bound of 0.506. By the
+reading fixed in advance, this is tentative evidence that the component separates judged drift
+among turns at the same turn number, and so is not only the turn number. The separation is much
+smaller than over all pairs, but that reduction does not divide confounding with the turn from
+drift that builds across turns: matching removes both.
+
+Three things keep the evidence tentative. A five-fold version with fewer pairs gives 0.62 (0.46
+to 0.76), which includes 0.5. At a fixed turn number the component does not clear the
+off-target bar (rank 18 against the 275 role directions). And it is not shown to be better than
+the axis on the same pairs (difference 0.05, −0.06 to 0.17), while the axis itself is not
+distinguishable from 0.5 there.
 In meta-reflection the same check gives 0.55 (0.42 to 0.67) for the component.
 
 Both analyses in this section were made after the registered results were seen and describe
