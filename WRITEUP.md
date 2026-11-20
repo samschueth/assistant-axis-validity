@@ -4,21 +4,38 @@
 > `results/` and every departure from the pre-registration is in section 15 of
 > [`PREREGISTRATION.md`](PREREGISTRATION.md).
 
-**Result in one paragraph.** On 1,045 turns of 70 newly generated conversations with Qwen 3 32B,
-the projection onto the released Assistant Axis falls as a conversation goes on. In
-emotional-disclosure conversations it falls faster than the projection onto any of 275 other
-persona directions, and in meta-reflection conversations faster than all but one. This is
-consistent with the paper's account of drift; it is a description, computed after the main result
-was known. The projection also separates turns that a validated judge rates as persona drift from
-turns it does not (AUC 0.76 in emotional disclosure, 0.63 in meta-reflection). It is not shown to
-do so better than other persona directions. The registered statistic, the gap between the axis's
-score and the 95th percentile of 275 role-direction scores within conversation type, is 0.032
-with a 95% interval of −0.029 to 0.067: not distinguishable from zero at this sample size. An
-exploratory analysis suggests why other directions are hard to beat in emotional disclosure. The
-largest single pattern in the activations there, 21% of their variance, follows the turn number,
-and the judge rates more turns as drift later in a conversation. Directions that overlap this
-pattern separate drift turns too, whether or not they measure the assistant persona. The study
-cannot say whether the pattern is position in the conversation or the drift itself.
+**What the study is.** A behavioural validation of the Assistant Axis as a monitor of persona
+drift, for one model. The projection onto the released axis is set against drift as rated by an
+independent judge, and against the same score for 275 other persona directions and 1,000 random
+directions, on 1,045 turns of 70 newly generated conversations with Qwen 3 32B. The question is
+whether the axis is a distinctive monitor of behavioural drift, and not only a direction that
+changes during conversations.
+
+**What it found.**
+
+- **The axis moves.** Its projection falls as a conversation goes on: faster than any of the 275
+  other persona directions in emotional-disclosure conversations, and faster than all but one in
+  meta-reflection. This is consistent with the paper's account, and is a description computed
+  after the main result was known.
+- **It separates judged drift.** The projection is lower on turns the judge rates as drift than
+  on turns it does not (AUC 0.76 in emotional disclosure, 0.63 in meta-reflection).
+- **It is not shown to do so better than other directions.** The registered statistic, the gap
+  between the axis's score and the 95th percentile of the 275 role-direction scores within
+  conversation type, is 0.032 with a 95% interval of −0.029 to 0.067: not distinguishable from
+  zero at this sample size. In emotional disclosure the axis ranks first of 276 directions, yet
+  its gap over random directions is 0.012 (−0.028 to 0.040). A high rank is not a margin over a
+  control.
+- **A possible reason (exploratory).** In emotional disclosure the largest single pattern in the
+  activations, 21% of their variance, follows the turn number, and the judge rates more turns as
+  drift later in a conversation. Directions that overlap this pattern separate drift turns too,
+  whether or not they measure the assistant persona. The study cannot say whether the pattern is
+  position in the conversation, the drift itself, or both.
+
+**What it does not show.** That the axis carries no information about behaviour; that random
+directions match it in general; or that position in a conversation accounts for persona drift.
+It also says nothing about the paper's steering and activation-capping results, which answer a
+different question: a direction can be useful for steering behaviour without being the best
+observational measure of it.
 
 ## 1. Question and motivation
 
@@ -43,8 +60,12 @@ conversations by judges or raters; monitors read from activations, such as probe
 directions; and checks that such a monitor measures what it is said to measure. The Assistant
 Axis is of the second kind. This study is of the third, applied to that axis, with the first as
 its criterion. It asks two things of the projection: does it agree with an independent judge of
-drift, and does it agree better than directions that were not built to measure drift? Survey
-science calls these convergent and discriminant validity. No new method is proposed.
+drift, and does it agree better than directions that were not built to measure drift? Measurement
+research calls this construct validation, and the two parts convergent and discriminant validity.
+The second part moves the standard of evidence from "does the axis separate judged drift?" to
+"does it do so better than directions that may share the same changes in the activations?" The
+contribution is that test and its result for one model. It is not a theory of persona and not a
+new kind of control.
 
 The Assistant Axis (arXiv:2601.10387) is a direction in activation space proposed as such a
 monitor: a low projection onto it is read as movement away from the default Assistant persona.
