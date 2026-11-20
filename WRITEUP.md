@@ -49,16 +49,35 @@ science calls these convergent and discriminant validity. No new method is propo
 The Assistant Axis (arXiv:2601.10387) is a direction in activation space proposed as such a
 monitor: a low projection onto it is read as movement away from the default Assistant persona.
 A projection that correlates with judged drift is not yet evidence about that direction, because
-other directions may correlate with drift as well. The control comparison is not a new idea. The
-probing literature has asked for one since "Designing and Interpreting Probes with Control Tasks"
-(arXiv:1909.03368), and the persona-vectors paper (arXiv:2507.21509) reports off-target
-directions that correlate with behaviour. In the text of the Assistant Axis paper, read in full,
-no off-target or random-direction comparison was found for drift, and drift in its multi-turn
-analysis is the projection itself with no behavioural judge. Those were the results of a short
-search, not a systematic review.
+other directions may correlate with drift as well.
 
-This study adds those two things for one model: a judge of drift validated against human labels,
-set against the projection turn by turn, and an off-target bar. The question is narrow:
+That a measure must be read against a control is well established. "Designing and Interpreting
+Probes with Control Tasks" (arXiv:1909.03368) argues that a probe's accuracy has to be set
+against its accuracy on a control task; its controls are of a different kind from the direction
+comparison used here. The closer precedent is the persona-vectors paper (arXiv:2507.21509). It
+reports correlations of 0.76 to 0.97 between a model's shift along a trait's vector and its
+expression of that trait, against 0.34 to 0.86 for its cross-trait baselines. The matching
+directions do better there, and the other directions still correlate substantially.
+
+Three claims about the Assistant Axis should be kept apart:
+
+1. Activations move along the axis during certain conversations.
+2. That movement tracks drift as assessed independently of the projection.
+3. The axis tracks that drift better than suitable control directions do.
+
+Section 4.1 of the paper shows the first, with projections averaged at each turn position. In
+that multi-turn analysis drift is the projection itself, and no comparison with random or
+off-target persona directions was found. The paper does compare the axis with the first
+principal component of its role vectors, including for drift (Appendix G); that component is an
+alternative construction of the same direction, not an off-target control. The paper uses
+behavioural judges elsewhere: in its steering and jailbreak evaluations, and in relating the
+projection of a role-prompted first turn to the rate of harmful replies on the next turn
+(section 4.3). Nothing in this study bears on those results. These remarks rest on a full
+reading of the paper's text and a short search, not a systematic review.
+
+This study tests the second and third claims for one model, with a judge of drift validated
+against human labels, set against the projection turn by turn, and an off-target bar. The
+question is narrow:
 
 **Does the Assistant Axis projection track judged persona drift better than other persona
 directions do, once conversation type is held fixed?**
