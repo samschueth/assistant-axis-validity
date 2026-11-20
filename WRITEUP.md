@@ -5,21 +5,46 @@
 > [`PREREGISTRATION.md`](PREREGISTRATION.md).
 
 **Result in one paragraph.** On 1,045 turns of 70 newly generated conversations with Qwen 3 32B,
-the projection onto the released Assistant Axis does separate turns that a validated judge rates
-as persona drift from turns it does not (AUC 0.76 in emotional-disclosure conversations, 0.63 in
-meta-reflection conversations). It is not shown to do so better than other persona directions.
-The registered statistic, the gap between the axis's score and the 95th percentile of 275
-role-direction scores within conversation type, is 0.032 with a 95% interval of −0.029 to 0.067:
-not distinguishable from zero at this sample size. An unregistered follow-up suggests why the bar
-is high in emotional disclosure: the activations there vary most along one component that moves
-with the turn number, judged drift rises over the same turns, and any direction that overlaps
-that component inherits the association.
+the projection onto the released Assistant Axis falls as a conversation goes on. In
+emotional-disclosure conversations it falls faster than the projection onto any of 275 other
+persona directions, and in meta-reflection conversations faster than all but one. This is
+consistent with the paper's account of drift; it is a description, computed after the main result
+was known. The projection also separates turns that a validated judge rates as persona drift from
+turns it does not (AUC 0.76 in emotional disclosure, 0.63 in meta-reflection). It is not shown to
+do so better than other persona directions. The registered statistic, the gap between the axis's
+score and the 95th percentile of 275 role-direction scores within conversation type, is 0.032
+with a 95% interval of −0.029 to 0.067: not distinguishable from zero at this sample size. An
+exploratory analysis suggests why other directions are hard to beat in emotional disclosure. The
+largest single pattern in the activations there, 21% of their variance, follows the turn number,
+and the judge rates more turns as drift later in a conversation. Directions that overlap this
+pattern separate drift turns too, whether or not they measure the assistant persona. The study
+cannot say whether the pattern is position in the conversation or the drift itself.
 
 ## 1. Question and motivation
 
 An organisation that deploys an assistant needs it to keep the same persona and the same honesty
 over a long conversation, and needs a monitor it can trust to say when that fails. The failure
 that matters most is drift toward telling users what they want to hear.
+
+**Why drift detection matters for safety.** A model's character is mostly tested on short
+exchanges and mostly used in long ones. Nothing guarantees that an assistant which is honest and
+keeps its boundaries on the first turn still does so on the thirtieth, after the context has
+filled with one user's framing. The conversations where this matters most are the ones where
+the user is most exposed: someone in distress, or someone pressing the model about its own
+nature. Checks on the output catch such a failure only once it is visible in the text. A signal
+read from the activations on every turn is cheap, could flag a change earlier, and could be used
+to trigger a correction. That makes the validity of the signal a safety question. A monitor that
+responds to the course of a conversation and not to the persona gives false alarms in exactly
+the conversations that need care, false assurance elsewhere, and a correction that acts on the
+wrong thing.
+
+**Where this study sits.** Work on drift falls into three kinds: behavioural evaluation of long
+conversations by judges or raters; monitors read from activations, such as probes and
+directions; and checks that such a monitor measures what it is said to measure. The Assistant
+Axis is of the second kind. This study is of the third, applied to that axis, with the first as
+its criterion. It asks two things of the projection: does it agree with an independent judge of
+drift, and does it agree better than directions that were not built to measure drift? Survey
+science calls these convergent and discriminant validity. No new method is proposed.
 
 The Assistant Axis (arXiv:2601.10387) is a direction in activation space proposed as such a
 monitor: a low projection onto it is read as movement away from the default Assistant persona.
@@ -181,7 +206,8 @@ every brief changes course.*
 
 - **Position.** The projection falls over the first six turns and then levels off (Figure 3). In
   emotional disclosure the axis has the steepest within-conversation slope of all 276 directions
-  (−0.16 standard deviations per turn); in meta-reflection it ranks second.
+  (−0.16 standard deviations per turn, against −0.08 at the 5th percentile of the role
+  directions); in meta-reflection it ranks second. Random directions were not compared.
 - **Where the variance is.** 42% of the projection's variance lies between conversation types,
   17% between conversations of one type, and 40% within conversations.
 - **Which ratings it separates.** In both types the axis separates a rating of 0 from 1 far
@@ -206,14 +232,29 @@ percentile (0.249) is above the role directions' (0.190). In that type the activ
 along one principal component (21% of the variance). That component separates judged drift
 better than the axis does (AUC 0.82), has a cosine of −0.48 with the axis, and rises with the
 turn number (rank correlation 0.68). With it removed from every direction, the random bar falls
-to 0.10, the role bar to 0.10, and the axis's own score from 0.26 to 0.00. Meta-reflection differs: its
-first component goes with reply length, not turn number, and removing it lowers neither bar; it
-takes the first three components to bring the axis's score from 0.13 to below zero and both bars
-to about 0.11. Two readings fit. The component may be position in the conversation, which the
-briefs tie to drift by design. Or it may be the drift itself, with the axis as a partial proxy
-for it. The component was fitted on the same turns it is scored on, and this study cannot tell
-the two apart. This was computed after the results were seen and is
-a description of this dataset, not a test.
+to 0.10, the role bar to 0.10, and the axis's own score from 0.26 to 0.00. These scores are
+distances of the AUC from 0.5, so zero means no separation at all: in this type the axis and its
+competitors draw on the same component.
+
+Meta-reflection differs. Its first component goes with reply length, not turn number, and
+removing it lowers neither bar; it takes the first three components to bring the axis's score
+from 0.13 to below zero and both bars to about 0.11.
+
+Two readings fit:
+
+1. **Position.** The component is mostly the course of the conversation: later turns and
+   escalating content, which the briefs tie to drift by design. Then the axis's association with
+   judged drift may come from a shared relation with turn number, not from a signal specific to
+   the persona.
+2. **Drift itself.** The component is persona drift building over the conversation, with the
+   axis as a partial proxy for it. Then removing it removes the signal the axis is meant to
+   measure.
+
+This analysis cannot tell the two apart, and the component was fitted on the same turns it is
+scored on. It does not show that the axis is uninformative, or that turn number causes drift. It
+shows why a correlation with judged drift is not enough to establish the axis as a distinctive
+monitor of drift. It was computed after the results were seen and is a description of this
+dataset, not a test.
 
 ## 5. Limitations
 
@@ -225,7 +266,8 @@ a description of this dataset, not a test.
   not the one first registered.
 - **Position and drift are confounded by design.** The briefs escalate, so later turns have
   both lower projections and more judged drift. The banded and within-conversation analyses
-  reduce this and do not remove it.
+  reduce this and do not remove it, and the two readings in
+  4.6 are the two sides of it.
 - **The 95th-percentile bar is conservative**, and more so as off-target directions share
   variance. A null against it does not show the axis is uninformative.
 - **The axis and role vectors are the authors' released files.** Nothing here tests how they
