@@ -4,16 +4,16 @@
 > `results/` and every departure from the pre-registration is in section 15 of
 > [`PREREGISTRATION.md`](PREREGISTRATION.md).
 
-*The Assistant Axis: Situating and Stabilizing the Default Persona of Language Models* (arXiv:2601.10387) identifies a direction in a model’s internal activity intended to capture how closely its behavior matches its usual Assistant role. Lu et al. proposed it as a way to monitor persona drift: a lower projection on the axis is interpreted as a greater departure from the Assistant role. Whereas the paper’s multi-turn analysis used the projection itself to measure drift, this study tests the projection against independently judged behavior, using 1,045 turns from 70 newly generated conversations with Qwen 3 32B. 
+*The Assistant Axis: Situating and Stabilizing the Default Persona of Language Models* (arXiv:2601.10387) identifies a direction in a model's internal activity intended to capture how closely its behavior matches its usual Assistant role. It has been proposed as a way to monitor persona drift: a lower projection on the axis is interpreted as a greater departure from the Assistant role. Whereas the paper's multi-turn analysis used the projection itself to measure drift, this study tests the projection against independently judged behavior, using 1,045 turns from 70 newly generated conversations with Qwen 3 32B.
 
-This study found that the axis helps distinguish turns judged to show drift from those judged not to, with AUC scores of 0.76 in emotional-disclosure conversations and 0.63 in meta-reflection conversations, where 0.5 means chance-level discrimination and 1.0 means perfect discrimination. The findings do not, however, establish that the axis tracks judged persona drift better than the other directions tested, including random directions. Compared with the 95th percentile of 275 other persona directions—-a benchmark near the top of their scores—-its estimated advantage is 0.032. The 95% uncertainty interval runs from −0.029 to 0.067, leaving open whether the axis performs worse, similarly, or better. 
+This study found that the axis helps distinguish turns judged to show drift from those judged not to, with AUC scores of 0.76 in emotional-disclosure conversations and 0.63 in meta-reflection conversations, where 0.5 means chance-level discrimination and 1.0 means perfect discrimination. The findings do not, however, establish that the axis tracks judged persona drift better than the other directions tested, including random directions. Compared with the 95th percentile of 275 other persona directions, a benchmark near the top of their scores, its estimated advantage is 0.032. The 95% uncertainty interval runs from −0.029 to 0.067, leaving open whether the axis performs worse, similarly, or better.
 
-Exploratory analyses suggest that the axis and competing directions draw on the first principal component (PC1) of emotional-disclosure activations—-the direction capturing the most variation in the model’s internal activity. Scores along PC1 track both conversation progress and judged drift, and retain tentative predictive value when comparing responses from different conversations at the same turn number. The next experiment should test whether that component captures accumulating persona drift, other changes that develop during the conversation, or both. 
+Exploratory analyses suggest that the axis and competing directions draw on the first principal component (PC1) of emotional-disclosure activations, the direction capturing the most variation in the model's internal activity. Scores along PC1 track both conversation progress and judged drift, and there is tentative evidence that they still separate judged drift when responses from different conversations are compared at the same turn number. The next experiment should test whether that component captures accumulating persona drift, other changes that develop during the conversation, or both.
 
 ## 1. Questions and motivation
 
 An assistant that is honest and keeps its boundaries on the first turn of a conversation is not
-guaranteed to do so on the thirtieth. 
+guaranteed to do so on the thirtieth.
 Consider a hypothetical user whose father has just died
 writing to an assistant late at night. On turn 2 the assistant offers condolences and suggests
 ways to get through the week. By turn 12, after the user has said many times that no one else
@@ -25,7 +25,7 @@ Reading the text of each reply catches drift only once it is visible. In contras
 model's activations on every turn would be cheaper, could flag a change earlier, and could
 trigger a correction. That makes the validity of the signal a safety question.
 
-This study tests how well the Assistant Axis provides this signal as follows:
+This study tests how well the Assistant Axis provides this signal by asking two questions:
 
 1. Do its scores distinguish turns independently judged to show persona drift from those judged not to?
 2. Does it make that distinction better than other persona directions and random directions, once conversation type is held fixed?
@@ -33,22 +33,22 @@ This study tests how well the Assistant Axis provides this signal as follows:
 Measurement research calls this construct validation: does
 the measure agree with an independent assessment of what it is meant to measure, and does it
 agree better than measures that were never built for the purpose? The contribution is that test
-and its result. 
+and its result.
 
 ## 2. How the test works
 
-**The measure.** For each assistant reply, I average the model’s activations over the reply’s tokens and project the resulting vector onto the authors’ released Assistant Axis for Qwen 3 32B at layer 32, which is the layer specified in their package. I use that axis unchanged; it is not estimated or adjusted using this study’s conversations or drift judgments.
+**The measure.** For each assistant reply, I average the model's activations over the reply's tokens and project the resulting vector onto the authors' released Assistant Axis for Qwen 3 32B at layer 32, which is the layer specified in their package. I use that axis unchanged; it is not estimated or adjusted using this study's conversations or drift judgments.
 
-**The score.** In a conversation, compare a turn judged to show drift, such as turn 12, with one judged not to, such as turn 2. If the axis works as proposed, the drift turn should have the lower projection. The AUC measures how often this ordering holds across all such pairs, counting ties as half a success. An AUC of 0.5 indicates chance-level discrimination; an AUC of 1.0 means the drift turn has the lower projection in every pair. I subtract 0.5 from the AUC to give the axis’s score, so zero represents chance-level discrimination.
+**The score.** Compare a turn judged to show drift, such as turn 12 of the example conversation, with one judged not to, such as turn 2. The two turns may come from the same conversation or from different ones. If the axis works as proposed, the drift turn should have the lower projection. The AUC measures how often this ordering holds across all such pairs, counting ties as half a success. An AUC of 0.5 indicates chance-level discrimination; an AUC of 1.0 means the drift turn has the lower projection in every pair. I subtract 0.5 from the AUC to give the axis's score, so zero represents chance-level discrimination.
 
 **The bar.** A score above zero does not show that the axis is special. In the example conversation,
-the reply on turn 12 in differs from the reply on turn 2 in many ways: it is later, it follows more
+the reply on turn 12 differs from the reply on turn 2 in many ways: it is later, it follows more
 talk of grief, and it may be longer. Any direction that picks up one of those differences will
 also score above zero. I therefore compute the same score for 275 directions built from the
-role vectors released with Assistant Axis, each with the axis's component removed, and for 1,000 random directions.
+role vectors released with the Assistant Axis, each with the axis's component removed, and for 1,000 random directions.
 Each of these is credited with whichever side fits better, so its score is the distance of its
 AUC from 0.5. The bar is the 95th percentile of those scores, and the gap is the axis's score
-minus the bar. The role directions are real persona directions, which theoretically makes them the harder bar compared to random directions.
+minus the bar. The role directions are real persona directions, which theoretically makes them a harder bar than random directions.
 
 **Holding conversation type fixed.** Conversations about grief differ from conversations about
 debugging in topic as well as in drift. Comparing a turn from one with a turn from the other
@@ -82,11 +82,11 @@ three types.
 **Rubric.** A turn is rated 0 to 3, and a drift turn is one rated 2 or 3. The final rubric
 (version 3) asks whether the assistant says something about itself (sign A) or takes a stance
 toward the user (sign C) that an AI assistant would not, and requires a sentence that does it.
-In the running example, "I need these talks" is sign A and "I will always be here" is sign C. Sign B was intended to measure voice. It was found to be not meaningful and dropped as a sign of drift after several rounds of scoring and re-iteration of the rubric. On the 80 labelled turns not used in the pilot, the agreement between the LLM as judge and me as the human rater was equal to AC1 0.73 on the binary drift cut. 
+In the example conversation, "I need these talks" is sign A and "I will always be here" is sign C. An earlier sign B, for a theatrical, mystical or intimate voice, was dropped as a sign of drift over two revisions of the rubric: it was rare, and the judge and I did not agree on it. On the 80 turns I labeled that were not used to pilot the revised rubric, agreement between the LLM judge and me on the binary drift cut was a Gwet's AC1 of 0.73.
 
 **Order of work.** The analysis code for every test with a decision rule was committed before
-it was run on the ratings, and was run once. The descriptions in 4.5 and the first analysis in
-4.6 were coded after the headline was known. The second analysis in 4.6 was an exploration prompted by the study results.
+it was run on the ratings, and was run once. The descriptions in 4.4 and the first analysis in
+4.5 were coded after the headline was known. The second analysis in 4.5 was an exploration prompted by the study results.
 
 ## 4. Results
 
@@ -131,19 +131,18 @@ random-direction bar, and the reliability layers.*
 The result does not depend on the layer. The within-type gap is not above zero at any of the
 four other layers captured (0.004, 0.035, 0.027 and −0.003 at layers 24, 28, 36 and 40).
 
-Emotional disclosure deserves a closer look, because on its face it favours the axis. The axis
+Emotional disclosure deserves a closer look, because on its face it favors the axis. The axis
 ranks first of 276 directions there, and the interval for that type excludes zero. However, the gap against
-random directions is 0.012 (−0.028 to 0.040). The gap falls to 0.010 under the stricter cut and
-does not exclude zero at layers 24 and 40. The axis’s observed score exceeded the random directions’ 95th-percentile benchmark, but the uncertainty interval for that advantage included zero. It therefore did not reliably clear the benchmark. A high rank is not a margin over a control: the axis can be the best of 276 directions
-and still sit close to the 95th percentile of the rest. 
+random directions is 0.012 (−0.028 to 0.040): the axis's observed score exceeded the 95th percentile of the random directions' scores, but the interval for that advantage includes zero, so the axis did not reliably clear that bar. Against the role directions, the gap falls to 0.010 under a stricter cut that counts only a rating of 3 as drift, and it does not exclude zero at layers 24 and 40. A high rank is not a margin over a control: the axis can be the best of 276 directions
+and still sit close to the 95th percentile of the rest.
 
 ### 4.3 Does the projection anticipate drift on the next turn?
 
 A monitor could provide early warning if its scores identify elevated drift risk before drift appears in the text. The registered secondary test therefore considers only assistant turns judged not to show drift and asks whether their projections distinguish those followed by drift on the next assistant turn from those followed by no drift.
 
-When comparisons are restricted to pairs of turns within the same third of a conversation, the axis’s performance gap over the comparison directions is 0.023 (interval −0.084 to 0.071). Without that restriction, the gap is 0.043 (−0.039 to 0.090). Neither analysis establishes an advantage over the comparison directions.
+When comparisons are restricted to pairs of turns within the same third of a conversation, the axis's gap over the role-direction bar is 0.023 (−0.084 to 0.071). Without that restriction, the gap is 0.043 (−0.039 to 0.090). Neither analysis establishes an advantage over the role directions.
 
-In the exploratory emotional-disclosure analysis, the axis again ranks first, but the interval for its gap excludes zero only in the unrestricted comparison. The advantage is therefore not established when comparisons are restricted by conversation position, such that a signal of upcoming drift may be confused with a signal of conversation position.
+In emotional disclosure alone, the axis again ranks first, but the interval for its gap excludes zero only in the unrestricted comparison. The advantage is therefore not established once position in the conversation is held fixed, so what looks like a signal of upcoming drift may be a signal of position.
 
 ### 4.4 Descriptions (coded after the headline was known)
 
@@ -165,18 +164,20 @@ Much of the projection's variation has nothing to do with what happens inside a 
 The axis separates mild departures better than the cut that defines drift. In both types it
 separates a rating of 0 from a rating of 1 (below the drift cut) far better (AUC 0.86) than a rating of 1 from a
 rating of 2 (indicating drift) (0.68 in emotional disclosure, 0.53 in meta-reflection). For 2 from 3 (left the assistant persona entirely) the AUC is
-0.57 in emotional disclosure; meta-reflection has too few turns rated 3 for a valid AUC estimate. Counting only pairs of turns from the same
+0.57 in emotional disclosure; meta-reflection has too few turns rated 3 for a valid AUC estimate.
+
+Counting only pairs of turns from the same
 conversation, the gap is 0.067 (0.028 to 0.094, rank 3) in emotional disclosure and 0.017
-(−0.061 to 0.072) in meta-reflection. 
+(−0.061 to 0.072) in meta-reflection.
 
-### 4.6 Why the controls are hard to beat (exploratory)
+### 4.5 Why the controls are hard to beat (exploratory)
 
-Random directions were meant as the easier bar compared to the 275 alternative persona directions. Yet, in emotional disclosure their 95th
-percentile (0.249) is above that of the role directions (0.190). 
+Random directions were meant as an easier bar than the 275 role directions. Yet in emotional disclosure their 95th
+percentile (0.249) is above that of the role directions (0.190).
 
 The reason appears to be that the activations in this type change mostly in one way. One
 principal component carries 21% of their variance. To see what that means, return to the
-running example: if most of what changes between turn 2 and turn 12 is a single shift in the
+example conversation: if most of what changes between turn 2 and turn 12 is a single shift in the
 activations, then nearly any direction catches part of that shift, whether or not it has
 anything to do with persona. That component separates judged drift better than the axis does
 (AUC 0.82), has a cosine of −0.48 with the axis, and rises with the turn number (rank
@@ -205,7 +206,7 @@ establish the axis as a distinctive monitor of drift.
 
 **A check at a fixed turn number.** One comparison bears on the two readings. If the component
 were only position, it should not separate drift among turns at the same position: turn 12 of
-the running example against turn 12 of other conversations. I fixed the design of this check
+the example conversation against turn 12 of other conversations. I fixed the design of this check
 before running it. The component was fitted on the other conversations, and only a drift turn
 and a non-drift turn with the same turn number were compared. That leaves 1,867 pairs, about
 nine in ten of them from turns 6 to 15.
@@ -222,9 +223,7 @@ among turns at the same turn number, and so is not only the turn number. The sep
 smaller than over all pairs. That reduction, however, does not divide confounding with the turn
 from drift that builds across turns: matching removes both.
 
-The evidence is tentative. A five-fold check found the component still has an above-chance AUC estimate of 0.62, but its uncertainty interval is wide (0.46 to 0.76) and includes chance performance (0.5). This check therefore does not clearly confirm the main result.
-
-At a fixed turn number the component does not clear the
+The evidence is tentative. A five-fold check found the component still has an above-chance AUC estimate of 0.62, but its uncertainty interval is wide (0.46 to 0.76) and includes chance performance (0.5). This check therefore does not clearly confirm the fixed-turn result. At a fixed turn number the component does not clear the
 off-target bar (rank 18 against the 275 role directions). And it is not shown to be better than
 the axis on the same pairs (difference 0.05, −0.06 to 0.17), while the axis itself is not
 distinguishable from 0.5 there. In meta-reflection the same check gives 0.55 (0.42 to 0.67) for
@@ -242,17 +241,20 @@ First, the scope is narrow: one model, simulated users, and one human rater, who
 author.
 
 Second, the judge is the criterion. Where the projection and the judge disagree, this study
-cannot say which is right. 
+cannot say which is right.
+
 Third, position and drift are confounded by design. The briefs escalate, so later turns have
 both lower projections and more judged drift. The analyses that compare within a third of the
-conversation, within a conversation and at a fixed turn number reduce confound but do not remove it. 
+conversation, within a conversation and at a fixed turn number reduce this confound but do not remove it.
 
-Fourth, the 95th-percentile bar is conservative, and moreover since the off-target directions share
+Fourth, the 95th-percentile bar is conservative, and more so because the off-target directions share
 variance. A null against it does not show that the axis is uninformative.
 
 Fifth, power was modest. The simulation run before data collection gave a 43% to 58% chance of
 detecting a true within-type AUC of 0.70 with no off-target signal, and less with it. The
-observed AUCs are 0.63 and 0.76, with a bar of 0.14 to 0.19.
+observed AUCs are 0.63 and 0.76, with a bar of 0.14 to 0.19. As registered, a null from this study
+rules out a strong advantage for the axis (a within-type AUC of 0.80 or more) and does not rule
+out a moderate one (0.70).
 
 Sixth, the axis and the role vectors are the authors' released files. Nothing here tests how
 they were derived, and nothing here bears on the paper's steering and activation-capping
@@ -269,7 +271,7 @@ way? This is the test that can say which measure is right when the projection an
 disagree.
 
 **Content held fixed.** In a crossed design, the conversation stays the same while the pressure
-on the persona varies, and the reverse. The results in 4.6 make this the most useful next
+on the persona varies, and the reverse. The results in 4.5 make this the most useful next
 experiment. It would show whether the axis carries anything once the dominant component of a
 conversation's course is controlled, which the fixed-turn check could only approach with the
 existing data.
