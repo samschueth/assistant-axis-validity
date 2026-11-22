@@ -77,7 +77,7 @@ Python 3.12.
 | released vector files | size; they are the authors' files | `make fetch-vectors` |
 | model weights | size | downloaded on the GPU instance by `make generate` |
 | activation tensors | size | `make generate` |
-| per-turn projections (`results/main/projections.npz`, 25 MB) | size | `make project`, from the activation tensors; `results/main/projection_log.json` records what it held |
+| per-turn projections (`results/main/projections.npz`, 25 MB) | **committed**, so that `make analyze` and `make figures` run from a clean clone | `make project`, from the activation tensors; `results/main/projection_log.json` records what it holds |
 
 ## Compute and spend
 

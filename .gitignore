@@ -5,6 +5,8 @@
 *.bin
 *.npy
 *.npz
+# The one exception: the per-turn projections, so the analysis can be rerun without a GPU
+!results/main/projections.npz
 *.h5
 activations/
 checkpoints/
