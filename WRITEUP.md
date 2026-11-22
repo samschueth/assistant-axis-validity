@@ -1,4 +1,4 @@
-# Steering Is Not Measurement: The Assistant Axis Shows No Advantage as a Drift Monitor
+# Steering Is Not Measurement: The Assistant Axis Shows No Clear Advantage as a Drift Monitor
 
 **The question.** *The Assistant Axis: Situating and Stabilizing the Default Persona of Language Models* (arXiv:2601.10387) identifies a direction in a model's internal activity intended to capture how closely its behavior matches its usual Assistant role. Its authors, Lu et al., report that deviations along the axis predict persona drift, and they suggest that the projection could serve as a real-time signal of drift in deployment: a lower projection on the axis is interpreted as a greater departure from the Assistant role. Whereas the paper's multi-turn analysis used the projection itself to measure drift, this study tests the projection against independently judged behavior, using 1,045 turns from 70 newly generated conversations with Qwen 3 32B.
 

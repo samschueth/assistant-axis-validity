@@ -1,4 +1,4 @@
-# Steering Is Not Measurement: The Assistant Axis Shows No Advantage as a Drift Monitor
+# Steering Is Not Measurement: The Assistant Axis Shows No Clear Advantage as a Drift Monitor
 
 **Does the Assistant Axis projection track judged persona drift better than other persona
 directions do, once conversation type is held fixed?**
