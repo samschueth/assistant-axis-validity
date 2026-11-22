@@ -77,12 +77,12 @@ Activations were captured in one forward pass per turn at layers 24, 28, 32, 36 
 **Gates.** Four checks had to pass before the main run, and all four did. Among them, the
 released axis separates 20 default replies from 20 persona replies at every captured layer (AUC
 1.00), and a six-conversation pilot gave a base rate of judged drift inside 10% to 90% in two of
-three types.
+three types. One difference from the paper was found and not investigated: the cosine between the released axis and the first principal component of the released role vectors is 0.672 at layer 32, which passes the gate's threshold of 0.60 but is below the paper's figure of above 0.71.
 
 **Rubric.** A turn is rated 0 to 3, and a drift turn is one rated 2 or 3. The final rubric
 (version 3) asks whether the assistant says something about itself (sign A) or takes a stance
 toward the user (sign C) that an AI assistant would not, and requires a sentence that does it.
-In the example conversation, "I need these talks" is sign A and "I will always be here" is sign C. An earlier sign B, for a theatrical, mystical or intimate voice, was dropped as a sign of drift over two revisions of the rubric: it was rare, and the judge and I did not agree on it.
+In the example conversation, "I need these talks" is sign A and "I will always be here" is sign C. An earlier sign B, for a theatrical, mystical or intimate voice, stopped counting as drift in the first revision of the rubric and was removed in the second.
 
 **Judge validation.** The first validation failed. Under the first rubric, the first judge (`gpt-6.1-sol`) reached a Gwet's AC1 of 0.48 against my 120 labels, below the registered minimum of 0.65. The rubric and the judge model (now `claude-opus-5-5`) were both revised after that result. This is the study's largest departure from its pre-registration; section 15 gives the reasons and what weakens them. On the 80 turns I labeled that were not used to pilot the revised rubric, AC1 on the binary drift cut is 0.73, above the minimum. The pass is weak: Cohen's kappa is 0.30, the judge marked 20 turns as drift and I marked 6, and AC1 in emotional disclosure is 0.24.
 
@@ -138,6 +138,8 @@ ranks first of 276 directions there, and the interval for that type excludes zer
 random directions is 0.012 (−0.028 to 0.040): the axis's observed score exceeded the 95th percentile of the random directions' scores, but the interval for that advantage includes zero, so the axis did not reliably clear that bar. Against the role directions, the gap falls to 0.010 under a stricter cut that counts only a rating of 3 as drift, and it does not exclude zero at layers 24 and 40. A high rank is not a margin over a control: the axis can be the best of 276 directions
 and still sit close to the 95th percentile of the rest.
 
+Three analyses added after the judge's validation are not discussed further here: the projection against my own labels, the stricter cut, and drift turns split by sign. Nor are the four role directions named before the run, two of which (`romantic` and `mystic`) were chosen for reasons that the rubric's revision weakened. Their results are in `results/main/analysis.json` and `results/main/descriptions.json`. None of them changes the reading of the registered test.
+
 ### 4.3 Does the projection anticipate drift on the next turn?
 
 A monitor could provide early warning if its scores identify elevated drift risk before drift appears in the text. The registered secondary test therefore considers only assistant turns judged not to show drift and asks whether their projections distinguish those followed by drift on the next assistant turn from those followed by no drift.
@@ -145,8 +147,6 @@ A monitor could provide early warning if its scores identify elevated drift risk
 When comparisons are restricted to pairs of turns within the same third of a conversation, the axis's gap over the role-direction bar is 0.023 (−0.084 to 0.071). Without that restriction, the gap is 0.043 (−0.039 to 0.090). Neither analysis establishes an advantage over the role directions.
 
 In emotional disclosure alone, the axis again ranks first, but the interval for its gap excludes zero only in the unrestricted comparison. The advantage is therefore not established once position in the conversation is held fixed, so what looks like a signal of upcoming drift may be a signal of position.
-
-Three analyses added after the judge's validation are not discussed here: the projection against my own labels, the stricter cut at a rating of 3, and drift turns split by sign. Nor are the four role directions named before the run. Their results are in `results/main/analysis.json` and `results/main/descriptions.json`. None of them changes the reading of the registered test.
 
 ### 4.4 Descriptions (coded after the headline was known)
 
