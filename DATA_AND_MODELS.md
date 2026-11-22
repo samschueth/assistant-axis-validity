@@ -8,8 +8,8 @@ recorded here first.
 | Model | Role | Licence | Notes |
 |---|---|---|---|
 | `Qwen/Qwen3-32B` | the only model studied | Apache-2.0 | ungated; 64 layers; thinking mode off for every generation |
-| simulated-user model | drives the user side of each conversation | API terms | `claude-sonnet-5-5`, effort low; not yet used |
-| judge model | rates drift on every assistant turn | API terms | `gpt-6.1-sol`, reasoning effort high |
+| simulated-user model | drives the user side of each conversation | API terms | `claude-sonnet-5-5`, effort low; used for the pilot and the main run |
+| judge model | rates drift on every assistant turn | API terms | `claude-opus-5-5`, reasoning effort high, from version 2 of the rubric on, including every rating the analysis uses; `gpt-6.1-sol`, reasoning effort high, for the pilot and the first validation under version 1 (PREREGISTRATION.md section 15) |
 
 No second model is run this round.
 
@@ -98,11 +98,16 @@ Budget estimate ≈ $50–65; hard cap $100, confirmed by the owner on 2026-11-1
 | 2026-11-17 | simulated-user API, `claude-sonnet-5-5` | 467 logged calls | main run, second part | about $4.60 (from logged token counts; price assumed, not verified) |
 | 2026-11-17 | laptop only | about 2 s | projections of the 1,045 main-run turns | $0 |
 | 2026-11-18 | judge API, `gpt-6.1-sol` | 120 calls (901 k input tokens, 185 k cached, 34 k output) | first judge validation: the 120 sampled turns | about $2.20 (list price not verified) |
+| 2026-11-18 | judge API, `claude-opus-5-5` | 40 calls | pilot of rubric version 2: sampled items 1 to 40 | not logged; token counts in `results/main/judge_log.rubric2.sample.items1-40.json` |
+| 2026-11-19 | judge API, `claude-opus-5-5` | 80 calls | judge validation under rubric version 3: sampled items 41 to 120 | not logged; token counts in `results/main/judge_log.rubric3.sample.items41-120.json` |
+| 2026-11-19 | judge API, `claude-opus-5-5` | 72 + 893 calls, in two stages | the remaining 965 turns under rubric version 3 | about $15.00 ($1.36 + $13.64, from `results/main/judge_log.rubric3.json`) |
+| 2026-11-19 to 2026-11-22 | laptop only | n/a | registered analyses, descriptions, exploratory analyses, sensitivity check, figures | $0 |
 
-**Running total: about $73.** Every instance has been deleted; nothing is billing. The judge
-has rated only the 120 sampled turns. Rating all 1,045 turns would cost about $17 to $21 (list
-price not verified; the sampled turns averaged 9,000 input tokens each), and a second validation
-on 80 turns about $1.50, so the study would end at about $92 to $96 against the cap of $100.
+**Final total: about $88, plus the 120 judge calls of the rubric version 2 pilot and the
+version 3 validation, whose cost was not logged (their token counts are in their logs). The cap
+was $100.** Every instance has been
+deleted; nothing is billing. The judge has rated all 1,045 turns. The notes below are the log as
+it was kept during the run, newest first.
 
 **Main run complete, 22:27 UTC, 2026-11-17.** 70 conversations, 1,045 turns: 68 conversations of
 15 turns, and the two that were cut short in the first part and stay as they are (`meta-23`, 14

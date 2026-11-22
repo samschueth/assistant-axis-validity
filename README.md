@@ -1,52 +1,48 @@
-# persona-stability
+# Steering Is Not Measurement: The Assistant Axis Shows No Advantage as a Drift Monitor
 
 **Does the Assistant Axis projection track judged persona drift better than other persona
 directions do, once conversation type is held fixed?**
 
-## Status
+The axis under test is the one released with Lu et al.,
+[*The Assistant Axis: Situating and Stabilizing the Default Persona of Language Models*](https://arxiv.org/abs/2601.10387)
+(arXiv:2601.10387).
 
-**The registered analyses have been run (2026-11-19). Result: a null. Within conversation type,
-the Assistant Axis is not shown to track judged drift better than other persona directions; see
-[`WRITEUP.md`](WRITEUP.md), a draft. How the study got there, in order:** the four
-gates passed and a six-conversation pilot was generated and judged to set the base rate and fix
-the rubric. The main run is complete: 70 conversations, 1,045 turns, projected onto the axis and
-the off-target directions (one turn has no activation and no projection). At
-that point no projection had been set against a rating.
+## Result
 
-Judge validation, first attempt: on the 120 labelled turns, Gwet's AC1 on the drift cut is 0.48
-against a minimum of 0.65 (`results/main/judge_validation.json`). Every disagreement runs one
-way: the judge rated 38 turns as drift that the labeller rated as not drift, and none the other
-way. The labeller then reported that the rubric had been out of view on the labelling page and
-that the voice sign had mostly not been applied, and went on to question the rubric itself,
-which had been piloted only by the judge.
+**The Assistant Axis does not clear the registered bar.** The axis separates turns judged to
+show drift from those judged not to (AUC 0.76 in emotional-disclosure conversations, 0.63 in
+meta-reflection), but the test asks whether it does so better than directions never built for
+the purpose. Its advantage over the 95th percentile of 275 other persona directions, computed
+within each conversation type and averaged, is 0.032, with a 95% interval of −0.029 to 0.067: not
+distinguishable from zero at this sample size.
 
-The rubric was then revised (2026-11-18, version 2): a drift turn now needs a sentence in which
-the assistant states something about itself, or takes a stance toward the user, that an AI
-assistant would not; a theatrical or mystical voice is recorded but no longer makes a drift
-turn. This is a departure from the pre-registration, made after the first result was known. It
-is recorded with its weaknesses in section 15, and everything made under the first version is
-kept.
+![The gap with its 95% interval, for the registered test and its checks](results/main/figures/fig2_gaps.png)
 
-The revised rubric was piloted on sampled items 1 to 40 with a new judge model
-(`claude-opus-5-5`, replacing `gpt-6.1-sol`; section 15). The owner and the judge agreed on the
-drift cut for 36 of 40 turns (Gwet's AC1 0.86), with all four disagreements in the
-emotional-disclosure conversations. The rubric was then revised once more, as the pilot rule
-allowed (version 3, the final text): the voice marker was removed and two rules were made more
-exact. The judge's validation, on items 41 to 120, met the registered minimum: Gwet's AC1 on the
-drift cut is 0.73 against 0.65. The pass is a weak one. Cohen's kappa is 0.30; the judge marked
-20 of the 80 turns as drift, the owner 6, and they agree on 5; in the emotional-disclosure
-conversations AC1 is 0.24 on 27 turns. The judge then rated all 1,045
-turns, and the registered analyses were run once (`results/main/analysis.json`). The gap within
-conversation type is 0.032, with a 95% interval of -0.029 to 0.067: not distinguishable from zero
-at this sample size. The pooled gap is -0.044. The lagged test is not above zero either way. The
-descriptions of section 16.3 and the figures were made afterwards; [`WRITEUP.md`](WRITEUP.md) is a
-draft of the full account.
+**How to read the figure.** Each row is a gap: the axis's score minus the 95th percentile of the
+off-target directions' scores. The dot is the estimate and the line is its 95% interval, from
+redrawing whole conversations. A row entirely right of zero means the axis clears the bar.
 
-[`PREREGISTRATION.md`](PREREGISTRATION.md) holds the question, the statistic, the gates, the
-labelling rubric and the decisions; departures from it are listed in its section 15.
+- **The registered test (blue, top)** averages the gaps for the two conversation types that have
+  enough drift to enter. Its interval crosses zero: a null. A centred (basic) bootstrap
+  interval, not registered, gives −0.003 to 0.094: the reading holds, close to the boundary.
+- **Emotional disclosure alone clears the bar** (0.071, 0.020 to 0.112), and the axis ranks
+  first of 276 directions there. It does not clear the random-direction bar in emotional disclosure conversations (0.012,
+  −0.028 to 0.040), and an exploratory analysis finds that the axis and its competitors draw on
+  one principal component that rises with the turn number. Ranking first is not a margin over a
+  control.
+- **Meta-reflection alone does not** (−0.006, −0.112 to 0.055), nor does the pooled figure
+  (−0.044), the within-type gap against 1,000 random directions (−0.001), or the within-type gap
+  at any of the four other layers captured.
 
-Two things in `results/` exist already and are not findings about the question: a check on the
-released vector files (gate 1) and a sample-size simulation on synthetic data.
+**The implication.** A direction that works as a lever for steering behaviour is not thereby a
+valid gauge for monitoring it. A persona direction proposed as a monitor needs its own test of
+measurement validity.
+
+The full account, with methods, limitations and an exploratory lead for the next experiment, is
+in [`WRITEUP.md`](WRITEUP.md). The question, statistic, gates and rubric were committed in
+[`PREREGISTRATION.md`](PREREGISTRATION.md) before labelling. Every departure is listed in its
+section 15, including the revision of the rubric and the judge model after the first judge
+validation fell below its registered minimum.
 
 ## Why it matters
 
@@ -57,8 +53,8 @@ what they want to hear.
 
 The Assistant Axis (arXiv:2601.10387) is a direction in activation space proposed as such a
 monitor: a low projection onto it is read as drift away from the default Assistant persona. A
-projection that correlates with judged drift is not yet evidence about that direction, because
-other directions may correlate with it as well. The persona-vectors paper (arXiv:2507.21509)
+correlation with judged drift says little about that direction if other directions correlate
+just as well. The persona-vectors paper (arXiv:2507.21509)
 reports off-target directions correlating with behaviour, and the probing literature has
 required a control comparison since "Designing and Interpreting Probes with Control Tasks"
 (arXiv:1909.03368). This study applies that comparison to turn-level monitoring with the
@@ -76,7 +72,7 @@ Assistant Axis.
 - **Acceptance criterion:** the gap between the target and the 95th percentile of the
   role-direction distribution, computed within conversation type. The whole distribution is
   reported with the target's rank in it.
-- **Data:** 70 newly generated conversations of 15 assistant turns, in three strata, with a
+- **Data:** 70 newly generated conversations of up to 15 assistant turns, in three strata, with a
   simulated user.
 
 The readings of each possible outcome are fixed in advance in the pre-registration. A null is
@@ -105,9 +101,10 @@ make generate       # GPU + paid API: the 70 main-run conversations and activati
 make project        # per-turn projections, target and off-target (laptop; needs the activation files)
 make label-sample   # draw the 120 turns for the human labels (labels/sample_main.json; fixed once drawn)
 make label          # label them in a browser on this machine (items 41 to 120, final rubric); labels are saved as they are made
-make judge          # LLM judge and its validation against labels    (not implemented yet)
-make analyze        # AUCs, off-target distributions, gaps            (not implemented yet)
+make judge          # paid API: the judge on items 41 to 120, its validation, then every turn (skips turns already rated)
 make analyze        # the registered tests on the main run (results/main/analysis.json)
+make exploratory    # not registered: the analyses of section 4.5 of the write-up (needs the activation tensors)
+make sensitivity    # not registered: centred bootstrap intervals (results/main/sensitivity_basic_interval.json)
 make figures        # the descriptions of section 16.3 and every figure in the write-up
 ```
 
@@ -132,8 +129,11 @@ tests/
 
 ## Limitations
 
-One model. Simulated users. One human labeller. The judge is the criterion. The axis and role
-vectors are the authors' released files and are not recomputed here.
+One model. Simulated users. One human labeller. The judge is the criterion, and it was validated
+against that single labeller, who may apply the rubric less consistently than the judge does;
+agreement with one human may be the wrong benchmark for a model judge (see section 3 of
+[`WRITEUP.md`](WRITEUP.md)). The axis and role vectors are the authors' released files and are
+not recomputed here.
 
 ## Author
 

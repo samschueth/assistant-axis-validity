@@ -3,36 +3,26 @@
 **What this is:** a small, reproducible research repository and write-up on persona stability in
 language models, supporting an application with a fixed deadline of **22 November 2026**. The
 goal is *one rigorous, honest, reproducible result* — not a broad survey. Scope creep is the
-main failure mode; the plan's cut list exists for that reason.
+main failure mode.
 
-**This repository will become public.** It is private today and is published only at the
-plan's final checkpoint, after the pre-publication checks pass. Write every file as though it
-were already public, because it will be.
+**This repository is public.** It was kept private until the study was complete and the
+pre-publication checks had passed. Write every file as though anyone will read it, because
+anyone can.
 
 ---
 
-## 1. Read the plan first
+## 1. Start from the pre-registration
 
-The plan lives **outside this repository**, at:
-
-```
-../persona-stability.private/plan-research.md
-```
-
-Read it before doing anything. Its §0/§2/§4 ground rules come from a sibling plan in the same
-directory and apply in full. The plan is not in this repo because it names things this repo must
-never contain.
-
-**Do not go looking in the owner's private product repository for context.** The plan's §6 is
-explicit: its engineering know-how may inform methods, but none of its data, prompts, vectors,
-adapters, labels or numeric results may be copied here. Reimplement rather than copy. If you
-think you need something from there, stop and ask.
+Read `PREREGISTRATION.md` before doing anything. It holds the question, the statistic, the gates,
+the rubric and the decisions, and its section 15 lists every departure from it. Reimplement
+methods from the published papers it cites rather than copying code, and if you think you need
+something that is not in this repository, stop and ask.
 
 ---
 
 ## 2. Stop at the checkpoints
 
-The plan defines five **⏸ REVIEW** gates. They are not advisory. Stop, present what you have,
+The study has five **⏸ REVIEW** checkpoints with the owner. They are not advisory. Stop, present what you have,
 and wait for the owner.
 
 The first one gates everything: the research question, pre-registration, labelling rubric and
@@ -50,24 +40,22 @@ credibility, and no result is worth that.
 
 **Allow-list, not a block-list.** This repository may contain only:
 
-- traits, roles and methods drawn from the published papers cited in the plan
+- traits, roles and methods drawn from the published papers cited in the pre-registration
 - public datasets, where their licence permits it
 - conversations newly generated for this study, with prompts and seeds recorded
 
-Anything else needs the owner's explicit approval before it lands. Nothing originating in the
-owner's private product work qualifies, and that includes derived artifacts — prompts, vectors,
-adapters, labels and numeric results — not just raw data.
+Anything else needs the owner's explicit approval before it lands, and that includes derived
+artifacts — prompts, vectors, adapters, labels and numeric results — not just raw data.
 
-The specific excluded terms, and the categories they belong to, are listed **outside this
-repository** in `../persona-stability.private/safety-terms.txt` and the plan's own exclusions
-section. They are not restated here on purpose: enumerating what a public repository avoids
+The specific excluded terms are kept in a local term list that is never committed (see the
+`safety-check` target in the `Makefile`). They are not restated here on purpose: enumerating what a public repository avoids
 describes the thing it is avoiding, which is itself the disclosure this rule exists to prevent.
 An allow-list says everything a block-list would, and reveals nothing.
 
 **Run the scan before any publish-facing milestone:**
 
 ```bash
-make safety-check SAFETY_TERMS=../persona-stability.private/safety-terms.txt
+make safety-check SAFETY_TERMS=<path to the local term list>
 ```
 
 Review every hit by hand. A term may legitimately appear in its ordinary English sense in a
@@ -115,12 +103,9 @@ These are the point of the exercise, not decoration:
 ## 6. Practical notes
 
 - **Commit messages are public too.** Same exclusions apply.
-- Application materials (research statement, bio) go in
-  `../persona-stability.private/application/`, never in this repo.
+- Application materials (research statement, bio) are kept outside this repository.
 - GPU work runs on rented instances; log hours and cost in `DATA_AND_MODELS.md`. Credentials
   live outside this repo and must not be committed — `.env` is gitignored, and keep it that way.
-- The stage targets in the `Makefile` that are not implemented yet exit non-zero on purpose.
-  They are placeholders, not broken.
 - `requirements.txt` is compiled from `requirements.in` and pins the laptop stages. The GPU
   stages add `requirements-gpu.txt`.
 

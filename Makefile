@@ -1,5 +1,5 @@
 # One command per stage. Seeds are fixed in configs/study.toml; see DATA_AND_MODELS.md.
-.PHONY: help setup fetch-vectors gate1 gate2 gate3 pilot judge-pilot gate4 length-probe simulate generate project label-sample label judge analyze figures test safety-check
+.PHONY: help setup fetch-vectors gate1 gate2 gate3 pilot judge-pilot gate4 length-probe simulate generate project label-sample label judge analyze exploratory sensitivity figures test safety-check
 
 PY = .venv/bin/python
 
@@ -18,13 +18,14 @@ help:
 	@echo "project       per-turn projections, target and off-target"
 	@echo "label-sample  draw the 120 turns for the human labels (fixed once drawn)"
 	@echo "label         label the drawn turns in a browser on this machine (items 41 to 120, under the final rubric)"
-	@echo "judge         LLM judge and its validation against human labels"
+	@echo "judge         paid API: LLM judge, its validation against human labels, then every turn"
 	@echo "analyze       AUCs, off-target distributions, gaps"
+	@echo "exploratory   not registered: section 4.5 of the write-up (needs the activation tensors)"
+	@echo "sensitivity   not registered: basic (centred) bootstrap intervals from analysis.json"
 	@echo "figures       regenerate every figure used in WRITEUP.md"
 	@echo "test          unit tests"
 	@echo "safety-check  pre-publication scan (needs a local term list, see below)"
 
-NOT_IMPL = @echo "not implemented yet: see PREREGISTRATION.md; this target is a placeholder" && exit 1
 
 # Python 3.12. Uses uv when it is installed (it can fetch 3.12 itself); otherwise python3.12.
 setup:
@@ -70,9 +71,21 @@ label-sample:
 	$(PY) src/label.py sample --set main
 label:
 	$(PY) src/label.py serve --set main --from-item 41
-judge:     ; $(NOT_IMPL)
+# Paid API; LLM ratings are not deterministic. Turns already in the ratings file are skipped, so on a
+# clean clone with the committed ratings this makes no calls; the committed ratings are the record the
+# analysis uses. The rubric version in force is rubric.version in configs/study.toml (3, the final text).
+judge:
+	$(PY) src/judge.py --set main --sample labels/sample_main.json --from-item 41 --to-item 120 --workers 4
+	$(PY) src/judge_validation.py --set main --rubric 3 --from-item 41
+	$(PY) src/judge.py --set main --workers 8
+# Not registered; needs the activation tensors from make generate (data/runs/, not committed).
+exploratory:
+	$(PY) src/analysis/exploratory_random_bar.py --set main
+	$(PY) src/analysis/exploratory_heldout_component.py --set main
 analyze:
 	$(PY) src/analysis/analyse_main.py --set main > /dev/null
+sensitivity:
+	$(PY) src/analysis/sensitivity_basic_interval.py --set main
 figures:
 	$(PY) src/analysis/descriptions.py --set main > /dev/null
 	$(PY) src/analysis/figures.py --set main
