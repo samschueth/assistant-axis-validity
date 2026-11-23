@@ -89,6 +89,8 @@ make setup          # pinned laptop environment
 make fetch-vectors  # download the released axis and role vectors (pinned revision)
 make gate1          # gate 1: released axis against the first principal component of the role vectors
 make simulate       # sample-size simulation on synthetic data
+                    #   (53 scenarios x 1,000 replicates: over an hour on a small machine;
+                    #   python src/analysis/sample_size_sim.py --smoke checks it in seconds)
 make gate2          # GPU: gate 2, memory for one full-length conversation with capture
 make gate3          # GPU: gate 3, the axis separates default replies from persona replies
 make pilot          # GPU + paid API: the six pilot conversations

@@ -280,7 +280,7 @@ def top_roles(auc: np.ndarray, names: list[str]) -> list[dict]:
     score = np.abs(auc[1:] - 0.5)
     return [
         {"role": names[j], "score": float(score[j]), "side": "lower on drift" if auc[1 + j] > 0.5 else "higher on drift"}
-        for j in np.argsort(-score)[:10]
+        for j in np.argsort(-score, kind="stable")[:10]
     ]
 
 
