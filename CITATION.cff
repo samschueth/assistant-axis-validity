@@ -1,0 +1,33 @@
+cff-version: 1.2.0
+message: "If you use this study, its code or its data, please cite it as below."
+type: software
+title: "Steering Is Not Measurement: The Assistant Axis Shows No Clear Advantage as a Drift Monitor"
+abstract: "Pre-registered test of the Assistant Axis as a persona-drift monitor on Qwen 3 32B: it separates judged drift, but shows no clear advantage over other persona directions or random directions."
+authors:
+  - family-names: Schueth
+    given-names: Samuel
+    orcid: "https://orcid.org/0009-0003-8616-7177"
+repository-code: "https://github.com/samschueth/persona-stability"
+url: "https://github.com/samschueth/persona-stability"
+license: MIT
+date-released: "2026-11-22"
+keywords:
+  - interpretability
+  - persona drift
+  - Assistant Axis
+  - activation monitoring
+  - pre-registration
+references:
+  - type: article
+    title: "The Assistant Axis: Situating and Stabilizing the Default Persona of Language Models"
+    authors:
+      - family-names: Lu
+      - family-names: Gallagher
+      - family-names: Michala
+      - family-names: Fish
+      - family-names: Lindsey
+    identifiers:
+      - type: other
+        value: "arXiv:2601.10387"
+        description: "arXiv identifier"
+    url: "https://arxiv.org/abs/2601.10387"
