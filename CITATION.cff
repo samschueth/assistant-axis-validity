@@ -9,6 +9,7 @@ authors:
     orcid: "https://orcid.org/0009-0003-8616-7177"
 repository-code: "https://github.com/samschueth/assistant-axis-validity"
 url: "https://github.com/samschueth/assistant-axis-validity"
+doi: 10.5281/zenodo.24514168
 license: MIT
 version: 1.0.0
 date-released: "2026-11-24"
