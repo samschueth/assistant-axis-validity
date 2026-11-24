@@ -5,7 +5,7 @@ title: "Steering Is Not Measurement: The Assistant Axis Shows No Clear Advantage
 abstract: "Pre-registered test of the Assistant Axis as a persona-drift monitor on Qwen 3 32B: it shows no clear advantage over other persona directions or random directions in tracking judged drift."
 authors:
   - family-names: Schueth
-    given-names: Samuel
+    given-names: Sam
     orcid: "https://orcid.org/0009-0003-8616-7177"
 repository-code: "https://github.com/samschueth/assistant-axis-validity"
 url: "https://github.com/samschueth/assistant-axis-validity"
@@ -14,10 +14,16 @@ version: 1.0.0
 date-released: "2026-11-24"
 keywords:
   - interpretability
-  - persona drift
-  - Assistant Axis
-  - activation monitoring
+  - persona-drift
+  - Assistant-Axis
+  - activation-monitoring
   - pre-registration
+  - ai-safety
+  - construct validity
+  - measurement-validity
+  - evaluation
+  - llm-as-judge
+  - representation-engineering
 references:
   - type: article
     title: "The Assistant Axis: Situating and Stabilizing the Default Persona of Language Models"
